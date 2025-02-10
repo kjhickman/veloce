@@ -7,8 +7,7 @@ using Zugfish.SelfPlay;
 // Console.WriteLine("Initial Board:");
 // Console.WriteLine(board.Render());
 //
-// Move move = new Move("e2e4");
-// board.MakeMove(move);
+// board.MakeMove("e2e4");
 // Console.WriteLine("After Move:");
 // Console.WriteLine(board.Render());
 //
@@ -16,12 +15,11 @@ using Zugfish.SelfPlay;
 // Console.WriteLine("After Unmaking Move:");
 // Console.WriteLine(board.Render());
 
-var board = new Board("r1bqkb1r/pppp1ppp/2n2n2/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4");
+var board = new Board("7k/8/8/8/Pp6/8/8/1K6 b - a3 0 1");
 Console.WriteLine("Initial Board:");
 Console.WriteLine(board.Render());
 
-var move = new Move("e1g1");
-board.MakeMove(move);
+board.MakeMove("b4a3");
 Console.WriteLine("After Move:");
 Console.WriteLine(board.Render());
 
