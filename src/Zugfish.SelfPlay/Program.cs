@@ -15,11 +15,11 @@ using Zugfish.SelfPlay;
 // Console.WriteLine("After Unmaking Move:");
 // Console.WriteLine(board.Render());
 
-var board = new Board("7k/8/8/8/Pp6/8/8/1K6 b - a3 0 1");
+var board = new Board("3k4/6P1/8/8/8/8/8/3K4 w - - 0 1");
 Console.WriteLine("Initial Board:");
 Console.WriteLine(board.Render());
 
-board.MakeMove("b4a3");
+board.MakeMove("g7g8q");
 Console.WriteLine("After Move:");
 Console.WriteLine(board.Render());
 
