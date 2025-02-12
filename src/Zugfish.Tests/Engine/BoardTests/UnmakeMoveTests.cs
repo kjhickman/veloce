@@ -29,7 +29,7 @@ public class UnmakeMoveTests
     }
 
     [Fact]
-    public void UnmakeMove_WhiteKingsideCastling_RestoresOriginalPosition()
+    public void UnmakeMove_KingsideCastlingWhite_RestoresOriginalPosition()
     {
         // Set up a board with only the white king on e1 and a white rook on h1.
         const string fen = "3k4/8/8/8/8/8/8/4K2R w K - 0 1";
@@ -45,7 +45,7 @@ public class UnmakeMoveTests
     }
 
     [Fact]
-    public void UnmakeMove_WhiteQueensideCastling_RestoresOriginalPosition()
+    public void UnmakeMove_QueensideCastlingWhite_RestoresOriginalPosition()
     {
         // Set up a board with the white king on e1 and a white rook on a1.
         const string fen = "3k4/8/8/8/8/8/8/R3K3 w Q - 0 1";
@@ -60,7 +60,7 @@ public class UnmakeMoveTests
     }
 
     [Fact]
-    public void UnmakeMove_BlackKingsideCastling_RestoresOriginalPosition()
+    public void UnmakeMove_KingsideCastlingBlack_RestoresOriginalPosition()
     {
         // Set up a board with the black king on e8 and a black rook on h8.
         const string fen = "4k2r/8/8/8/8/8/8/4K3 b k - 0 1";
@@ -75,7 +75,7 @@ public class UnmakeMoveTests
     }
 
     [Fact]
-    public void UnmakeMove_BlackQueensideCastling_RestoresOriginalPosition()
+    public void UnmakeMove_QueensideCastlingBlack_RestoresOriginalPosition()
     {
         // Set up a board with the black king on e8 and a black rook on a8.
         const string fen = "r3k3/8/8/8/8/8/8/4K3 w q - 0 1";
@@ -90,7 +90,7 @@ public class UnmakeMoveTests
     }
 
     [Fact]
-    public void UnmakeMove_WhiteDoublePawnPush_RestoresOriginalPosition()
+    public void UnmakeMove_DoublePawnPushWhite_RestoresOriginalPosition()
     {
         // Using the standard starting position:
         // A double pawn push from e2 to e4 should set en passant to e3.
@@ -104,7 +104,7 @@ public class UnmakeMoveTests
     }
 
     [Fact]
-    public void UnmakeMove_BlackDoublePawnPush_RestoresOriginalPosition()
+    public void UnmakeMove_DoublePawnPushBlack_RestoresOriginalPosition()
     {
         // In the standard starting position, white moves first.
         // After a dummy white move, a black pawn from e7 moves to e5,
@@ -127,7 +127,7 @@ public class UnmakeMoveTests
     [InlineData("r", MoveType.PromoteToRook)]
     [InlineData("b", MoveType.PromoteToBishop)]
     [InlineData("n", MoveType.PromoteToKnight)]
-    public void UnmakeMove_WhitePromotion_RestoresOriginalPosition(string promo, MoveType expectedType)
+    public void UnmakeMove_PromotionWhite_RestoresOriginalPosition(string promo, MoveType expectedType)
     {
         // Create a position with a white pawn on g7 (ready to promote) and a black king.
         const string fen = "3k4/6P1/8/8/8/8/8/3K4 w - - 0 1";
@@ -146,7 +146,7 @@ public class UnmakeMoveTests
     [InlineData("r", MoveType.PromoteToRook)]
     [InlineData("b", MoveType.PromoteToBishop)]
     [InlineData("n", MoveType.PromoteToKnight)]
-    public void UnmakeMove_BlackPromotion_RestoresOriginalPosition(string promo, MoveType expectedType)
+    public void UnmakeMove_PromotionBlack_RestoresOriginalPosition(string promo, MoveType expectedType)
     {
         // Create a position with a black pawn on a2 (ready to promote) and a white king.
         const string fen = "3k4/8/8/8/8/8/p7/3K4 b - - 0 1";
@@ -161,7 +161,7 @@ public class UnmakeMoveTests
     }
 
     [Fact]
-    public void UnmakeMove_WhiteEnPassant_RestoresOriginalPosition()
+    public void UnmakeMove_EnPassantWhite_RestoresOriginalPosition()
     {
         // Set up a position where a white pawn on d5 can capture en passant a black pawn on e5.
         const string fen = "4k3/8/8/3Pp3/8/8/8/4K3 w - e6 0 1";
@@ -175,7 +175,7 @@ public class UnmakeMoveTests
     }
 
     [Fact]
-    public void UnmakeMove_BlackEnPassant_RestoresOriginalPosition()
+    public void UnmakeMove_EnPassantBlack_RestoresOriginalPosition()
     {
         // Set up a position where a black pawn on d4 can capture en passant a white pawn on e4.
         const string fen = "8/8/8/8/3pP3/8/8/8 b - e3 0 1";
