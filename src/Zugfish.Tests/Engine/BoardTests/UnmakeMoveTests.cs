@@ -38,7 +38,7 @@ public class UnmakeMoveTests
 
         // White castling kingside (e1→g1)
         board.MakeMove("e1g1");
-        board.UnmakeMove();
+        board.UndoMove();
 
         // After unmaking, the board should match the starting state.
         AssertBoardsEqual(expected, board);
@@ -54,7 +54,7 @@ public class UnmakeMoveTests
 
         // White queenside castling (e1→c1)
         board.MakeMove("e1c1");
-        board.UnmakeMove();
+        board.UndoMove();
 
         AssertBoardsEqual(expected, board);
     }
@@ -69,7 +69,7 @@ public class UnmakeMoveTests
 
         // Black kingside castling: e8 → g8.
         board.MakeMove("e8g8");
-        board.UnmakeMove();
+        board.UndoMove();
 
         AssertBoardsEqual(expected, board);
     }
@@ -84,7 +84,7 @@ public class UnmakeMoveTests
 
         // Black queenside castling: e8 → c8.
         board.MakeMove("e8c8");
-        board.UnmakeMove();
+        board.UndoMove();
 
         AssertBoardsEqual(expected, board);
     }
@@ -98,7 +98,7 @@ public class UnmakeMoveTests
         var expected = new Board();
 
         board.MakeMove("e2e4");
-        board.UnmakeMove();
+        board.UndoMove();
 
         AssertBoardsEqual(expected, board);
     }
@@ -117,7 +117,7 @@ public class UnmakeMoveTests
         expected.MakeMove("a2a3");
 
         board.MakeMove("e7e5");
-        board.UnmakeMove();
+        board.UndoMove();
 
         AssertBoardsEqual(expected, board);
     }
@@ -136,7 +136,7 @@ public class UnmakeMoveTests
 
         var move = $"g7g8{promo}";
         board.MakeMove(move);
-        board.UnmakeMove();
+        board.UndoMove();
 
         AssertBoardsEqual(expected, board);
     }
@@ -155,7 +155,7 @@ public class UnmakeMoveTests
 
         var move = $"a2a1{promo}";
         board.MakeMove(move);
-        board.UnmakeMove();
+        board.UndoMove();
 
         AssertBoardsEqual(expected, board);
     }
@@ -169,7 +169,7 @@ public class UnmakeMoveTests
         var expected = new Board(fen);
 
         board.MakeMove("d5e6");
-        board.UnmakeMove();
+        board.UndoMove();
 
         AssertBoardsEqual(expected, board);
     }
@@ -183,7 +183,7 @@ public class UnmakeMoveTests
         var expected = new Board(fen);
 
         board.MakeMove("d4e3");
-        board.UnmakeMove();
+        board.UndoMove();
 
         AssertBoardsEqual(expected, board);
     }

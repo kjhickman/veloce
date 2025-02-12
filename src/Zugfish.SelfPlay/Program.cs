@@ -23,6 +23,6 @@ board.MakeMove("g7g8q");
 Console.WriteLine("After Move:");
 Console.WriteLine(board.Render());
 
-board.UnmakeMove();
+board.UndoMove();
 Console.WriteLine("After Unmaking Move:");
 Console.WriteLine(board.Render());
