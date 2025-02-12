@@ -9,11 +9,11 @@ public static class BoardRenderer
     {
         var boardArray = new char[64];
 
-        // Fill with empty squares
+        // Fill with empty squares.
         for (var i = 0; i < 64; i++)
             boardArray[i] = '.';
 
-        // Place all pieces
+        // Place white pieces.
         PlacePieces(board.WhitePawns, 'P');
         PlacePieces(board.WhiteKnights, 'N');
         PlacePieces(board.WhiteBishops, 'B');
@@ -21,6 +21,7 @@ public static class BoardRenderer
         PlacePieces(board.WhiteQueens, 'Q');
         PlacePieces(board.WhiteKing, 'K');
 
+        // Place black pieces.
         PlacePieces(board.BlackPawns, 'p');
         PlacePieces(board.BlackKnights, 'n');
         PlacePieces(board.BlackBishops, 'b');
@@ -28,24 +29,24 @@ public static class BoardRenderer
         PlacePieces(board.BlackQueens, 'q');
         PlacePieces(board.BlackKing, 'k');
 
-        // Build board string
+        // Build board string.
         var sb = new StringBuilder();
         sb.AppendLine("  a b c d e f g h");
         sb.AppendLine("  ----------------");
-        for (var rank = 7; rank >= 0; rank--)  // Print top-down
+        for (var rank = 7; rank >= 0; rank--)  // Top-down rendering.
         {
-            sb.Append((rank + 1) + "| ");
+            sb.Append($"{rank + 1}| ");
             for (var file = 0; file < 8; file++)
             {
                 sb.Append(boardArray[rank * 8 + file]);
-                sb.Append(' '); // Space for readability
+                sb.Append(' ');
             }
             sb.AppendLine("|");
         }
         sb.AppendLine("  ----------------");
         return sb.ToString();
 
-        // Helper to place pieces
+        // Local function to place pieces based on bitboard.
         void PlacePieces(Bitboard bitboard, char pieceChar)
         {
             var value = bitboard.Value;
