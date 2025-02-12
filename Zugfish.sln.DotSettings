@@ -2,4 +2,5 @@
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=halfmove/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=kingside/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=queenside/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=zobrist/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=zugfish/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>
