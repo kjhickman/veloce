@@ -1,4 +1,5 @@
 ﻿using Zugfish.Engine;
+using Zugfish.UCI;
 using static Zugfish.Engine.Translation;
 
 namespace Zugfish.Tests.Engine.BoardTests;
@@ -16,8 +17,8 @@ public class MakeMoveTests
         board.MakeMove("e1g1");
 
         // After castling, the king should be on g1 and the rook on f1
-        Assert.Equal(1UL << SquareFromUci("g1"), board.WhiteKing.Value);
-        Assert.Equal(1UL << SquareFromUci("f1"), board.WhiteRooks.Value);
+        Assert.Equal(1UL << SquareFromAlgebraic("g1"), board.WhiteKing.Value);
+        Assert.Equal(1UL << SquareFromAlgebraic("f1"), board.WhiteRooks.Value);
         Assert.Equal(0, board.CastlingRights);
     }
 
@@ -32,8 +33,8 @@ public class MakeMoveTests
         board.MakeMove("e1c1");
 
         // After castling, the king should be on c1 and the rook should move from a1 to d1
-        Assert.Equal(1UL << SquareFromUci("c1"), board.WhiteKing.Value);
-        Assert.Equal(1UL << SquareFromUci("d1"), board.WhiteRooks.Value);
+        Assert.Equal(1UL << SquareFromAlgebraic("c1"), board.WhiteKing.Value);
+        Assert.Equal(1UL << SquareFromAlgebraic("d1"), board.WhiteRooks.Value);
         Assert.Equal(0, board.CastlingRights);
     }
 
@@ -48,8 +49,8 @@ public class MakeMoveTests
         board.MakeMove("e8g8");
 
         // After castling, the king should be on g8 and the rook on f8.
-        Assert.Equal(1UL << SquareFromUci("g8"), board.BlackKing.Value);
-        Assert.Equal(1UL << SquareFromUci("f8"), board.BlackRooks.Value);
+        Assert.Equal(1UL << SquareFromAlgebraic("g8"), board.BlackKing.Value);
+        Assert.Equal(1UL << SquareFromAlgebraic("f8"), board.BlackRooks.Value);
         Assert.Equal(0, board.CastlingRights);
     }
 
@@ -64,8 +65,8 @@ public class MakeMoveTests
         board.MakeMove("e8c8");
 
         // After castling, the king should be on c8 and the rook on d8.
-        Assert.Equal(1UL << SquareFromUci("c8"), board.BlackKing.Value);
-        Assert.Equal(1UL << SquareFromUci("d8"), board.BlackRooks.Value);
+        Assert.Equal(1UL << SquareFromAlgebraic("c8"), board.BlackKing.Value);
+        Assert.Equal(1UL << SquareFromAlgebraic("d8"), board.BlackRooks.Value);
         Assert.Equal(0, board.CastlingRights);
     }
 
@@ -76,9 +77,9 @@ public class MakeMoveTests
         // A double pawn push from e2 to e4 should set the en passant target to e3.
         var board = new Board();
         board.MakeMove("e2e4");
-        Assert.False((board.WhitePawns & (1UL << SquareFromUci("e2"))) != 0); // Pawn left e2.
-        Assert.True((board.WhitePawns & (1UL << SquareFromUci("e4"))) != 0);  // Pawn appears on e4.
-        Assert.Equal(SquareFromUci("e3"), board.EnPassantTarget);
+        Assert.False((board.WhitePawns & (1UL << SquareFromAlgebraic("e2"))) != 0); // Pawn left e2.
+        Assert.True((board.WhitePawns & (1UL << SquareFromAlgebraic("e4"))) != 0);  // Pawn appears on e4.
+        Assert.Equal(SquareFromAlgebraic("e3"), board.EnPassantTarget);
     }
 
     [Fact]
@@ -90,9 +91,9 @@ public class MakeMoveTests
         var board = new Board();
         board.MakeMove("a2a3"); // White makes a non-interfering move.
         board.MakeMove("e7e5");
-        Assert.False((board.BlackPawns & (1UL << SquareFromUci("e7"))) != 0);
-        Assert.True((board.BlackPawns & (1UL << SquareFromUci("e5"))) != 0);
-        Assert.Equal(SquareFromUci("e6"), board.EnPassantTarget);
+        Assert.False((board.BlackPawns & (1UL << SquareFromAlgebraic("e7"))) != 0);
+        Assert.True((board.BlackPawns & (1UL << SquareFromAlgebraic("e5"))) != 0);
+        Assert.Equal(SquareFromAlgebraic("e6"), board.EnPassantTarget);
     }
 
     [Theory]
@@ -109,21 +110,21 @@ public class MakeMoveTests
         board.MakeMove(move);
 
         // The pawn should be removed from g7 and the promoted piece placed on g8.
-        Assert.False((board.WhitePawns & (1UL << SquareFromUci("g7"))) != 0);
+        Assert.False((board.WhitePawns & (1UL << SquareFromAlgebraic("g7"))) != 0);
 
         switch (expectedType)
         {
             case MoveType.PromoteToQueen:
-                Assert.True((board.WhiteQueens & (1UL << SquareFromUci("g8"))) != 0, "White queen should be on g8");
+                Assert.True((board.WhiteQueens & (1UL << SquareFromAlgebraic("g8"))) != 0, "White queen should be on g8");
                 break;
             case MoveType.PromoteToRook:
-                Assert.True((board.WhiteRooks & (1UL << SquareFromUci("g8"))) != 0, "White rook should be on g8");
+                Assert.True((board.WhiteRooks & (1UL << SquareFromAlgebraic("g8"))) != 0, "White rook should be on g8");
                 break;
             case MoveType.PromoteToBishop:
-                Assert.True((board.WhiteBishops & (1UL << SquareFromUci("g8"))) != 0, "White bishop should be on g8");
+                Assert.True((board.WhiteBishops & (1UL << SquareFromAlgebraic("g8"))) != 0, "White bishop should be on g8");
                 break;
             case MoveType.PromoteToKnight:
-                Assert.True((board.WhiteKnights & (1UL << SquareFromUci("g8"))) != 0, "White knight should be on g8");
+                Assert.True((board.WhiteKnights & (1UL << SquareFromAlgebraic("g8"))) != 0, "White knight should be on g8");
                 break;
         }
     }
@@ -142,21 +143,21 @@ public class MakeMoveTests
         board.MakeMove(move);
 
         // The pawn should be removed from a2 and the promoted piece placed on a1.
-        Assert.False((board.BlackPawns & (1UL << SquareFromUci("a2"))) != 0);
+        Assert.False((board.BlackPawns & (1UL << SquareFromAlgebraic("a2"))) != 0);
 
         switch (expectedType)
         {
             case MoveType.PromoteToQueen:
-                Assert.True((board.BlackQueens & (1UL << SquareFromUci("a1"))) != 0, "Black queen should be on a1");
+                Assert.True((board.BlackQueens & (1UL << SquareFromAlgebraic("a1"))) != 0, "Black queen should be on a1");
                 break;
             case MoveType.PromoteToRook:
-                Assert.True((board.BlackRooks & (1UL << SquareFromUci("a1"))) != 0, "Black rook should be on a1");
+                Assert.True((board.BlackRooks & (1UL << SquareFromAlgebraic("a1"))) != 0, "Black rook should be on a1");
                 break;
             case MoveType.PromoteToBishop:
-                Assert.True((board.BlackBishops & (1UL << SquareFromUci("a1"))) != 0, "Black bishop should be on a1");
+                Assert.True((board.BlackBishops & (1UL << SquareFromAlgebraic("a1"))) != 0, "Black bishop should be on a1");
                 break;
             case MoveType.PromoteToKnight:
-                Assert.True((board.BlackKnights & (1UL << SquareFromUci("a1"))) != 0, "Black knight should be on a1");
+                Assert.True((board.BlackKnights & (1UL << SquareFromAlgebraic("a1"))) != 0, "Black knight should be on a1");
                 break;
         }
     }
@@ -173,8 +174,8 @@ public class MakeMoveTests
 
         // After en passant, the white pawn should now be on e6
         // and the black pawn on e5 should be captured.
-        Assert.True((board.WhitePawns & (1UL << SquareFromUci("e6"))) != 0, "White pawn should be on e6 after en passant");
-        Assert.False((board.BlackPawns & (1UL << SquareFromUci("e5"))) != 0, "Black pawn on e5 should be captured via en passant");
+        Assert.True((board.WhitePawns & (1UL << SquareFromAlgebraic("e6"))) != 0, "White pawn should be on e6 after en passant");
+        Assert.False((board.BlackPawns & (1UL << SquareFromAlgebraic("e5"))) != 0, "Black pawn on e5 should be captured via en passant");
     }
 
     [Fact]
@@ -189,7 +190,7 @@ public class MakeMoveTests
 
         // After en passant, the black pawn should now be on e3
         // and the white pawn on e4 should be captured.
-        Assert.True((board.BlackPawns & (1UL << SquareFromUci("e3"))) != 0, "Black pawn should be on e3 after en passant");
-        Assert.False((board.WhitePawns & (1UL << SquareFromUci("e4"))) != 0, "White pawn on e4 should be captured via en passant");
+        Assert.True((board.BlackPawns & (1UL << SquareFromAlgebraic("e3"))) != 0, "Black pawn should be on e3 after en passant");
+        Assert.False((board.WhitePawns & (1UL << SquareFromAlgebraic("e4"))) != 0, "White pawn on e4 should be captured via en passant");
     }
 }

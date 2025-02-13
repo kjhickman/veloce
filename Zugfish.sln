@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zugfish.SelfPlay", "src\Zug
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zugfish.Tests", "src\Zugfish.Tests\Zugfish.Tests.csproj", "{0DEE393C-C646-4597-AAF3-652EA5E14ECE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zugfish.Benchmarks", "src\Zugfish.Benchmarks\Zugfish.Benchmarks.csproj", "{F5E78E14-49B3-4B24-842C-C8FCE0DAEC5C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +38,10 @@ Global
 		{0DEE393C-C646-4597-AAF3-652EA5E14ECE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DEE393C-C646-4597-AAF3-652EA5E14ECE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DEE393C-C646-4597-AAF3-652EA5E14ECE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5E78E14-49B3-4B24-842C-C8FCE0DAEC5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5E78E14-49B3-4B24-842C-C8FCE0DAEC5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5E78E14-49B3-4B24-842C-C8FCE0DAEC5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5E78E14-49B3-4B24-842C-C8FCE0DAEC5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection

@@ -1,4 +1,5 @@
 ﻿using Zugfish.Engine;
+using Zugfish.UCI;
 
 namespace Zugfish.Tests.Engine.BoardTests;
 

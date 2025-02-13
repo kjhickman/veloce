@@ -47,7 +47,7 @@ public class GenerateLegalMovesTests
         var moveCount = moveGenerator.GenerateLegalMoves(board, moves);
 
         // Assert
-        var condition = moves.Contains(new Move(SquareFromUci("e1"), SquareFromUci("g1"), MoveType.Castling));
+        var condition = moves.Contains(new Move(SquareFromAlgebraic("e1"), SquareFromAlgebraic("g1"), MoveType.Castling));
         Assert.False(condition, "White cannot castle into check");
         Assert.Equal(37, moveCount);
     }
@@ -64,7 +64,7 @@ public class GenerateLegalMovesTests
         var moveCount = moveGenerator.GenerateLegalMoves(board, moves);
 
         // Assert
-        var condition = moves.Contains(new Move(SquareFromUci("e1"), SquareFromUci("g1"), MoveType.Castling));
+        var condition = moves.Contains(new Move(SquareFromAlgebraic("e1"), SquareFromAlgebraic("g1"), MoveType.Castling));
         Assert.False(condition, "White cannot castle when in check");
         Assert.Equal(4, moveCount);
     }
@@ -81,7 +81,7 @@ public class GenerateLegalMovesTests
         var moveCount = moveGenerator.GenerateLegalMoves(board, moves);
 
         // Assert
-        var condition = moves[..moveCount].ToArray().Any(x => x.From == SquareFromUci("c3"));
+        var condition = moves[..moveCount].ToArray().Any(x => x.From == SquareFromAlgebraic("c3"));
         Assert.False(condition, "Pinned knight on c3 should not be able to move");
     }
 }
