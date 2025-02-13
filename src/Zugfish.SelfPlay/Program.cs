@@ -10,5 +10,11 @@ while (true)
 {
     Console.WriteLine(board.Render());
     var bestMove = Search.FindBestMove(moveGenerator, board, 4);
-    board.MakeMove(bestMove);
+    if (bestMove == null)
+    {
+        Console.WriteLine("Game over");
+        break;
+    }
+
+    board.MakeMove(bestMove.Value);
 }
