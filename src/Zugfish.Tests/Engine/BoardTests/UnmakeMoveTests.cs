@@ -187,4 +187,21 @@ public class UnmakeMoveTests
 
         AssertBoardsEqual(expected, board);
     }
+
+    [Fact]
+    public void UnmakeMove_WhenKnightCaptures_RestoresOriginalPosition()
+    {
+        // Set up a position where a white knight on f3 captures a black pawn on e5.
+        const string fen = "rnbqkbnr/ppp2ppp/8/3pp3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 3";
+        var board = new Board(fen);
+        var expected = new Board(fen);
+
+        board.MakeMove("f3e5");
+        var foo = new Board("rnbqkbnr/ppp2ppp/8/3pN3/4P3/8/PPPP1PPP/RNBQKB1R b KQkq - 0 3");
+        AssertBoardsEqual(foo, board);
+
+        board.UndoMove();
+
+        AssertBoardsEqual(expected, board);
+    }
 }
