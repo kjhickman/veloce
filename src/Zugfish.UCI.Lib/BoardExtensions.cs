@@ -1,11 +1,12 @@
 using Zugfish.Engine;
-using static Zugfish.UCI.Helpers;
+using Zugfish.Engine.Models;
+using static Zugfish.UCI.Lib.Helpers;
 
-namespace Zugfish.UCI;
+namespace Zugfish.UCI.Lib;
 
 public static class BoardExtensions
 {
-    public static void MakeMove(this Board board, ReadOnlySpan<char> uciMove)
+    public static void MakeMove(this Position position, ReadOnlySpan<char> uciMove)
     {
         if (uciMove.Length is < 4 or > 5)
             throw new ArgumentException("Invalid UCI move format.", nameof(uciMove));
@@ -19,7 +20,7 @@ public static class BoardExtensions
         // Default to a quiet move
         var moveType = MoveType.Quiet;
 
-        var isPawnMove = (board.WhitePawns & (1UL << from)) != 0 || (board.BlackPawns & (1UL << from)) != 0;
+        var isPawnMove = (position.WhitePawns & (1UL << from)) != 0 || (position.BlackPawns & (1UL << from)) != 0;
 
         // Detect castling (if king moves two squares)
         if ((from == 4 && to is 2 or 6) || (from == 60 && to is 58 or 62))
@@ -37,7 +38,7 @@ public static class BoardExtensions
                 _ => throw new ArgumentException("Invalid promotion piece.", nameof(uciMove))
             };
         }
-        else if (isPawnMove && board.EnPassantTarget == to) // Detect En Passant
+        else if (isPawnMove && position.EnPassantTarget == to) // Detect En Passant
         {
             moveType = MoveType.EnPassant;
         }
@@ -45,12 +46,12 @@ public static class BoardExtensions
         {
             moveType = MoveType.DoublePawnPush;
         }
-        else if ((Bitboard.Mask(to) & board.AllPieces) != 0) // Detect capture
+        else if ((Bitboard.Mask(to) & position.AllPieces) != 0) // Detect capture
         {
             moveType = MoveType.Capture;
         }
 
         var move = new Move(from, to, moveType);
-        board.MakeMove(move);
+        position.MakeMove(move);
     }
 }

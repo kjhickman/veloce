@@ -5,10 +5,14 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <PublishTrimmed>true</PublishTrimmed>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Zugfish.Engine\Zugfish.Engine.csproj" />
+    <ProjectReference Include="..\Zugfish.UCI.Lib\Zugfish.UCI.Lib.csproj" />
   </ItemGroup>
 
 </Project>

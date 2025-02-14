@@ -1,4 +1,4 @@
-using Zugfish.Engine;
+using Zugfish.Engine.Models;
 
 namespace Zugfish.Tests;
 

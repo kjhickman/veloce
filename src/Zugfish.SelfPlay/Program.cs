@@ -3,18 +3,18 @@
 using Zugfish.Engine;
 using Zugfish.SelfPlay;
 
-var board = new Board();
+var position = new Position();
 var moveGenerator = new MoveGenerator();
 
 while (true)
 {
-    Console.WriteLine(board.Render());
-    var bestMove = Search.FindBestMove(moveGenerator, board, 4);
+    Console.WriteLine(position.Render());
+    var bestMove = Search.FindBestMove(moveGenerator, position, 4);
     if (bestMove == null)
     {
         Console.WriteLine("Game over");
         break;
     }
 
-    board.MakeMove(bestMove.Value);
+    position.MakeMove(bestMove.Value);
 }

@@ -1,11 +1,12 @@
 using System.Text;
 using Zugfish.Engine;
+using Zugfish.Engine.Models;
 
 namespace Zugfish.SelfPlay;
 
 public static class BoardRenderer
 {
-    public static string Render(this Board board)
+    public static string Render(this Position position)
     {
         var boardArray = new char[64];
 
@@ -14,20 +15,20 @@ public static class BoardRenderer
             boardArray[i] = '.';
 
         // Place white pieces.
-        PlacePieces(board.WhitePawns, 'P');
-        PlacePieces(board.WhiteKnights, 'N');
-        PlacePieces(board.WhiteBishops, 'B');
-        PlacePieces(board.WhiteRooks, 'R');
-        PlacePieces(board.WhiteQueens, 'Q');
-        PlacePieces(board.WhiteKing, 'K');
+        PlacePieces(position.WhitePawns, 'P');
+        PlacePieces(position.WhiteKnights, 'N');
+        PlacePieces(position.WhiteBishops, 'B');
+        PlacePieces(position.WhiteRooks, 'R');
+        PlacePieces(position.WhiteQueens, 'Q');
+        PlacePieces(position.WhiteKing, 'K');
 
         // Place black pieces.
-        PlacePieces(board.BlackPawns, 'p');
-        PlacePieces(board.BlackKnights, 'n');
-        PlacePieces(board.BlackBishops, 'b');
-        PlacePieces(board.BlackRooks, 'r');
-        PlacePieces(board.BlackQueens, 'q');
-        PlacePieces(board.BlackKing, 'k');
+        PlacePieces(position.BlackPawns, 'p');
+        PlacePieces(position.BlackKnights, 'n');
+        PlacePieces(position.BlackBishops, 'b');
+        PlacePieces(position.BlackRooks, 'r');
+        PlacePieces(position.BlackQueens, 'q');
+        PlacePieces(position.BlackKing, 'k');
 
         // Build board string.
         var sb = new StringBuilder();
