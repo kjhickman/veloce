@@ -8,7 +8,6 @@ namespace Zugfish.Benchmarks.Benchmarks;
 [BenchmarkCategory("MoveGeneration")]
 public class MoveGenerationBenchmarks
 {
-    private readonly MoveGenerator _moveGenerator = new();
     private Position _startingPosition = null!;
     private Position _midGamePosition = null!;
     private Position _endGamePosition = null!;
@@ -25,20 +24,20 @@ public class MoveGenerationBenchmarks
     public int GenerateMoves_StartingPosition()
     {
         Span<Move> movesBuffer = stackalloc Move[218];
-        return _moveGenerator.GenerateLegalMoves(_startingPosition, movesBuffer);
+        return MoveGenerator.GenerateLegalMoves(_startingPosition, movesBuffer);
     }
 
     [Benchmark]
     public int GenerateMoves_MidGamePosition()
     {
         Span<Move> movesBuffer = stackalloc Move[218];
-        return _moveGenerator.GenerateLegalMoves(_midGamePosition, movesBuffer);
+        return MoveGenerator.GenerateLegalMoves(_midGamePosition, movesBuffer);
     }
 
     [Benchmark]
     public int GenerateMoves_EndGamePosition()
     {
         Span<Move> movesBuffer = stackalloc Move[218];
-        return _moveGenerator.GenerateLegalMoves(_endGamePosition, movesBuffer);
+        return MoveGenerator.GenerateLegalMoves(_endGamePosition, movesBuffer);
     }
 }

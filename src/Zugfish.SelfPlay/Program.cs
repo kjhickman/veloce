@@ -1,15 +1,18 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Diagnostics;
 using Zugfish.Engine;
 using Zugfish.SelfPlay;
 
 var position = new Position();
-var moveGenerator = new MoveGenerator();
+var search = new Search();
+var i = 0;
 
-while (true)
+var sw = Stopwatch.StartNew();
+while (i++ < 40)
 {
     Console.WriteLine(position.Render());
-    var bestMove = Search.FindBestMove(moveGenerator, position, 4);
+    var bestMove = search.FindBestMove(position, 4);
     if (bestMove == null)
     {
         Console.WriteLine("Game over");
@@ -18,3 +21,5 @@ while (true)
 
     position.MakeMove(bestMove.Value);
 }
+
+Console.WriteLine($"Elapsed: {sw.Elapsed}");

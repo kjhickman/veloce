@@ -8,7 +8,7 @@ public static class Program
     public static void Main()
     {
         var position = new Position();
-        var moveGenerator = new MoveGenerator();
+        var search = new Search();
 
         while (true)
         {
@@ -46,7 +46,7 @@ public static class Program
 
                 case "go":
                     // Using depth 4 as a default - this can be made configurable later
-                    var bestMove = Search.FindBestMove(moveGenerator, position, 4);
+                    var bestMove = search.FindBestMove(position, 4);
                     var bestMoveString = bestMove.HasValue ? Helpers.UciFromMove(bestMove.Value) : "0000";
                     Console.WriteLine($"bestmove {bestMoveString}");
                     break;
