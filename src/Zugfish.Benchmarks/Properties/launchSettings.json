@@ -6,7 +6,7 @@
     },
     "Benchmarks-All": {
       "commandName": "Project",
-      "commandLineArgs": "--filter * --join"
+      "commandLineArgs": "--filter * --job long --join"
     },
     "Benchmarks-Quick": {
       "commandName": "Project",
