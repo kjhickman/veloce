@@ -4,11 +4,11 @@
       "commandName": "Project",
       "commandLineArgs": "--join"
     },
-    "Benchmarks-All": {
+    "Benchmarks-Long": {
       "commandName": "Project",
       "commandLineArgs": "--filter * --job long --join"
     },
-    "Benchmarks-Quick": {
+    "Benchmarks-Short": {
       "commandName": "Project",
       "commandLineArgs": "--filter * --job short --join"
     }
