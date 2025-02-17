@@ -18,6 +18,6 @@ public class StaticAnalysisBenchmarks
     [Benchmark]
     public ulong ComputeZobristHash()
     {
-        return _position.ComputeZobristHash();
+        return Zobrist.ComputeHash(_position);
     }
 }

@@ -124,11 +124,11 @@ public class UnmakeMoveTests
     }
 
     [Theory]
-    [InlineData("q", MoveType.PromoteToQueen)]
-    [InlineData("r", MoveType.PromoteToRook)]
-    [InlineData("b", MoveType.PromoteToBishop)]
-    [InlineData("n", MoveType.PromoteToKnight)]
-    public void UnmakeMove_PromotionWhite_RestoresOriginalPosition(string promo, MoveType expectedType)
+    [InlineData("q")]
+    [InlineData("r")]
+    [InlineData("b")]
+    [InlineData("n")]
+    public void UnmakeMove_PromotionWhite_RestoresOriginalPosition(string promo)
     {
         // Create a position with a white pawn on g7 (ready to promote) and a black king.
         const string fen = "3k4/6P1/8/8/8/8/8/3K4 w - - 0 1";
