@@ -38,7 +38,7 @@ public static class BoardExtensions
                 _ => throw new ArgumentException("Invalid promotion piece.", nameof(uciMove))
             };
         }
-        else if (isPawnMove && position.EnPassantTarget == to) // Detect En Passant
+        else if (isPawnMove && (int)position.EnPassantTarget == to) // Detect En Passant
         {
             moveType = MoveType.EnPassant;
         }

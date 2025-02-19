@@ -79,7 +79,7 @@ public class MakeMoveTests
         position.MakeMove("e2e4");
         Assert.False((position.WhitePawns & (1UL << SquareFromAlgebraic("e2"))) != 0); // Pawn left e2.
         Assert.True((position.WhitePawns & (1UL << SquareFromAlgebraic("e4"))) != 0);  // Pawn appears on e4.
-        Assert.Equal(SquareFromAlgebraic("e3"), position.EnPassantTarget);
+        Assert.Equal(Square.e3, position.EnPassantTarget);
     }
 
     [Fact]
@@ -93,7 +93,7 @@ public class MakeMoveTests
         position.MakeMove("e7e5");
         Assert.False((position.BlackPawns & (1UL << SquareFromAlgebraic("e7"))) != 0);
         Assert.True((position.BlackPawns & (1UL << SquareFromAlgebraic("e5"))) != 0);
-        Assert.Equal(SquareFromAlgebraic("e6"), position.EnPassantTarget);
+        Assert.Equal(Square.e6, position.EnPassantTarget);
     }
 
     [Theory]
