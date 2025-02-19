@@ -19,7 +19,7 @@ public class MakeMoveTests
         // After castling, the king should be on g1 and the rook on f1
         Assert.Equal(1UL << SquareFromAlgebraic("g1"), position.WhiteKing.Value);
         Assert.Equal(1UL << SquareFromAlgebraic("f1"), position.WhiteRooks.Value);
-        Assert.Equal(0, position.CastlingRights);
+        Assert.Equal(CastlingRights.None, position.CastlingRights);
     }
 
     [Fact]
@@ -35,7 +35,7 @@ public class MakeMoveTests
         // After castling, the king should be on c1 and the rook should move from a1 to d1
         Assert.Equal(1UL << SquareFromAlgebraic("c1"), position.WhiteKing.Value);
         Assert.Equal(1UL << SquareFromAlgebraic("d1"), position.WhiteRooks.Value);
-        Assert.Equal(0, position.CastlingRights);
+        Assert.Equal(CastlingRights.None, position.CastlingRights);
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class MakeMoveTests
         // After castling, the king should be on g8 and the rook on f8.
         Assert.Equal(1UL << SquareFromAlgebraic("g8"), position.BlackKing.Value);
         Assert.Equal(1UL << SquareFromAlgebraic("f8"), position.BlackRooks.Value);
-        Assert.Equal(0, position.CastlingRights);
+        Assert.Equal(CastlingRights.None, position.CastlingRights);
     }
 
     [Fact]
@@ -67,7 +67,7 @@ public class MakeMoveTests
         // After castling, the king should be on c8 and the rook on d8.
         Assert.Equal(1UL << SquareFromAlgebraic("c8"), position.BlackKing.Value);
         Assert.Equal(1UL << SquareFromAlgebraic("d8"), position.BlackRooks.Value);
-        Assert.Equal(0, position.CastlingRights);
+        Assert.Equal(CastlingRights.None, position.CastlingRights);
     }
 
     [Fact]
