@@ -12,7 +12,7 @@ var sw = Stopwatch.StartNew();
 while (i++ < 40)
 {
     Console.WriteLine(position.Render());
-    var bestMove = search.FindBestMove(position, 5);
+    var bestMove = search.FindBestMove(position, 4);
     if (bestMove == null)
     {
         Console.WriteLine("Game over");
