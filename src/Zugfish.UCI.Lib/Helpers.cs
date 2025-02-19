@@ -37,11 +37,9 @@ public class Helpers
         return $"{from}{to}{promotion}";
     }
 
-    public static string AlgebraicFromSquare(int square)
+    public static string AlgebraicFromSquare(Square square)
     {
-        var file = (char)('a' + (square & 7));
-        var rank = (char)('1' + (square >> 3));
-        return $"{file}{rank}";
+        return square.ToString();
     }
 
     public static Position? ParsePosition(string[] parts)

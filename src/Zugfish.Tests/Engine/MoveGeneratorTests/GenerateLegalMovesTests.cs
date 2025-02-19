@@ -77,7 +77,7 @@ public class GenerateLegalMovesTests
         var moveCount = MoveGenerator.GenerateLegalMoves(position, moves);
 
         // Assert
-        var condition = moves[..moveCount].ToArray().Any(x => x.From == SquareFromAlgebraic("c3"));
+        var condition = moves[..moveCount].ToArray().Any(x => x.From == Square.c3);
         Assert.False(condition, "Pinned knight on c3 should not be able to move");
     }
 }
