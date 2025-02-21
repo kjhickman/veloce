@@ -17,41 +17,53 @@ public static class BoardExtensions
         if ((from | to) >> 6 != 0) // Ensure indices are valid
             throw new ArgumentOutOfRangeException(nameof(uciMove), "Square index out of range.");
 
-        // Default to a quiet move
-        var moveType = MoveType.Quiet;
+        var specialMoveType = SpecialMoveType.None;
 
         var isPawnMove = (position.WhitePawns & (1UL << from)) != 0 || (position.BlackPawns & (1UL << from)) != 0;
 
         // Detect castling (if king moves two squares)
-        if ((from == 4 && to is 2 or 6) || (from == 60 && to is 58 or 62))
+        if ((from == 4 && to is 6) || (from == 60 && to is 62))
         {
-            moveType = MoveType.Castling;
+            specialMoveType = SpecialMoveType.ShortCastle;
         }
-        else if (uciMove.Length == 5) // If the move has a 5th character (promotion), determine its type
+        else if ((from == 4 && to is 2) || from == 60 && to is 58)
         {
-            moveType = uciMove[4] switch
-            {
-                'q' => MoveType.PromoteToQueen,
-                'r' => MoveType.PromoteToRook,
-                'b' => MoveType.PromoteToBishop,
-                'n' => MoveType.PromoteToKnight,
-                _ => throw new ArgumentException("Invalid promotion piece.", nameof(uciMove))
-            };
+            specialMoveType = SpecialMoveType.LongCastle;
         }
         else if (isPawnMove && (int)position.EnPassantTarget == to) // Detect En Passant
         {
-            moveType = MoveType.EnPassant;
+            specialMoveType = SpecialMoveType.EnPassant;
         }
         else if (isPawnMove && Math.Abs(from - to) == 16) // Detect double pawn move
         {
-            moveType = MoveType.DoublePawnPush;
-        }
-        else if ((Bitboard.Mask(to) & position.AllPieces) != 0) // Detect capture
-        {
-            moveType = MoveType.Capture;
+            specialMoveType = SpecialMoveType.DoublePawnPush;
         }
 
-        var move = new Move(from, to, moveType);
+        var isCapture = (Bitboard.Mask(to) & position.AllPieces) != 0 || specialMoveType == SpecialMoveType.EnPassant;
+        var capturedPieceType = PieceType.None;
+        if (specialMoveType == SpecialMoveType.EnPassant)
+        {
+            capturedPieceType = position.WhiteToMove ? PieceType.BlackPawn : PieceType.WhitePawn;
+        }
+        else if (isCapture)
+        {
+            capturedPieceType = position.GetPieceTypeAt((Square)to, !position.WhiteToMove);
+        }
+
+        var promotedPieceType = PromotedPieceType.None;
+        if (uciMove.Length == 5) // If the move has a 5th character (promotion), determine its type
+        {
+            promotedPieceType = uciMove[4] switch
+            {
+                'q' => PromotedPieceType.Queen,
+                'r' => PromotedPieceType.Rook,
+                'b' => PromotedPieceType.Bishop,
+                'n' => PromotedPieceType.Knight,
+                _ => PromotedPieceType.None
+            };
+        }
+
+        var move = new Move((Square)from, (Square)to, promotedPieceType, position.GetPieceTypeAt((Square)from, position.WhiteToMove), capturedPieceType, isCapture, specialMoveType);
         position.MakeMove(move);
     }
 }

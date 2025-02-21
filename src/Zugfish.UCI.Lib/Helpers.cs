@@ -26,13 +26,13 @@ public class Helpers
     {
         var from = AlgebraicFromSquare(move.From);
         var to = AlgebraicFromSquare(move.To);
-        var promotion = move.Type switch
+        var promotion = move.PromotedPieceType switch
         {
-            MoveType.PromoteToQueen => "q",
-            MoveType.PromoteToRook => "r",
-            MoveType.PromoteToBishop => "b",
-            MoveType.PromoteToKnight => "n",
-            _ => ""
+            PromotedPieceType.Queen => "q",
+            PromotedPieceType.Rook => "r",
+            PromotedPieceType.Bishop => "b",
+            PromotedPieceType.Knight => "n",
+            _ => string.Empty
         };
         return $"{from}{to}{promotion}";
     }

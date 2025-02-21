@@ -45,7 +45,7 @@ public class GenerateLegalMovesTests
         var moveCount = MoveGenerator.GenerateLegalMoves(position, moves);
 
         // Assert
-        var condition = moves.Contains(new Move(SquareFromAlgebraic("e1"), SquareFromAlgebraic("g1"), MoveType.Castling));
+        var condition = moves.Contains(Move.CreateShortCastle(isWhite: true));
         Assert.False(condition, "White cannot castle into check");
         Assert.Equal(37, moveCount);
     }
@@ -61,7 +61,7 @@ public class GenerateLegalMovesTests
         var moveCount = MoveGenerator.GenerateLegalMoves(position, moves);
 
         // Assert
-        var condition = moves.Contains(new Move(SquareFromAlgebraic("e1"), SquareFromAlgebraic("g1"), MoveType.Castling));
+        var condition = moves.Contains(Move.CreateShortCastle(isWhite: true));
         Assert.False(condition, "White cannot castle when in check");
         Assert.Equal(4, moveCount);
     }

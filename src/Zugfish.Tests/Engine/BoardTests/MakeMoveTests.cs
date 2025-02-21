@@ -190,7 +190,7 @@ public class MakeMoveTests
 
         // After en passant, the black pawn should now be on e3
         // and the white pawn on e4 should be captured.
-        Assert.True((position.BlackPawns & (1UL << SquareFromAlgebraic("e3"))) != 0, "Black pawn should be on e3 after en passant");
-        Assert.False((position.WhitePawns & (1UL << SquareFromAlgebraic("e4"))) != 0, "White pawn on e4 should be captured via en passant");
+        Assert.True((position.BlackPawns & Bitboard.Mask(Square.e3)) != 0, "Black pawn should be on e3 after en passant");
+        Assert.False((position.WhitePawns & Bitboard.Mask(Square.e4)) != 0, "White pawn on e4 should be captured via en passant");
     }
 }
