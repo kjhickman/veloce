@@ -1,4 +1,5 @@
-﻿using Zugfish.Engine;
+﻿using Shouldly;
+using Zugfish.Engine;
 using Zugfish.Engine.Models;
 
 namespace Zugfish.Tests.Engine.MoveGeneratorTests;
@@ -16,7 +17,7 @@ public class GenerateLegalMovesTests
         var moveCount = MoveGenerator.GenerateLegalMoves(position, moves);
 
         // Assert
-        Assert.Equal(20, moveCount);
+        moveCount.ShouldBe(20);
     }
 
     [Fact]
@@ -30,7 +31,7 @@ public class GenerateLegalMovesTests
         var moveCount = MoveGenerator.GenerateLegalMoves(position, moves);
 
         // Assert
-        Assert.Equal(218, moveCount);
+        moveCount.ShouldBe(218);
     }
 
     [Fact]
@@ -44,9 +45,8 @@ public class GenerateLegalMovesTests
         var moveCount = MoveGenerator.GenerateLegalMoves(position, moves);
 
         // Assert
-        var condition = moves.Contains(Move.CreateShortCastle(isWhite: true));
-        Assert.False(condition, "White cannot castle into check");
-        Assert.Equal(37, moveCount);
+        moveCount.ShouldBe(37);
+        moves.ToArray().ShouldNotContain(x => x.SpecialMoveType == SpecialMoveType.ShortCastle);
     }
 
     [Fact]
@@ -60,9 +60,8 @@ public class GenerateLegalMovesTests
         var moveCount = MoveGenerator.GenerateLegalMoves(position, moves);
 
         // Assert
-        var condition = moves.Contains(Move.CreateShortCastle(isWhite: true));
-        Assert.False(condition, "White cannot castle when in check");
-        Assert.Equal(4, moveCount);
+        moveCount.ShouldBe(4);
+        moves.ToArray().ShouldNotContain(x => x.SpecialMoveType == SpecialMoveType.ShortCastle);
     }
 
     [Fact]
@@ -73,10 +72,24 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
+        MoveGenerator.GenerateLegalMoves(position, moves);
+
+        // Assert
+        moves.ToArray().ShouldNotContain(x => x.From == Square.c3);
+    }
+
+    [Fact]
+    public void GenerateLegalMoves_WhenEnPassantAvailable_FindsEnPassantMove()
+    {
+        // Arrange
+        var position = new Position("4k3/8/8/3Pp3/8/8/8/4K3 w - e6 0 1");
+
+        // Act
+        Span<Move> moves = stackalloc Move[218];
         var moveCount = MoveGenerator.GenerateLegalMoves(position, moves);
 
         // Assert
-        var condition = moves[..moveCount].ToArray().Any(x => x.From == Square.c3);
-        Assert.False(condition, "Pinned knight on c3 should not be able to move");
+        moveCount.ShouldBe(7);
+        moves.ToArray().ShouldContain(x => x.SpecialMoveType == SpecialMoveType.EnPassant);
     }
 }
