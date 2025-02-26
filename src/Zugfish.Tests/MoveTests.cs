@@ -1,5 +1,3 @@
-using Zugfish.Engine.Models;
-
 namespace Zugfish.Tests;
 
 public class MoveTests

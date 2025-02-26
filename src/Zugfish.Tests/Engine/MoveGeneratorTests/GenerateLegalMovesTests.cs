@@ -1,6 +1,5 @@
 ﻿using Zugfish.Engine;
 using Zugfish.Engine.Models;
-using static Zugfish.Engine.Translation;
 
 namespace Zugfish.Tests.Engine.MoveGeneratorTests;
 

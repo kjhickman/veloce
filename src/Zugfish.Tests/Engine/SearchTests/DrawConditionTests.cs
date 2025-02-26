@@ -1,7 +1,4 @@
-﻿using Zugfish.Engine;
-using Zugfish.Engine.Models;
-
-namespace Zugfish.Tests.Engine.SearchTests;
+﻿namespace Zugfish.Tests.Engine.SearchTests;
 
 // public class DrawConditionTests
 // {
