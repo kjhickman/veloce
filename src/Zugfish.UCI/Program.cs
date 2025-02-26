@@ -1,7 +1,7 @@
 ﻿using Zugfish.Engine;
-using Zugfish.UCI.Lib;
+using Zugfish.Uci.Lib;
 
-namespace Zugfish.UCI;
+namespace Zugfish.Uci;
 
 public static class Program
 {

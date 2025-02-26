@@ -23,7 +23,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Zugfish.Engine\Zugfish.Engine.csproj" />
-      <ProjectReference Include="..\Zugfish.UCI\Zugfish.UCI.csproj" />
+      <ProjectReference Include="..\Zugfish.Uci\Zugfish.Uci.csproj" />
     </ItemGroup>
 
 </Project>

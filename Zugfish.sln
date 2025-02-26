@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zugfish.Engine", "src\Zugfish.Engine\Zugfish.Engine.csproj", "{35052747-B359-426B-8CA6-977D2F419898}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zugfish.UCI", "src\Zugfish.UCI\Zugfish.UCI.csproj", "{B42A19CD-3A2F-4833-911E-40778389F404}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zugfish.Uci", "src\Zugfish.Uci\Zugfish.Uci.csproj", "{B42A19CD-3A2F-4833-911E-40778389F404}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zugfish.SelfPlay", "src\Zugfish.SelfPlay\Zugfish.SelfPlay.csproj", "{FF6DD555-B068-4F0A-89E8-EB850EC8B678}"
 EndProject
@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zugfish.Tests", "src\Zugfis
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zugfish.Benchmarks", "src\Zugfish.Benchmarks\Zugfish.Benchmarks.csproj", "{F5E78E14-49B3-4B24-842C-C8FCE0DAEC5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zugfish.UCI.Lib", "src\Zugfish.UCI.Lib\Zugfish.UCI.Lib.csproj", "{3FEB6772-6043-4F7E-958F-BF3367463923}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zugfish.Uci.Lib", "src\Zugfish.Uci.Lib\Zugfish.Uci.Lib.csproj", "{3FEB6772-6043-4F7E-958F-BF3367463923}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

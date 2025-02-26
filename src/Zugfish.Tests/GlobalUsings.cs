@@ -1,1 +1,1 @@
-﻿global using Zugfish.UCI.Lib;
+﻿global using Zugfish.Uci.Lib;

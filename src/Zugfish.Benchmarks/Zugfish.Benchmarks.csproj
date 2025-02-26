@@ -13,7 +13,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Zugfish.Engine\Zugfish.Engine.csproj" />
-      <ProjectReference Include="..\Zugfish.UCI.Lib\Zugfish.UCI.Lib.csproj" />
+      <ProjectReference Include="..\Zugfish.Uci.Lib\Zugfish.Uci.Lib.csproj" />
     </ItemGroup>
 
 </Project>

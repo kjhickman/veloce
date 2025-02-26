@@ -1,7 +1,7 @@
 using Zugfish.Engine;
 using Zugfish.Engine.Models;
 
-namespace Zugfish.UCI.Lib;
+namespace Zugfish.Uci.Lib;
 
 public class Helpers
 {

@@ -1,8 +1,8 @@
 using Zugfish.Engine;
 using Zugfish.Engine.Models;
-using static Zugfish.UCI.Lib.Helpers;
+using static Zugfish.Uci.Lib.Helpers;
 
-namespace Zugfish.UCI.Lib;
+namespace Zugfish.Uci.Lib;
 
 public static class BoardExtensions
 {

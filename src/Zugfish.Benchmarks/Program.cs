@@ -1,4 +1,4 @@
-﻿global using Zugfish.UCI.Lib;
+﻿global using Zugfish.Uci.Lib;
 using BenchmarkDotNet.Running;
 
 BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
