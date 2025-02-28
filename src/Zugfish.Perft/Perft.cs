@@ -1,6 +1,7 @@
+using Zugfish.Engine;
 using Zugfish.Engine.Models;
 
-namespace Zugfish.Engine;
+namespace Zugfish.Perft;
 
 public static class Perft
 {
