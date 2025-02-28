@@ -24,20 +24,20 @@ public class MoveGenerationBenchmarks
     public int GenerateMoves_StartingPosition()
     {
         Span<Move> movesBuffer = stackalloc Move[218];
-        return MoveGenerator.GenerateLegalMoves(_startingPosition, movesBuffer);
+        return MoveGeneration.GenerateLegalMoves(_startingPosition, movesBuffer);
     }
 
     [Benchmark]
     public int GenerateMoves_MidGamePosition()
     {
         Span<Move> movesBuffer = stackalloc Move[218];
-        return MoveGenerator.GenerateLegalMoves(_midGamePosition, movesBuffer);
+        return MoveGeneration.GenerateLegalMoves(_midGamePosition, movesBuffer);
     }
 
     [Benchmark]
     public int GenerateMoves_EndGamePosition()
     {
         Span<Move> movesBuffer = stackalloc Move[218];
-        return MoveGenerator.GenerateLegalMoves(_endGamePosition, movesBuffer);
+        return MoveGeneration.GenerateLegalMoves(_endGamePosition, movesBuffer);
     }
 }

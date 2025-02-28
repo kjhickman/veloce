@@ -14,7 +14,7 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        var moveCount = MoveGenerator.GenerateLegalMoves(position, moves);
+        var moveCount = MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moveCount.ShouldBe(20);
@@ -28,7 +28,7 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        var moveCount = MoveGenerator.GenerateLegalMoves(position, moves);
+        var moveCount = MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moveCount.ShouldBe(218);
@@ -42,7 +42,7 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        var moveCount = MoveGenerator.GenerateLegalMoves(position, moves);
+        var moveCount = MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moveCount.ShouldBe(37);
@@ -57,7 +57,7 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        var moveCount = MoveGenerator.GenerateLegalMoves(position, moves);
+        var moveCount = MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moveCount.ShouldBe(4);
@@ -72,7 +72,7 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        MoveGenerator.GenerateLegalMoves(position, moves);
+        MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moves.ToArray().ShouldNotContain(x => x.From == Square.c3);
@@ -86,7 +86,7 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        var moveCount = MoveGenerator.GenerateLegalMoves(position, moves);
+        var moveCount = MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moveCount.ShouldBe(7);
