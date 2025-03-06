@@ -9,6 +9,7 @@ public class SearchBenchmarks
 {
     private Position _startingPosition = null!;
     private Search _search = null!;
+    private MoveExecutor _executor = null!;
 
     // [Params(3, 4)]
     // public int Depth { get; set; }
@@ -18,6 +19,13 @@ public class SearchBenchmarks
     {
         _search = new Search();
         _startingPosition = new Position();
+        _executor = new MoveExecutor();
+    }
+
+    [IterationCleanup]
+    public void IterationCleanup()
+    {
+        _executor.ClearMoveHistory();
     }
 
     [Benchmark]
@@ -28,7 +36,7 @@ public class SearchBenchmarks
         {
             var bestMove = _search.FindBestMove(_startingPosition, 4);
             if (bestMove == null) throw new Exception("Game ended unexpectedly");
-            _startingPosition.MakeMove(bestMove.Value);
+            _executor.MakeMove(_startingPosition, bestMove.Value);
         }
 
         return _startingPosition.ZobristHash;

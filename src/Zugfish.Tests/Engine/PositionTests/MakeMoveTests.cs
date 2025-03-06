@@ -2,7 +2,7 @@
 using Zugfish.Engine.Models;
 using static Zugfish.Engine.Translation;
 
-namespace Zugfish.Tests.Engine.BoardTests;
+namespace Zugfish.Tests.Engine.PositionTests;
 
 public class MakeMoveTests
 {
@@ -12,9 +12,10 @@ public class MakeMoveTests
         // Set up a position with only the white king on e1 and a white rook on h1
         const string fen = "3k4/8/8/8/8/8/8/4K2R w K - 0 1";
         var position = new Position(fen);
+        var executor = new MoveExecutor();
 
         // White castling kingside (e1→g1)
-        position.MakeMove("e1g1");
+        executor.MakeMove(position, "e1g1");
 
         // After castling, the king should be on g1 and the rook on f1
         Assert.Equal(1UL << SquareFromAlgebraic("g1"), position.WhiteKing.Value);
@@ -28,9 +29,10 @@ public class MakeMoveTests
         // Set up a position with the white king on e1 and a white rook on a1
         const string fen = "3k4/8/8/8/8/8/8/R3K3 w Q - 0 1";
         var position = new Position(fen);
+        var executor = new MoveExecutor();
 
         // White queenside castling (e1→c1)
-        position.MakeMove("e1c1");
+        executor.MakeMove(position, "e1c1");
 
         // After castling, the king should be on c1 and the rook should move from a1 to d1
         Assert.Equal(1UL << SquareFromAlgebraic("c1"), position.WhiteKing.Value);
@@ -44,9 +46,10 @@ public class MakeMoveTests
         // Set up a position with the black king on e8 and a black rook on h8.
         const string fen = "4k2r/8/8/8/8/8/8/4K3 b k - 0 1";
         var position = new Position(fen);
+        var executor = new MoveExecutor();
 
         // Black kingside castling: e8 -> g8.
-        position.MakeMove("e8g8");
+        executor.MakeMove(position, "e8g8");
 
         // After castling, the king should be on g8 and the rook on f8.
         Assert.Equal(1UL << SquareFromAlgebraic("g8"), position.BlackKing.Value);
@@ -58,11 +61,12 @@ public class MakeMoveTests
     public void MakeMove_CastlingQueensideBlack_UpdatesKingAndRookPositions()
     {
         // Set up a position with the black king on e8 and a black rook on a8.
-        const string fen = "r3k3/8/8/8/8/8/8/4K3 w q - 0 1";
+        const string fen = "r3k3/8/8/8/8/8/8/4K3 b q - 0 1";
         var position = new Position(fen);
+        var executor = new MoveExecutor();
 
         // Black queenside castling: e8 -> c8.
-        position.MakeMove("e8c8");
+        executor.MakeMove(position, "e8c8");
 
         // After castling, the king should be on c8 and the rook on d8.
         Assert.Equal(1UL << SquareFromAlgebraic("c8"), position.BlackKing.Value);
@@ -76,7 +80,8 @@ public class MakeMoveTests
         // Using the standard starting position:
         // A double pawn push from e2 to e4 should set the en passant target to e3.
         var position = new Position();
-        position.MakeMove("e2e4");
+        var executor = new MoveExecutor();
+        executor.MakeMove(position, "e2e4");
         Assert.False((position.WhitePawns & (1UL << SquareFromAlgebraic("e2"))) != 0); // Pawn left e2.
         Assert.True((position.WhitePawns & (1UL << SquareFromAlgebraic("e4"))) != 0);  // Pawn appears on e4.
         Assert.Equal(Square.e3, position.EnPassantTarget);
@@ -89,8 +94,9 @@ public class MakeMoveTests
         // After a dummy white move, black pawn from e7 can move to e5.
         // The double pawn push should set the en passant target to e6.
         var position = new Position();
-        position.MakeMove("a2a3"); // White makes a non-interfering move.
-        position.MakeMove("e7e5");
+        var executor = new MoveExecutor();
+        executor.MakeMove(position, "a2a3"); // White makes a non-interfering move.
+        executor.MakeMove(position, "e7e5");
         Assert.False((position.BlackPawns & (1UL << SquareFromAlgebraic("e7"))) != 0);
         Assert.True((position.BlackPawns & (1UL << SquareFromAlgebraic("e5"))) != 0);
         Assert.Equal(Square.e6, position.EnPassantTarget);
@@ -106,8 +112,9 @@ public class MakeMoveTests
         // Create a position with a white pawn on g7 (ready to promote) and a black king.
         const string fen = "3k4/6P1/8/8/8/8/8/3K4 w - - 0 1";
         var position = new Position(fen);
+        var executor = new MoveExecutor();
         var move = $"g7g8{promo}";
-        position.MakeMove(move);
+        executor.MakeMove(position, move);
 
         // The pawn should be removed from g7 and the promoted piece placed on g8.
         Assert.False((position.WhitePawns & (1UL << SquareFromAlgebraic("g7"))) != 0);
@@ -139,8 +146,9 @@ public class MakeMoveTests
         // Create a position with a black pawn on a2 (ready to promote) and a white king.
         const string fen = "3k4/8/8/8/8/8/p7/3K4 b - - 0 1";
         var position = new Position(fen);
+        var executor = new MoveExecutor();
         var move = $"a2a1{promo}";
-        position.MakeMove(move);
+        executor.MakeMove(position, move);
 
         // The pawn should be removed from a2 and the promoted piece placed on a1.
         Assert.False((position.BlackPawns & (1UL << SquareFromAlgebraic("a2"))) != 0);
@@ -168,9 +176,10 @@ public class MakeMoveTests
         // Set up a position where a white pawn on d5 can capture en passant a black pawn on e5
         const string fen = "4k3/8/8/3Pp3/8/8/8/4K3 w - e6 0 1";
         var position = new Position(fen);
+        var executor = new MoveExecutor();
 
         // White en passant move: d5 -> e6
-        position.MakeMove("d5e6");
+        executor.MakeMove(position, "d5e6");
 
         // After en passant, the white pawn should now be on e6
         // and the black pawn on e5 should be captured.
@@ -184,9 +193,10 @@ public class MakeMoveTests
         // Set up a position where a black pawn on d4 can capture en passant a white pawn on e4.
         const string fen = "8/8/8/8/3pP3/8/8/8 b - e3 0 1";
         var position = new Position(fen);
+        var executor = new MoveExecutor();
 
         // Black en passant move: d4 -> e3.
-        position.MakeMove("d4e3");
+        executor.MakeMove(position, "d4e3");
 
         // After en passant, the black pawn should now be on e3
         // and the white pawn on e4 should be captured.

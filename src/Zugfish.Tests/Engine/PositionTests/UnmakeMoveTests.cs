@@ -1,7 +1,6 @@
 ﻿using Zugfish.Engine;
-using Zugfish.Engine.Models;
 
-namespace Zugfish.Tests.Engine.BoardTests;
+namespace Zugfish.Tests.Engine.PositionTests;
 
 public class UnmakeMoveTests
 {
@@ -36,10 +35,11 @@ public class UnmakeMoveTests
         const string fen = "3k4/8/8/8/8/8/8/4K2R w K - 0 1";
         var position = new Position(fen);
         var expected = new Position(fen);
+        var executor = new MoveExecutor();
 
         // White castling kingside (e1→g1)
-        position.MakeMove("e1g1");
-        position.UndoMove();
+        executor.MakeMove(position, "e1g1");
+        executor.UndoMove(position);
 
         // After unmaking, the position should match the starting state.
         AssertPositionsEqual(expected, position);
@@ -52,10 +52,11 @@ public class UnmakeMoveTests
         const string fen = "3k4/8/8/8/8/8/8/R3K3 w Q - 0 1";
         var position = new Position(fen);
         var expected = new Position(fen);
+        var executor = new MoveExecutor();
 
         // White queenside castling (e1→c1)
-        position.MakeMove("e1c1");
-        position.UndoMove();
+        executor.MakeMove(position, "e1c1");
+        executor.UndoMove(position);
 
         AssertPositionsEqual(expected, position);
     }
@@ -67,10 +68,11 @@ public class UnmakeMoveTests
         const string fen = "4k2r/8/8/8/8/8/8/4K3 b k - 0 1";
         var position = new Position(fen);
         var expected = new Position(fen);
+        var executor = new MoveExecutor();
 
         // Black kingside castling: e8 → g8.
-        position.MakeMove("e8g8");
-        position.UndoMove();
+        executor.MakeMove(position, "e8g8");
+        executor.UndoMove(position);
 
         AssertPositionsEqual(expected, position);
     }
@@ -82,10 +84,11 @@ public class UnmakeMoveTests
         const string fen = "r3k3/8/8/8/8/8/8/4K3 w q - 0 1";
         var position = new Position(fen);
         var expected = new Position(fen);
+        var executor = new MoveExecutor();
 
         // Black queenside castling: e8 → c8.
-        position.MakeMove("e8c8");
-        position.UndoMove();
+        executor.MakeMove(position, "e8c8");
+        executor.UndoMove(position);
 
         AssertPositionsEqual(expected, position);
     }
@@ -97,9 +100,10 @@ public class UnmakeMoveTests
         // A double pawn push from e2 to e4 should set en passant to e3.
         var position = new Position();
         var expected = new Position();
+        var executor = new MoveExecutor();
 
-        position.MakeMove("e2e4");
-        position.UndoMove();
+        executor.MakeMove(position, "e2e4");
+        executor.UndoMove(position);
 
         AssertPositionsEqual(expected, position);
     }
@@ -111,14 +115,17 @@ public class UnmakeMoveTests
         // After a dummy white move, a black pawn from e7 moves to e5,
         // which should set the en passant target to e6.
         var position = new Position();
-        position.MakeMove("a2a3"); // White non-interfering move.
+        var executor = new MoveExecutor();
+        executor.MakeMove(position, "a2a3"); // White non-interfering move.
 
         // Capture the state after white's move as the expected state for black's move.
         var expected = new Position();
-        expected.MakeMove("a2a3");
+        var executor2 = new MoveExecutor();
 
-        position.MakeMove("e7e5");
-        position.UndoMove();
+        executor2.MakeMove(expected, "a2a3");
+
+        executor.MakeMove(position, "e7e5");
+        executor.UndoMove(position);
 
         AssertPositionsEqual(expected, position);
     }
@@ -134,10 +141,11 @@ public class UnmakeMoveTests
         const string fen = "3k4/6P1/8/8/8/8/8/3K4 w - - 0 1";
         var position = new Position(fen);
         var expected = new Position(fen);
+        var executor = new MoveExecutor();
 
         var move = $"g7g8{promo}";
-        position.MakeMove(move);
-        position.UndoMove();
+        executor.MakeMove(position, move);
+        executor.UndoMove(position);
 
         AssertPositionsEqual(expected, position);
     }
@@ -153,10 +161,11 @@ public class UnmakeMoveTests
         const string fen = "3k4/8/8/8/8/8/p7/3K4 b - - 0 1";
         var position = new Position(fen);
         var expected = new Position(fen);
+        var executor = new MoveExecutor();
 
         var move = $"a2a1{promo}";
-        position.MakeMove(move);
-        position.UndoMove();
+        executor.MakeMove(position, move);
+        executor.UndoMove(position);
 
         AssertPositionsEqual(expected, position);
     }
@@ -168,9 +177,10 @@ public class UnmakeMoveTests
         const string fen = "4k3/8/8/3Pp3/8/8/8/4K3 w - e6 0 1";
         var position = new Position(fen);
         var expected = new Position(fen);
+        var executor = new MoveExecutor();
 
-        position.MakeMove("d5e6");
-        position.UndoMove();
+        executor.MakeMove(position, "d5e6");
+        executor.UndoMove(position);
 
         AssertPositionsEqual(expected, position);
     }
@@ -182,9 +192,10 @@ public class UnmakeMoveTests
         const string fen = "8/8/8/8/3pP3/8/8/8 b - e3 0 1";
         var position = new Position(fen);
         var expected = new Position(fen);
+        var executor = new MoveExecutor();
 
-        position.MakeMove("d4e3");
-        position.UndoMove();
+        executor.MakeMove(position, "d4e3");
+        executor.UndoMove(position);
 
         AssertPositionsEqual(expected, position);
     }
@@ -196,12 +207,13 @@ public class UnmakeMoveTests
         const string fen = "rnbqkbnr/ppp2ppp/8/3pp3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 3";
         var position = new Position(fen);
         var expected = new Position(fen);
+        var executor = new MoveExecutor();
 
-        position.MakeMove("f3e5");
+        executor.MakeMove(position, "f3e5");
         var foo = new Position("rnbqkbnr/ppp2ppp/8/3pN3/4P3/8/PPPP1PPP/RNBQKB1R b KQkq - 0 3");
         AssertPositionsEqual(foo, position);
 
-        position.UndoMove();
+        executor.UndoMove(position);
 
         AssertPositionsEqual(expected, position);
     }

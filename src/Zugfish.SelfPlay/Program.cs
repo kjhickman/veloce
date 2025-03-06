@@ -6,6 +6,7 @@ using Zugfish.SelfPlay;
 
 var position = new Position();
 var search = new Search();
+var executor = new MoveExecutor();
 var i = 0;
 
 var sw = Stopwatch.StartNew();
@@ -19,7 +20,7 @@ while (i++ < 40)
         break;
     }
 
-    position.MakeMove(bestMove.Value);
+    executor.MakeMove(position, bestMove.Value);
 }
 
 Console.WriteLine($"Elapsed: {sw.Elapsed}");

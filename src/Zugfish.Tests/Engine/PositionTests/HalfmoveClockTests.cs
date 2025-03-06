@@ -1,4 +1,4 @@
-﻿namespace Zugfish.Tests.Engine.BoardTests;
+﻿namespace Zugfish.Tests.Engine.PositionTests;
 
 public class HalfmoveClockTests
 {

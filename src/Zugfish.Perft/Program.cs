@@ -11,16 +11,17 @@ if (args.Length == 3)
 }
 
 var position = new Position(fen);
+var executor = new MoveExecutor();
 if (movesList is not null)
 {
     var moves = movesList.Split(' ');
     foreach (var move in moves)
     {
-        position.MakeMove(move);
+        executor.MakeMove(position, move);
     }
 }
 
-var division = Perft.DividePerft(position, depth);
+var division = Perft.DividePerft(position, executor, depth);
 
 foreach (var move in division)
 {

@@ -5,6 +5,7 @@ namespace Zugfish.Tests.Engine.Puzzles;
 public class CheckmatePuzzleTests
 {
     private readonly Search _search = new();
+    private readonly MoveExecutor _executor = new();
 
     // https://lichess.org/training/pipKp
     [Fact]
@@ -15,8 +16,8 @@ public class CheckmatePuzzleTests
         Assert.NotNull(bestMove);
         Assert.Equal("f3e5", Helpers.UciFromMove(bestMove.Value));
 
-        position.MakeMove(bestMove.Value);
-        position.MakeMove("d7e8");
+        _executor.MakeMove(position, bestMove.Value);
+        _executor.MakeMove(position, "d7e8");
 
         bestMove = _search.FindBestMove(position, 4);
         Assert.NotNull(bestMove);

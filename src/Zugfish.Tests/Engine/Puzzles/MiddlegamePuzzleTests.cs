@@ -5,6 +5,7 @@ namespace Zugfish.Tests.Engine.Puzzles;
 public class MiddlegamePuzzleTests
 {
     private readonly Search _search = new();
+    private readonly MoveExecutor _executor = new();
 
     // https://lichess.org/training/CNQTv
     [Fact]
@@ -15,8 +16,8 @@ public class MiddlegamePuzzleTests
         Assert.NotNull(bestMove);
         Assert.Equal("f4e3", Helpers.UciFromMove(bestMove.Value));
 
-        position.MakeMove(bestMove.Value);
-        position.MakeMove("e2e3");
+        _executor.MakeMove(position, bestMove.Value);
+        _executor.MakeMove(position, "e2e3");
 
         bestMove = _search.FindBestMove(position, 4);
         Assert.NotNull(bestMove);

@@ -1,4 +1,3 @@
-using Zugfish.Engine;
 using Zugfish.Engine.Models;
 
 namespace Zugfish.Uci.Lib;
@@ -24,8 +23,8 @@ public class Helpers
 
     public static string UciFromMove(Move move)
     {
-        var from = AlgebraicFromSquare(move.From);
-        var to = AlgebraicFromSquare(move.To);
+        var from = move.From.ToString();
+        var to = move.To.ToString();
         var promotion = move.PromotedPieceType switch
         {
             PromotedPieceType.Queen => "q",
@@ -37,51 +36,46 @@ public class Helpers
         return $"{from}{to}{promotion}";
     }
 
-    public static string AlgebraicFromSquare(Square square)
-    {
-        return square.ToString();
-    }
-
-    public static Position? ParsePosition(string[] parts)
-    {
-        if (parts.Length < 2) return null;
-
-        switch (parts[1])
-        {
-            case "startpos":
-            {
-                var position = new Position();
-                var movesIndex = Array.IndexOf(parts, "moves");
-                if (movesIndex != -1)
-                {
-                    // Apply all moves after "moves"
-                    for (var i = movesIndex + 1; i < parts.Length; i++)
-                    {
-                        position.MakeMove(parts[i]);
-                    }
-                }
-
-                return position;
-            }
-            case "fen" when parts.Length >= 7:
-            {
-                var fen = string.Join(" ", parts.Skip(2).Take(6));
-                var position = new Position(fen);
-
-                var movesIndex = Array.IndexOf(parts, "moves");
-                if (movesIndex != -1)
-                {
-                    // Apply all moves after "moves"
-                    for (var i = movesIndex + 1; i < parts.Length; i++)
-                    {
-                        position.MakeMove(parts[i]);
-                    }
-                }
-
-                return position;
-            }
-            default:
-                return null;
-        }
-    }
+    // public static Position? ParsePosition(string[] parts)
+    // {
+    //     if (parts.Length < 2) return null;
+    //
+    //     switch (parts[1])
+    //     {
+    //         case "startpos":
+    //         {
+    //             var position = new Position();
+    //             var movesIndex = Array.IndexOf(parts, "moves");
+    //             if (movesIndex != -1)
+    //             {
+    //                 // Apply all moves after "moves"
+    //                 for (var i = movesIndex + 1; i < parts.Length; i++)
+    //                 {
+    //                     position.MakeMove(parts[i]);
+    //                 }
+    //             }
+    //
+    //             return position;
+    //         }
+    //         case "fen" when parts.Length >= 7:
+    //         {
+    //             var fen = string.Join(" ", parts.Skip(2).Take(6));
+    //             var position = new Position(fen);
+    //
+    //             var movesIndex = Array.IndexOf(parts, "moves");
+    //             if (movesIndex != -1)
+    //             {
+    //                 // Apply all moves after "moves"
+    //                 for (var i = movesIndex + 1; i < parts.Length; i++)
+    //                 {
+    //                     position.MakeMove(parts[i]);
+    //                 }
+    //             }
+    //
+    //             return position;
+    //         }
+    //         default:
+    //             return null;
+    //     }
+    // }
 }

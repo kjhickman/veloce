@@ -39,10 +39,10 @@ public static class Program
                     position = new Position();
                     break;
 
-                case "position":
-                    var newPosition = Helpers.ParsePosition(parts);
-                    if (newPosition != null) position = newPosition;
-                    break;
+                // case "position":
+                //     var newPosition = Helpers.ParsePosition(parts);
+                //     if (newPosition != null) position = newPosition;
+                //     break;
 
                 case "go":
                     // Using depth 4 as a default - this can be made configurable later

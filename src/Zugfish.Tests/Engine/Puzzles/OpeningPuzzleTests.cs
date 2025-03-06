@@ -5,6 +5,7 @@ namespace Zugfish.Tests.Engine.Puzzles;
 public class OpeningPuzzleTests
 {
     private readonly Search _search = new();
+    private readonly MoveExecutor _executor = new();
 
     // https://lichess.org/training/Km0QH
     [Fact]
@@ -15,8 +16,8 @@ public class OpeningPuzzleTests
         Assert.NotNull(bestMove);
         Assert.Equal("e6f7", Helpers.UciFromMove(bestMove.Value));
 
-        position.MakeMove(bestMove.Value);
-        position.MakeMove("e7f7");
+        _executor.MakeMove(position, bestMove.Value);
+        _executor.MakeMove(position, "e7f7");
 
         bestMove = _search.FindBestMove(position, 4);
         Assert.NotNull(bestMove);
