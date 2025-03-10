@@ -34,7 +34,7 @@ public class SearchBenchmarks
         var i = 0;
         while (i++ < 10)
         {
-            var bestMove = _search.FindBestMove(_startingPosition, 4);
+            var bestMove = _search.FindBestMove(_startingPosition, 4).BestMove;
             if (bestMove == null) throw new Exception("Game ended unexpectedly");
             _executor.MakeMove(_startingPosition, bestMove.Value);
         }

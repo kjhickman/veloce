@@ -12,13 +12,13 @@ while (i++ < 40)
 {
     Console.WriteLine(position.Render());
     var bestMove = search.FindBestMove(position, 5);
-    if (bestMove == null)
+    if (bestMove.BestMove == null)
     {
         Console.WriteLine("Game over");
         break;
     }
 
-    executor.MakeMove(position, bestMove.Value);
+    executor.MakeMove(position, bestMove.BestMove!.Value);
 }
 
 Console.WriteLine($"Elapsed: {sw.Elapsed}");
