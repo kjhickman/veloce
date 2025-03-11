@@ -1,13 +1,15 @@
+using Zugfish.Engine;
+using Zugfish.Engine.Extensions;
 using Zugfish.Engine.Models;
 
 namespace Zugfish.Uci.Lib;
 
-public class Helpers
+public static class Helpers
 {
     /// <summary>
     /// Converts a two-character UCI square (e.g. "e4") to its square index.
     /// </summary>
-    public static int SquareFromUci(ReadOnlySpan<char> square)
+    public static Square SquareFromUci(ReadOnlySpan<char> square)
     {
         if (square.Length != 2)
             throw new ArgumentException("Invalid square length", nameof(square));
@@ -18,7 +20,7 @@ public class Helpers
         if (file < 'a' || file > 'h' || rank < '1' || rank > '8')
             throw new ArgumentException("Invalid UCI square.", nameof(file));
 
-        return (rank - '1') * 8 + (file - 'a');
+        return (Square)((rank - '1') * 8 + (file - 'a'));
     }
 
     public static string UciFromMove(Move move)
@@ -36,46 +38,68 @@ public class Helpers
         return $"{from}{to}{promotion}";
     }
 
-    // public static Position? ParsePosition(string[] parts)
-    // {
-    //     if (parts.Length < 2) return null;
-    //
-    //     switch (parts[1])
-    //     {
-    //         case "startpos":
-    //         {
-    //             var position = new Position();
-    //             var movesIndex = Array.IndexOf(parts, "moves");
-    //             if (movesIndex != -1)
-    //             {
-    //                 // Apply all moves after "moves"
-    //                 for (var i = movesIndex + 1; i < parts.Length; i++)
-    //                 {
-    //                     position.MakeMove(parts[i]);
-    //                 }
-    //             }
-    //
-    //             return position;
-    //         }
-    //         case "fen" when parts.Length >= 7:
-    //         {
-    //             var fen = string.Join(" ", parts.Skip(2).Take(6));
-    //             var position = new Position(fen);
-    //
-    //             var movesIndex = Array.IndexOf(parts, "moves");
-    //             if (movesIndex != -1)
-    //             {
-    //                 // Apply all moves after "moves"
-    //                 for (var i = movesIndex + 1; i < parts.Length; i++)
-    //                 {
-    //                     position.MakeMove(parts[i]);
-    //                 }
-    //             }
-    //
-    //             return position;
-    //         }
-    //         default:
-    //             return null;
-    //     }
-    // }
+    public static Move MoveFromUci(Position position, ReadOnlySpan<char> uciMove)
+    {
+        if (uciMove.Length is < 4 or > 5)
+            throw new ArgumentException("Invalid UCI move format.", nameof(uciMove));
+
+        var from = SquareFromUci(uciMove[..2]);
+        var to = SquareFromUci(uciMove[2..4]);
+
+        if (!from.IsValid() || !to.IsValid()) // Ensure indices are valid
+            throw new ArgumentOutOfRangeException(nameof(uciMove), "Square index out of range.");
+
+        var fromMask = from.ToMask();
+        var toMask = to.ToMask();
+
+        var specialMoveType = SpecialMoveType.None;
+
+        var isPawnMove = (position.WhitePawns | position.BlackPawns).Intersects(fromMask);
+        var isKingMove = (position.WhiteKing | position.BlackKing).Intersects(fromMask);
+        var fromRank = from.GetRank();
+        var toRank = to.GetRank();
+
+        // Detect castling (if king moves two squares)
+        if (isKingMove && fromRank == toRank)
+        {
+            if (Math.Abs(from - to) == 2)
+            {
+                specialMoveType = from < to ? SpecialMoveType.ShortCastle : SpecialMoveType.LongCastle;
+            }
+        }
+        else if (isPawnMove && position.EnPassantTarget == to) // Detect En Passant
+        {
+            specialMoveType = SpecialMoveType.EnPassant;
+        }
+        else if (isPawnMove && Math.Abs(from - to) == 16) // Detect double pawn move
+        {
+            specialMoveType = SpecialMoveType.DoublePawnPush;
+        }
+
+        var isCapture = (toMask & position.AllPieces).IsNotEmpty() || specialMoveType == SpecialMoveType.EnPassant;
+        var capturedPieceType = PieceType.None;
+        if (specialMoveType == SpecialMoveType.EnPassant)
+        {
+            capturedPieceType = position.WhiteToMove ? PieceType.BlackPawn : PieceType.WhitePawn;
+        }
+        else if (isCapture)
+        {
+            capturedPieceType = position.GetPieceTypeAt(to, !position.WhiteToMove);
+        }
+
+        var promotedPieceType = PromotedPieceType.None;
+        if (uciMove.Length == 5) // If the move has a 5th character (promotion), determine its type
+        {
+            promotedPieceType = uciMove[4] switch
+            {
+                'q' => PromotedPieceType.Queen,
+                'r' => PromotedPieceType.Rook,
+                'b' => PromotedPieceType.Bishop,
+                'n' => PromotedPieceType.Knight,
+                _ => PromotedPieceType.None
+            };
+        }
+
+        return new Move(from, to, promotedPieceType, position.GetPieceTypeAt(from, position.WhiteToMove), capturedPieceType, isCapture, specialMoveType);
+    }
 }
