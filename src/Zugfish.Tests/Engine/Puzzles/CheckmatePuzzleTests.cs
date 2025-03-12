@@ -1,4 +1,5 @@
 ﻿using Zugfish.Engine;
+using Zugfish.Uci.Lib.Extensions;
 
 namespace Zugfish.Tests.Engine.Puzzles;
 

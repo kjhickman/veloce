@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using Zugfish.Engine;
+using Zugfish.Uci.Lib.Extensions;
 
 namespace Zugfish.Benchmarks.Benchmarks;
 

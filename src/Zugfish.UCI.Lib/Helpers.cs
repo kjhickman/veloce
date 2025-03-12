@@ -1,28 +1,12 @@
 using Zugfish.Engine;
 using Zugfish.Engine.Extensions;
 using Zugfish.Engine.Models;
+using Zugfish.Uci.Lib.Extensions;
 
 namespace Zugfish.Uci.Lib;
 
 public static class Helpers
 {
-    /// <summary>
-    /// Converts a two-character UCI square (e.g. "e4") to its square index.
-    /// </summary>
-    public static Square SquareFromUci(ReadOnlySpan<char> square)
-    {
-        if (square.Length != 2)
-            throw new ArgumentException("Invalid square length", nameof(square));
-
-        var file = square[0];
-        var rank = square[1];
-
-        if (file < 'a' || file > 'h' || rank < '1' || rank > '8')
-            throw new ArgumentException("Invalid UCI square.", nameof(file));
-
-        return (Square)((rank - '1') * 8 + (file - 'a'));
-    }
-
     public static string UciFromMove(Move move)
     {
         var from = move.From.ToString();
@@ -101,5 +85,19 @@ public static class Helpers
         }
 
         return new Move(from, to, promotedPieceType, position.GetPieceTypeAt(from, position.WhiteToMove), capturedPieceType, isCapture, specialMoveType);
+    }
+
+    private static Square SquareFromUci(ReadOnlySpan<char> square)
+    {
+        if (square.Length != 2)
+            throw new ArgumentException("Invalid square length", nameof(square));
+
+        var file = square[0];
+        var rank = square[1];
+
+        if (file < 'a' || file > 'h' || rank < '1' || rank > '8')
+            throw new ArgumentException("Invalid UCI square.", nameof(file));
+
+        return (Square)((rank - '1') * 8 + (file - 'a'));
     }
 }

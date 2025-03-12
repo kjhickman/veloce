@@ -1,18 +1,10 @@
 using Zugfish.Engine;
-using Zugfish.Engine.Extensions;
 using Zugfish.Engine.Models;
-using static Zugfish.Uci.Lib.Helpers;
 
-namespace Zugfish.Uci.Lib;
+namespace Zugfish.Uci.Lib.Extensions;
 
-public static class MoveExecutorExtensions
+public static class PositionExtensions
 {
-    public static void MakeMove(this MoveExecutor executor, Position position, ReadOnlySpan<char> uciMove)
-    {
-        var move = MoveFromUci(position, uciMove);
-        executor.MakeMove(position, move);
-    }
-
     public static PieceType GetPieceTypeAt(this Position position, Square square, bool isWhite)
     {
         var mask = Bitboard.Mask(square);

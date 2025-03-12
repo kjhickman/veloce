@@ -1,6 +1,7 @@
 ﻿using Zugfish.Engine;
 using Zugfish.Perft;
 using Zugfish.Uci.Lib;
+using Zugfish.Uci.Lib.Extensions;
 
 var depth = int.Parse(args[0]);
 var fen = args[1];

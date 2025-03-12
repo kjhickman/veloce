@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using Zugfish.Engine;
-using Zugfish.SelfPlay;
 
 var settings = new EngineSettings
 {

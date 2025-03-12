@@ -1,6 +1,7 @@
 ﻿using Shouldly;
 using Zugfish.Engine;
 using Zugfish.Engine.Models;
+using Zugfish.Uci.Lib.Extensions;
 
 namespace Zugfish.Tests.Engine.Puzzles;
 
