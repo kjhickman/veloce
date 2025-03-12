@@ -17,9 +17,9 @@ public class SearchBenchmarks
     [IterationSetup]
     public void IterationSetup()
     {
-        _search = new Search();
         _startingPosition = new Position();
         _executor = new MoveExecutor();
+        _search = new Search(new NullEngineLogger(), _executor, 24);
     }
 
     [IterationCleanup]
@@ -34,7 +34,7 @@ public class SearchBenchmarks
         var i = 0;
         while (i++ < 10)
         {
-            var bestMove = _search.FindBestMove(_startingPosition, 4).BestMove;
+            var bestMove = _search.FindBestMove(_startingPosition, 6).BestMove;
             if (bestMove == null) throw new Exception("Game ended unexpectedly");
             _executor.MakeMove(_startingPosition, bestMove.Value);
         }

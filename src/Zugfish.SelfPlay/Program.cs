@@ -2,7 +2,12 @@
 using Zugfish.Engine;
 using Zugfish.SelfPlay;
 
-var settings = EngineSettings.Default;
+var settings = new EngineSettings
+{
+    Depth = 6,
+    HashSizeInMb = 24,
+    Threads = 1
+};
 var engine = new Engine(new ConsoleEngineLogger(), settings);
 var i = 0;
 
