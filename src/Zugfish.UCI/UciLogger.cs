@@ -28,6 +28,7 @@ public class UciEngineLogger : IEngineLogger
         sb.Append($" nodes {info.NodesSearched}");
         sb.Append($" time {(int)info.TimeElapsed.TotalMilliseconds}");
         sb.Append($" nps {info.NodesPerSecond}");
+        sb.Append($" hashfull {info.HashFull}");
 
         Console.WriteLine(sb.ToString());
     }

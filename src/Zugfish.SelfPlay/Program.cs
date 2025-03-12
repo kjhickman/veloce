@@ -3,8 +3,8 @@ using Zugfish.Engine;
 
 var settings = new EngineSettings
 {
-    Depth = 6,
-    HashSizeInMb = 24,
+    Depth = 8,
+    HashSizeInMb = 16,
     Threads = 1
 };
 var engine = new Engine(new ConsoleEngineLogger(), settings);
