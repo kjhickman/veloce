@@ -1,4 +1,3 @@
-using Veloce;
 using Veloce.Extensions;
 using Veloce.Models;
 using Veloce.Uci.Lib.Extensions;

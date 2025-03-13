@@ -1,5 +1,4 @@
 using BenchmarkDotNet.Attributes;
-using Veloce;
 
 namespace Veloce.Benchmarks.Benchmarks;
 
@@ -7,25 +6,14 @@ namespace Veloce.Benchmarks.Benchmarks;
 [BenchmarkCategory("Search")]
 public class SearchBenchmarks
 {
-    private Position _startingPosition = null!;
     private Search _search = null!;
-    private MoveExecutor _executor = null!;
-
-    // [Params(3, 4)]
-    // public int Depth { get; set; }
+    private Game _game = null!;
 
     [IterationSetup]
     public void IterationSetup()
     {
-        _startingPosition = new Position();
-        _executor = new MoveExecutor();
-        _search = new Search(new NullEngineLogger(), _executor, 24);
-    }
-
-    [IterationCleanup]
-    public void IterationCleanup()
-    {
-        _executor.ClearMoveHistory();
+        _search = new Search(new NullEngineLogger());
+        _game = new Game();
     }
 
     [Benchmark]
@@ -34,11 +22,11 @@ public class SearchBenchmarks
         var i = 0;
         while (i++ < 10)
         {
-            var bestMove = _search.FindBestMove(_startingPosition, 6).BestMove;
+            var bestMove = _search.FindBestMove(_game, 6).BestMove;
             if (bestMove == null) throw new Exception("Game ended unexpectedly");
-            _executor.MakeMove(_startingPosition, bestMove.Value);
+            _game.MakeMove(bestMove.Value);
         }
 
-        return _startingPosition.ZobristHash;
+        return _game.Position.ZobristHash;
     }
 }

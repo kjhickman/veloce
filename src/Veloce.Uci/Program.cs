@@ -1,5 +1,4 @@
-﻿using Veloce;
-using Veloce.Models;
+﻿using Veloce.Models;
 using Veloce.Uci.Lib;
 
 namespace Veloce.Uci;

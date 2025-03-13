@@ -1,5 +1,4 @@
 ﻿using BenchmarkDotNet.Attributes;
-using Veloce;
 using Veloce.Uci.Lib.Extensions;
 
 namespace Veloce.Benchmarks.Benchmarks;

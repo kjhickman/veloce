@@ -1,4 +1,3 @@
-using Veloce;
 using Veloce.Models;
 
 namespace Veloce.Perft;

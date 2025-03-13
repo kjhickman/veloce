@@ -1,5 +1,4 @@
-﻿using Veloce;
-using Veloce.Uci.Lib.Extensions;
+﻿using Veloce.Uci.Lib.Extensions;
 
 namespace Veloce.Tests.Engine.PositionTests;
 

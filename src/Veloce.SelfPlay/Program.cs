@@ -4,7 +4,7 @@ using Veloce;
 var settings = new EngineSettings
 {
     Depth = 8,
-    HashSizeInMb = 16,
+    TranspositionTableSizeMb = 16,
     Threads = 1
 };
 var engine = new Engine(new ConsoleEngineLogger(), settings);

@@ -1,5 +1,4 @@
 using Shouldly;
-using Veloce;
 
 namespace Veloce.Tests.Engine.MoveGeneratorTests;
 
