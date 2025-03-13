@@ -45,7 +45,8 @@ public static class Program
                     break;
 
                 case "go":
-                    engine.FindBestMove();
+                    var timeControl = ParseTimeControl(parts);
+                    engine.FindBestMove(timeControl);
                     break;
 
                 case "stop":
@@ -60,6 +61,46 @@ public static class Program
                     break;
             }
         }
+    }
+
+    // TODO: Safely parse time control
+    private static TimeControl ParseTimeControl(string[] parts)
+    {
+        var timeLeft = -1;
+        var increment = -1;
+        var movesToGo = -1;
+
+        for (var i = 1; i < parts.Length; i++)
+        {
+            if (i + 1 >= parts.Length) break;
+
+            switch (parts[i])
+            {
+                case "wtime":
+                case "btime":
+                    int.TryParse(parts[i + 1], out timeLeft);
+                    i++;
+                    break;
+
+                case "winc":
+                case "binc":
+                    int.TryParse(parts[i + 1], out increment);
+                    i++;
+                    break;
+
+                case "movestogo":
+                    int.TryParse(parts[i + 1], out movesToGo);
+                    i++;
+                    break;
+
+                case "depth":
+                case "nodes":
+                case "infinite":
+                    return TimeControl.Infinite;
+            }
+        }
+
+        return new TimeControl(timeLeft, increment, movesToGo);
     }
 
     private static void SetPosition(Engine engine, string[] commandParts)

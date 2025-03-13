@@ -3,8 +3,8 @@ using Veloce;
 
 var settings = new EngineSettings
 {
-    Depth = 8,
-    TranspositionTableSizeMb = 16,
+    MaxDepth = 6,
+    TranspositionTableSizeMb = 128,
     Threads = 1
 };
 var engine = new Engine(new ConsoleEngineLogger(), settings);
