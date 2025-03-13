@@ -29,12 +29,13 @@ public static class Program
                     Console.WriteLine("uciok");
                     break;
 
+                case "setoption":
+                    // TODO: implement setoption logic
+                    break;
+
                 case "isready":
                     Console.WriteLine("readyok");
                     break;
-
-                case "quit":
-                    return;
 
                 case "ucinewgame":
                     engine.NewGame();
@@ -45,12 +46,15 @@ public static class Program
                     break;
 
                 case "go":
-                    var bestMove = engine.FindBestMove();
-                    if (bestMove.HasValue)
-                    {
-                        engine.MakeMove(bestMove.Value);
-                    }
+                    engine.FindBestMove();
                     break;
+
+                case "stop":
+                    // TODO: implement stop logic
+                    break;
+
+                case "quit":
+                    return;
 
                 default:
                     Console.WriteLine($"Unknown command: {command}");
@@ -95,28 +99,24 @@ public static class Program
 
         engine.SetPosition(position);
 
-        // Handle moves if present
-        if (index < commandParts.Length && commandParts[index] == "moves")
+        if (index >= commandParts.Length || commandParts[index] != "moves") return;
+
+        index++; // Skip "moves" keyword
+        // Apply each move
+        while (index < commandParts.Length)
         {
-            index++; // Skip "moves" keyword
+            var moveUci = commandParts[index++];
+            var move = Helpers.MoveFromUci(position, moveUci);
 
-            // Apply each move
-            while (index < commandParts.Length)
+            if (move != Move.NullMove)
             {
-                var moveUci = commandParts[index++];
-                var move = Helpers.MoveFromUci(position, moveUci);
-
-                if (move != Move.NullMove)
-                {
-                    engine.MakeMove(move);
-                }
-                else
-                {
-                    // Invalid move
-                    break;
-                }
+                engine.MakeMove(move);
+            }
+            else
+            {
+                // Invalid move
+                break;
             }
         }
     }
 }
-
