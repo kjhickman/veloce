@@ -1,32 +1,34 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 namespace Veloce.Benchmarks.Benchmarks;
 
 [MemoryDiagnoser]
 [BenchmarkCategory("Search")]
+[SimpleJob(RuntimeMoniker.Net80)]
+[SimpleJob(RuntimeMoniker.Net90)]
+[SimpleJob(RuntimeMoniker.Net10_0)]
 public class SearchBenchmarks
 {
-    private Search _search = null!;
-    private Game _game = null!;
+    private Engine _engine = null!;
 
     [IterationSetup]
     public void IterationSetup()
     {
-        _search = new Search(new NullEngineLogger());
-        _game = new Game();
+        _engine = new Engine(new NullEngineLogger(), new EngineSettings { MaxDepth = 6 });
+        var move = _engine.FindBestMove();
+        _engine.MakeMove(move!.Value);
     }
 
     [Benchmark]
-    public ulong Play10Moves_StartingPosition()
+    public void Play10Moves()
     {
         var i = 0;
         while (i++ < 10)
         {
-            var bestMove = _search.FindBestMove(_game, 6).BestMove;
+            var bestMove = _engine.FindBestMove();
             if (bestMove == null) throw new Exception("Game ended unexpectedly");
-            _game.MakeMove(bestMove.Value);
+            _engine.MakeMove(bestMove.Value);
         }
-
-        return _game.Position.ZobristHash;
     }
 }
