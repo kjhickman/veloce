@@ -10,19 +10,19 @@ public class UnmakeMoveTests
     /// </summary>
     private static void AssertPositionsEqual(Position expected, Position actual)
     {
-        Assert.Equal(expected.WhitePawns.Value, actual.WhitePawns.Value);
-        Assert.Equal(expected.WhiteKnights.Value, actual.WhiteKnights.Value);
-        Assert.Equal(expected.WhiteBishops.Value, actual.WhiteBishops.Value);
-        Assert.Equal(expected.WhiteRooks.Value, actual.WhiteRooks.Value);
-        Assert.Equal(expected.WhiteQueens.Value, actual.WhiteQueens.Value);
-        Assert.Equal(expected.WhiteKing.Value, actual.WhiteKing.Value);
+        Assert.Equal(expected.WhitePawns, actual.WhitePawns);
+        Assert.Equal(expected.WhiteKnights, actual.WhiteKnights);
+        Assert.Equal(expected.WhiteBishops, actual.WhiteBishops);
+        Assert.Equal(expected.WhiteRooks, actual.WhiteRooks);
+        Assert.Equal(expected.WhiteQueens, actual.WhiteQueens);
+        Assert.Equal(expected.WhiteKing, actual.WhiteKing);
 
-        Assert.Equal(expected.BlackPawns.Value, actual.BlackPawns.Value);
-        Assert.Equal(expected.BlackKnights.Value, actual.BlackKnights.Value);
-        Assert.Equal(expected.BlackBishops.Value, actual.BlackBishops.Value);
-        Assert.Equal(expected.BlackRooks.Value, actual.BlackRooks.Value);
-        Assert.Equal(expected.BlackQueens.Value, actual.BlackQueens.Value);
-        Assert.Equal(expected.BlackKing.Value, actual.BlackKing.Value);
+        Assert.Equal(expected.BlackPawns, actual.BlackPawns);
+        Assert.Equal(expected.BlackKnights, actual.BlackKnights);
+        Assert.Equal(expected.BlackBishops, actual.BlackBishops);
+        Assert.Equal(expected.BlackRooks, actual.BlackRooks);
+        Assert.Equal(expected.BlackQueens, actual.BlackQueens);
+        Assert.Equal(expected.BlackKing, actual.BlackKing);
 
         Assert.Equal(expected.CastlingRights, actual.CastlingRights);
         Assert.Equal(expected.EnPassantTarget, actual.EnPassantTarget);
