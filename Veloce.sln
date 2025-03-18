@@ -9,13 +9,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Veloce.Uci", "src\Veloce.Uc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Veloce.SelfPlay", "src\Veloce.SelfPlay\Veloce.SelfPlay.csproj", "{FF6DD555-B068-4F0A-89E8-EB850EC8B678}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Veloce.Tests", "src\Veloce.Tests\Veloce.Tests.csproj", "{0DEE393C-C646-4597-AAF3-652EA5E14ECE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Veloce.Benchmarks", "src\Veloce.Benchmarks\Veloce.Benchmarks.csproj", "{F5E78E14-49B3-4B24-842C-C8FCE0DAEC5C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Veloce.Uci.Lib", "src\Veloce.Uci.Lib\Veloce.Uci.Lib.csproj", "{3FEB6772-6043-4F7E-958F-BF3367463923}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Veloce.Perft", "src\Veloce.Perft\Veloce.Perft.csproj", "{D12D93C4-5149-4F9A-8049-B5B52E3D7A9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Veloce.UnitTests", "src\Veloce.UnitTests\Veloce.UnitTests.csproj", "{6A452DAD-AD9D-4BE9-8113-34A09B7BC716}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,10 +38,6 @@ Global
 		{FF6DD555-B068-4F0A-89E8-EB850EC8B678}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF6DD555-B068-4F0A-89E8-EB850EC8B678}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF6DD555-B068-4F0A-89E8-EB850EC8B678}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0DEE393C-C646-4597-AAF3-652EA5E14ECE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0DEE393C-C646-4597-AAF3-652EA5E14ECE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0DEE393C-C646-4597-AAF3-652EA5E14ECE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0DEE393C-C646-4597-AAF3-652EA5E14ECE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F5E78E14-49B3-4B24-842C-C8FCE0DAEC5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F5E78E14-49B3-4B24-842C-C8FCE0DAEC5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5E78E14-49B3-4B24-842C-C8FCE0DAEC5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -54,6 +50,10 @@ Global
 		{D12D93C4-5149-4F9A-8049-B5B52E3D7A9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D12D93C4-5149-4F9A-8049-B5B52E3D7A9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D12D93C4-5149-4F9A-8049-B5B52E3D7A9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A452DAD-AD9D-4BE9-8113-34A09B7BC716}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A452DAD-AD9D-4BE9-8113-34A09B7BC716}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A452DAD-AD9D-4BE9-8113-34A09B7BC716}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A452DAD-AD9D-4BE9-8113-34A09B7BC716}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection

@@ -1,15 +1,15 @@
-using Shouldly;
+﻿using Shouldly;
 using Veloce.Models;
 using static Veloce.Perft.Perft;
 
-namespace Veloce.Tests.Engine.MoveGeneratorTests;
+namespace Veloce.UnitTests.Engine.MoveGeneration;
 
 public class PerftTests
 {
     private readonly MoveExecutor _executor = new();
 
-    // [Fact]
-    [Fact(Skip = "This test is only for debugging purposes")]
+    // [Test]
+    [Test, Skip("This test is only for debugging purposes")]
     public void Problem1()
     {
         var position = new Position("8/8/8/1Ppp3r/RK3p1k/8/4P1P1/8 w - c6 0 3");
@@ -17,19 +17,19 @@ public class PerftTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        var moveCount = MoveGeneration.GenerateLegalMoves(position, moves);
+        var moveCount = Veloce.MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moveCount.ShouldBe(6);
     }
     
-    [Theory]
-    [InlineData(1, 20)]
-    [InlineData(2, 400)]
-    [InlineData(3, 8902)]
-    [InlineData(4, 197281)]
-    [InlineData(5, 4865609)]
-    [InlineData(6, 119060324)]
+    [Test]
+    [Arguments(1, 20)]
+    [Arguments(2, 400)]
+    [Arguments(3, 8902)]
+    [Arguments(4, 197281)]
+    [Arguments(5, 4865609)]
+    [Arguments(6, 119060324)]
     public void Position1_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -42,12 +42,12 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 48)]
-    [InlineData(2, 2039)]
-    [InlineData(3, 97862)]
-    [InlineData(4, 4085603)]
-    [InlineData(5, 193690690)]
+    [Test]
+    [Arguments(1, 48)]
+    [Arguments(2, 2039)]
+    [Arguments(3, 97862)]
+    [Arguments(4, 4085603)]
+    [Arguments(5, 193690690)]
     public void Position2_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -60,13 +60,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 15)]
-    [InlineData(2, 66)]
-    [InlineData(3, 1197)]
-    [InlineData(4, 7059)]
-    [InlineData(5, 133987)]
-    [InlineData(6, 764643)]
+    [Test]
+    [Arguments(1, 15)]
+    [Arguments(2, 66)]
+    [Arguments(3, 1197)]
+    [Arguments(4, 7059)]
+    [Arguments(5, 133987)]
+    [Arguments(6, 764643)]
     public void Position3_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -79,13 +79,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 16)]
-    [InlineData(2, 71)]
-    [InlineData(3, 1287)]
-    [InlineData(4, 7626)]
-    [InlineData(5, 145232)]
-    [InlineData(6, 846648)]
+    [Test]
+    [Arguments(1, 16)]
+    [Arguments(2, 71)]
+    [Arguments(3, 1287)]
+    [Arguments(4, 7626)]
+    [Arguments(5, 145232)]
+    [Arguments(6, 846648)]
     public void Position4_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -98,13 +98,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 75)]
-    [InlineData(3, 459)]
-    [InlineData(4, 8290)]
-    [InlineData(5, 47635)]
-    [InlineData(6, 899442)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 75)]
+    [Arguments(3, 459)]
+    [Arguments(4, 8290)]
+    [Arguments(5, 47635)]
+    [Arguments(6, 899442)]
     public void Position5_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -117,13 +117,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 80)]
-    [InlineData(3, 493)]
-    [InlineData(4, 8897)]
-    [InlineData(5, 52710)]
-    [InlineData(6, 1001523)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 80)]
+    [Arguments(3, 493)]
+    [Arguments(4, 8897)]
+    [Arguments(5, 52710)]
+    [Arguments(6, 1001523)]
     public void Position6_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -136,13 +136,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 26)]
-    [InlineData(2, 112)]
-    [InlineData(3, 3189)]
-    [InlineData(4, 17945)]
-    [InlineData(5, 532933)]
-    [InlineData(6, 2788982)]
+    [Test]
+    [Arguments(1, 26)]
+    [Arguments(2, 112)]
+    [Arguments(3, 3189)]
+    [Arguments(4, 17945)]
+    [Arguments(5, 532933)]
+    [Arguments(6, 2788982)]
     public void Position7_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -155,13 +155,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 130)]
-    [InlineData(3, 782)]
-    [InlineData(4, 22180)]
-    [InlineData(5, 118882)]
-    [InlineData(6, 3517770)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 130)]
+    [Arguments(3, 782)]
+    [Arguments(4, 22180)]
+    [Arguments(5, 118882)]
+    [Arguments(6, 3517770)]
     public void Position8_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -174,13 +174,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 12)]
-    [InlineData(2, 38)]
-    [InlineData(3, 564)]
-    [InlineData(4, 2219)]
-    [InlineData(5, 37735)]
-    [InlineData(6, 185867)]
+    [Test]
+    [Arguments(1, 12)]
+    [Arguments(2, 38)]
+    [Arguments(3, 564)]
+    [Arguments(4, 2219)]
+    [Arguments(5, 37735)]
+    [Arguments(6, 185867)]
     public void Position9_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -193,13 +193,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 15)]
-    [InlineData(2, 65)]
-    [InlineData(3, 1018)]
-    [InlineData(4, 4573)]
-    [InlineData(5, 80619)]
-    [InlineData(6, 413018)]
+    [Test]
+    [Arguments(1, 15)]
+    [Arguments(2, 65)]
+    [Arguments(3, 1018)]
+    [Arguments(4, 4573)]
+    [Arguments(5, 80619)]
+    [Arguments(6, 413018)]
     public void Position10_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -212,13 +212,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 3)]
-    [InlineData(2, 32)]
-    [InlineData(3, 134)]
-    [InlineData(4, 2073)]
-    [InlineData(5, 10485)]
-    [InlineData(6, 179869)]
+    [Test]
+    [Arguments(1, 3)]
+    [Arguments(2, 32)]
+    [Arguments(3, 134)]
+    [Arguments(4, 2073)]
+    [Arguments(5, 10485)]
+    [Arguments(6, 179869)]
     public void Position11_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -231,13 +231,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 4)]
-    [InlineData(2, 49)]
-    [InlineData(3, 243)]
-    [InlineData(4, 3991)]
-    [InlineData(5, 20780)]
-    [InlineData(6, 367724)]
+    [Test]
+    [Arguments(1, 4)]
+    [Arguments(2, 49)]
+    [Arguments(3, 243)]
+    [Arguments(4, 3991)]
+    [Arguments(5, 20780)]
+    [Arguments(6, 367724)]
     public void Position12_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -250,13 +250,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 26)]
-    [InlineData(2, 568)]
-    [InlineData(3, 13744)]
-    [InlineData(4, 314346)]
-    [InlineData(5, 7594526)]
-    [InlineData(6, 179862938)]
+    [Test]
+    [Arguments(1, 26)]
+    [Arguments(2, 568)]
+    [Arguments(3, 13744)]
+    [Arguments(4, 314346)]
+    [Arguments(5, 7594526)]
+    [Arguments(6, 179862938)]
     public void Position13_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -269,13 +269,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 25)]
-    [InlineData(2, 567)]
-    [InlineData(3, 14095)]
-    [InlineData(4, 328965)]
-    [InlineData(5, 8153719)]
-    [InlineData(6, 195629489)]
+    [Test]
+    [Arguments(1, 25)]
+    [Arguments(2, 567)]
+    [Arguments(3, 14095)]
+    [Arguments(4, 328965)]
+    [Arguments(5, 8153719)]
+    [Arguments(6, 195629489)]
     public void Position14_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -288,13 +288,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 25)]
-    [InlineData(2, 548)]
-    [InlineData(3, 13502)]
-    [InlineData(4, 312835)]
-    [InlineData(5, 7736373)]
-    [InlineData(6, 184411439)]
+    [Test]
+    [Arguments(1, 25)]
+    [Arguments(2, 548)]
+    [Arguments(3, 13502)]
+    [Arguments(4, 312835)]
+    [Arguments(5, 7736373)]
+    [Arguments(6, 184411439)]
     public void Position15_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -307,13 +307,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 25)]
-    [InlineData(2, 547)]
-    [InlineData(3, 13579)]
-    [InlineData(4, 316214)]
-    [InlineData(5, 7878456)]
-    [InlineData(6, 189224276)]
+    [Test]
+    [Arguments(1, 25)]
+    [Arguments(2, 547)]
+    [Arguments(3, 13579)]
+    [Arguments(4, 316214)]
+    [Arguments(5, 7878456)]
+    [Arguments(6, 189224276)]
     public void Position16_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -326,13 +326,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 26)]
-    [InlineData(2, 583)]
-    [InlineData(3, 14252)]
-    [InlineData(4, 334705)]
-    [InlineData(5, 8198901)]
-    [InlineData(6, 198328929)]
+    [Test]
+    [Arguments(1, 26)]
+    [Arguments(2, 583)]
+    [Arguments(3, 14252)]
+    [Arguments(4, 334705)]
+    [Arguments(5, 8198901)]
+    [Arguments(6, 198328929)]
     public void Position17_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -345,13 +345,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 25)]
-    [InlineData(2, 560)]
-    [InlineData(3, 13592)]
-    [InlineData(4, 317324)]
-    [InlineData(5, 7710115)]
-    [InlineData(6, 185959088)]
+    [Test]
+    [Arguments(1, 25)]
+    [Arguments(2, 560)]
+    [Arguments(3, 13592)]
+    [Arguments(4, 317324)]
+    [Arguments(5, 7710115)]
+    [Arguments(6, 185959088)]
     public void Position18_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -364,13 +364,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 25)]
-    [InlineData(2, 560)]
-    [InlineData(3, 13607)]
-    [InlineData(4, 320792)]
-    [InlineData(5, 7848606)]
-    [InlineData(6, 190755813)]
+    [Test]
+    [Arguments(1, 25)]
+    [Arguments(2, 560)]
+    [Arguments(3, 13607)]
+    [Arguments(4, 320792)]
+    [Arguments(5, 7848606)]
+    [Arguments(6, 190755813)]
     public void Position19_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -383,13 +383,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 75)]
-    [InlineData(3, 459)]
-    [InlineData(4, 8290)]
-    [InlineData(5, 47635)]
-    [InlineData(6, 899442)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 75)]
+    [Arguments(3, 459)]
+    [Arguments(4, 8290)]
+    [Arguments(5, 47635)]
+    [Arguments(6, 899442)]
     public void Position20_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -402,13 +402,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 80)]
-    [InlineData(3, 493)]
-    [InlineData(4, 8897)]
-    [InlineData(5, 52710)]
-    [InlineData(6, 1001523)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 80)]
+    [Arguments(3, 493)]
+    [Arguments(4, 8897)]
+    [Arguments(5, 52710)]
+    [Arguments(6, 1001523)]
     public void Position21_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -421,13 +421,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 15)]
-    [InlineData(2, 66)]
-    [InlineData(3, 1197)]
-    [InlineData(4, 7059)]
-    [InlineData(5, 133987)]
-    [InlineData(6, 764643)]
+    [Test]
+    [Arguments(1, 15)]
+    [Arguments(2, 66)]
+    [Arguments(3, 1197)]
+    [Arguments(4, 7059)]
+    [Arguments(5, 133987)]
+    [Arguments(6, 764643)]
     public void Position22_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -440,13 +440,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 16)]
-    [InlineData(2, 71)]
-    [InlineData(3, 1287)]
-    [InlineData(4, 7626)]
-    [InlineData(5, 145232)]
-    [InlineData(6, 846648)]
+    [Test]
+    [Arguments(1, 16)]
+    [Arguments(2, 71)]
+    [Arguments(3, 1287)]
+    [Arguments(4, 7626)]
+    [Arguments(5, 145232)]
+    [Arguments(6, 846648)]
     public void Position23_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -459,13 +459,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 130)]
-    [InlineData(3, 782)]
-    [InlineData(4, 22180)]
-    [InlineData(5, 118882)]
-    [InlineData(6, 3517770)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 130)]
+    [Arguments(3, 782)]
+    [Arguments(4, 22180)]
+    [Arguments(5, 118882)]
+    [Arguments(6, 3517770)]
     public void Position24_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -478,13 +478,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 26)]
-    [InlineData(2, 112)]
-    [InlineData(3, 3189)]
-    [InlineData(4, 17945)]
-    [InlineData(5, 532933)]
-    [InlineData(6, 2788982)]
+    [Test]
+    [Arguments(1, 26)]
+    [Arguments(2, 112)]
+    [Arguments(3, 3189)]
+    [Arguments(4, 17945)]
+    [Arguments(5, 532933)]
+    [Arguments(6, 2788982)]
     public void Position25_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -497,13 +497,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 3)]
-    [InlineData(2, 32)]
-    [InlineData(3, 134)]
-    [InlineData(4, 2073)]
-    [InlineData(5, 10485)]
-    [InlineData(6, 179869)]
+    [Test]
+    [Arguments(1, 3)]
+    [Arguments(2, 32)]
+    [Arguments(3, 134)]
+    [Arguments(4, 2073)]
+    [Arguments(5, 10485)]
+    [Arguments(6, 179869)]
     public void Position26_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -516,13 +516,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 4)]
-    [InlineData(2, 49)]
-    [InlineData(3, 243)]
-    [InlineData(4, 3991)]
-    [InlineData(5, 20780)]
-    [InlineData(6, 367724)]
+    [Test]
+    [Arguments(1, 4)]
+    [Arguments(2, 49)]
+    [Arguments(3, 243)]
+    [Arguments(4, 3991)]
+    [Arguments(5, 20780)]
+    [Arguments(6, 367724)]
     public void Position27_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -535,13 +535,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 12)]
-    [InlineData(2, 38)]
-    [InlineData(3, 564)]
-    [InlineData(4, 2219)]
-    [InlineData(5, 37735)]
-    [InlineData(6, 185867)]
+    [Test]
+    [Arguments(1, 12)]
+    [Arguments(2, 38)]
+    [Arguments(3, 564)]
+    [Arguments(4, 2219)]
+    [Arguments(5, 37735)]
+    [Arguments(6, 185867)]
     public void Position28_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -554,13 +554,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 15)]
-    [InlineData(2, 65)]
-    [InlineData(3, 1018)]
-    [InlineData(4, 4573)]
-    [InlineData(5, 80619)]
-    [InlineData(6, 413018)]
+    [Test]
+    [Arguments(1, 15)]
+    [Arguments(2, 65)]
+    [Arguments(3, 1018)]
+    [Arguments(4, 4573)]
+    [Arguments(5, 80619)]
+    [Arguments(6, 413018)]
     public void Position29_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -573,13 +573,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 26)]
-    [InlineData(2, 568)]
-    [InlineData(3, 13744)]
-    [InlineData(4, 314346)]
-    [InlineData(5, 7594526)]
-    [InlineData(6, 179862938)]
+    [Test]
+    [Arguments(1, 26)]
+    [Arguments(2, 568)]
+    [Arguments(3, 13744)]
+    [Arguments(4, 314346)]
+    [Arguments(5, 7594526)]
+    [Arguments(6, 179862938)]
     public void Position30_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -592,13 +592,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 26)]
-    [InlineData(2, 583)]
-    [InlineData(3, 14252)]
-    [InlineData(4, 334705)]
-    [InlineData(5, 8198901)]
-    [InlineData(6, 198328929)]
+    [Test]
+    [Arguments(1, 26)]
+    [Arguments(2, 583)]
+    [Arguments(3, 14252)]
+    [Arguments(4, 334705)]
+    [Arguments(5, 8198901)]
+    [Arguments(6, 198328929)]
     public void Position31_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -611,13 +611,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 25)]
-    [InlineData(2, 560)]
-    [InlineData(3, 13592)]
-    [InlineData(4, 317324)]
-    [InlineData(5, 7710115)]
-    [InlineData(6, 185959088)]
+    [Test]
+    [Arguments(1, 25)]
+    [Arguments(2, 560)]
+    [Arguments(3, 13592)]
+    [Arguments(4, 317324)]
+    [Arguments(5, 7710115)]
+    [Arguments(6, 185959088)]
     public void Position32_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -630,13 +630,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 25)]
-    [InlineData(2, 560)]
-    [InlineData(3, 13607)]
-    [InlineData(4, 320792)]
-    [InlineData(5, 7848606)]
-    [InlineData(6, 190755813)]
+    [Test]
+    [Arguments(1, 25)]
+    [Arguments(2, 560)]
+    [Arguments(3, 13607)]
+    [Arguments(4, 320792)]
+    [Arguments(5, 7848606)]
+    [Arguments(6, 190755813)]
     public void Position33_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -649,13 +649,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 25)]
-    [InlineData(2, 567)]
-    [InlineData(3, 14095)]
-    [InlineData(4, 328965)]
-    [InlineData(5, 8153719)]
-    [InlineData(6, 195629489)]
+    [Test]
+    [Arguments(1, 25)]
+    [Arguments(2, 567)]
+    [Arguments(3, 14095)]
+    [Arguments(4, 328965)]
+    [Arguments(5, 8153719)]
+    [Arguments(6, 195629489)]
     public void Position34_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -668,13 +668,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 25)]
-    [InlineData(2, 548)]
-    [InlineData(3, 13502)]
-    [InlineData(4, 312835)]
-    [InlineData(5, 7736373)]
-    [InlineData(6, 184411439)]
+    [Test]
+    [Arguments(1, 25)]
+    [Arguments(2, 548)]
+    [Arguments(3, 13502)]
+    [Arguments(4, 312835)]
+    [Arguments(5, 7736373)]
+    [Arguments(6, 184411439)]
     public void Position35_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -687,13 +687,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 25)]
-    [InlineData(2, 547)]
-    [InlineData(3, 13579)]
-    [InlineData(4, 316214)]
-    [InlineData(5, 7878456)]
-    [InlineData(6, 189224276)]
+    [Test]
+    [Arguments(1, 25)]
+    [Arguments(2, 547)]
+    [Arguments(3, 13579)]
+    [Arguments(4, 316214)]
+    [Arguments(5, 7878456)]
+    [Arguments(6, 189224276)]
     public void Position36_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -706,13 +706,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 14)]
-    [InlineData(2, 195)]
-    [InlineData(3, 2760)]
-    [InlineData(4, 38675)]
-    [InlineData(5, 570726)]
-    [InlineData(6, 8107539)]
+    [Test]
+    [Arguments(1, 14)]
+    [Arguments(2, 195)]
+    [Arguments(3, 2760)]
+    [Arguments(4, 38675)]
+    [Arguments(5, 570726)]
+    [Arguments(6, 8107539)]
     public void Position37_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -725,13 +725,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 11)]
-    [InlineData(2, 156)]
-    [InlineData(3, 1636)]
-    [InlineData(4, 20534)]
-    [InlineData(5, 223507)]
-    [InlineData(6, 2594412)]
+    [Test]
+    [Arguments(1, 11)]
+    [Arguments(2, 156)]
+    [Arguments(3, 1636)]
+    [Arguments(4, 20534)]
+    [Arguments(5, 223507)]
+    [Arguments(6, 2594412)]
     public void Position38_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -744,13 +744,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 19)]
-    [InlineData(2, 289)]
-    [InlineData(3, 4442)]
-    [InlineData(4, 73584)]
-    [InlineData(5, 1198299)]
-    [InlineData(6, 19870403)]
+    [Test]
+    [Arguments(1, 19)]
+    [Arguments(2, 289)]
+    [Arguments(3, 4442)]
+    [Arguments(4, 73584)]
+    [Arguments(5, 1198299)]
+    [Arguments(6, 19870403)]
     public void Position39_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -763,13 +763,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 3)]
-    [InlineData(2, 51)]
-    [InlineData(3, 345)]
-    [InlineData(4, 5301)]
-    [InlineData(5, 38348)]
-    [InlineData(6, 588695)]
+    [Test]
+    [Arguments(1, 3)]
+    [Arguments(2, 51)]
+    [Arguments(3, 345)]
+    [Arguments(4, 5301)]
+    [Arguments(5, 38348)]
+    [Arguments(6, 588695)]
     public void Position40_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -782,13 +782,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 17)]
-    [InlineData(2, 54)]
-    [InlineData(3, 835)]
-    [InlineData(4, 5910)]
-    [InlineData(5, 92250)]
-    [InlineData(6, 688780)]
+    [Test]
+    [Arguments(1, 17)]
+    [Arguments(2, 54)]
+    [Arguments(3, 835)]
+    [Arguments(4, 5910)]
+    [Arguments(5, 92250)]
+    [Arguments(6, 688780)]
     public void Position41_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -801,13 +801,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 15)]
-    [InlineData(2, 193)]
-    [InlineData(3, 2816)]
-    [InlineData(4, 40039)]
-    [InlineData(5, 582642)]
-    [InlineData(6, 8503277)]
+    [Test]
+    [Arguments(1, 15)]
+    [Arguments(2, 193)]
+    [Arguments(3, 2816)]
+    [Arguments(4, 40039)]
+    [Arguments(5, 582642)]
+    [Arguments(6, 8503277)]
     public void Position42_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -820,13 +820,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 16)]
-    [InlineData(2, 180)]
-    [InlineData(3, 2290)]
-    [InlineData(4, 24640)]
-    [InlineData(5, 288141)]
-    [InlineData(6, 3147566)]
+    [Test]
+    [Arguments(1, 16)]
+    [Arguments(2, 180)]
+    [Arguments(3, 2290)]
+    [Arguments(4, 24640)]
+    [Arguments(5, 288141)]
+    [Arguments(6, 3147566)]
     public void Position43_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -839,13 +839,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 4)]
-    [InlineData(2, 68)]
-    [InlineData(3, 1118)]
-    [InlineData(4, 16199)]
-    [InlineData(5, 281190)]
-    [InlineData(6, 4405103)]
+    [Test]
+    [Arguments(1, 4)]
+    [Arguments(2, 68)]
+    [Arguments(3, 1118)]
+    [Arguments(4, 16199)]
+    [Arguments(5, 281190)]
+    [Arguments(6, 4405103)]
     public void Position44_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -858,13 +858,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 17)]
-    [InlineData(2, 54)]
-    [InlineData(3, 835)]
-    [InlineData(4, 5910)]
-    [InlineData(5, 92250)]
-    [InlineData(6, 688780)]
+    [Test]
+    [Arguments(1, 17)]
+    [Arguments(2, 54)]
+    [Arguments(3, 835)]
+    [Arguments(4, 5910)]
+    [Arguments(5, 92250)]
+    [Arguments(6, 688780)]
     public void Position45_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -877,13 +877,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 3)]
-    [InlineData(2, 51)]
-    [InlineData(3, 345)]
-    [InlineData(4, 5301)]
-    [InlineData(5, 38348)]
-    [InlineData(6, 588695)]
+    [Test]
+    [Arguments(1, 3)]
+    [Arguments(2, 51)]
+    [Arguments(3, 345)]
+    [Arguments(4, 5301)]
+    [Arguments(5, 38348)]
+    [Arguments(6, 588695)]
     public void Position46_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -896,13 +896,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 17)]
-    [InlineData(2, 278)]
-    [InlineData(3, 4607)]
-    [InlineData(4, 76778)]
-    [InlineData(5, 1320507)]
-    [InlineData(6, 22823890)]
+    [Test]
+    [Arguments(1, 17)]
+    [Arguments(2, 278)]
+    [Arguments(3, 4607)]
+    [Arguments(4, 76778)]
+    [Arguments(5, 1320507)]
+    [Arguments(6, 22823890)]
     public void Position47_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -915,13 +915,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 21)]
-    [InlineData(2, 316)]
-    [InlineData(3, 5744)]
-    [InlineData(4, 93338)]
-    [InlineData(5, 1713368)]
-    [InlineData(6, 28861171)]
+    [Test]
+    [Arguments(1, 21)]
+    [Arguments(2, 316)]
+    [Arguments(3, 5744)]
+    [Arguments(4, 93338)]
+    [Arguments(5, 1713368)]
+    [Arguments(6, 28861171)]
     public void Position48_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -934,13 +934,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 21)]
-    [InlineData(2, 144)]
-    [InlineData(3, 3242)]
-    [InlineData(4, 32955)]
-    [InlineData(5, 787524)]
-    [InlineData(6, 7881673)]
+    [Test]
+    [Arguments(1, 21)]
+    [Arguments(2, 144)]
+    [Arguments(3, 3242)]
+    [Arguments(4, 32955)]
+    [Arguments(5, 787524)]
+    [Arguments(6, 7881673)]
     public void Position49_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -953,13 +953,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 7)]
-    [InlineData(2, 143)]
-    [InlineData(3, 1416)]
-    [InlineData(4, 31787)]
-    [InlineData(5, 310862)]
-    [InlineData(6, 7382896)]
+    [Test]
+    [Arguments(1, 7)]
+    [Arguments(2, 143)]
+    [Arguments(3, 1416)]
+    [Arguments(4, 31787)]
+    [Arguments(5, 310862)]
+    [Arguments(6, 7382896)]
     public void Position50_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -972,13 +972,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 6)]
-    [InlineData(2, 106)]
-    [InlineData(3, 1829)]
-    [InlineData(4, 31151)]
-    [InlineData(5, 530585)]
-    [InlineData(6, 9250746)]
+    [Test]
+    [Arguments(1, 6)]
+    [Arguments(2, 106)]
+    [Arguments(3, 1829)]
+    [Arguments(4, 31151)]
+    [Arguments(5, 530585)]
+    [Arguments(6, 9250746)]
     public void Position51_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -991,13 +991,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 17)]
-    [InlineData(2, 309)]
-    [InlineData(3, 5133)]
-    [InlineData(4, 93603)]
-    [InlineData(5, 1591064)]
-    [InlineData(6, 29027891)]
+    [Test]
+    [Arguments(1, 17)]
+    [Arguments(2, 309)]
+    [Arguments(3, 5133)]
+    [Arguments(4, 93603)]
+    [Arguments(5, 1591064)]
+    [Arguments(6, 29027891)]
     public void Position52_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1010,13 +1010,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 7)]
-    [InlineData(2, 143)]
-    [InlineData(3, 1416)]
-    [InlineData(4, 31787)]
-    [InlineData(5, 310862)]
-    [InlineData(6, 7382896)]
+    [Test]
+    [Arguments(1, 7)]
+    [Arguments(2, 143)]
+    [Arguments(3, 1416)]
+    [Arguments(4, 31787)]
+    [Arguments(5, 310862)]
+    [Arguments(6, 7382896)]
     public void Position53_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1029,13 +1029,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 21)]
-    [InlineData(2, 144)]
-    [InlineData(3, 3242)]
-    [InlineData(4, 32955)]
-    [InlineData(5, 787524)]
-    [InlineData(6, 7881673)]
+    [Test]
+    [Arguments(1, 21)]
+    [Arguments(2, 144)]
+    [Arguments(3, 3242)]
+    [Arguments(4, 32955)]
+    [Arguments(5, 787524)]
+    [Arguments(6, 7881673)]
     public void Position54_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1048,13 +1048,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 19)]
-    [InlineData(2, 275)]
-    [InlineData(3, 5300)]
-    [InlineData(4, 104342)]
-    [InlineData(5, 2161211)]
-    [InlineData(6, 44956585)]
+    [Test]
+    [Arguments(1, 19)]
+    [Arguments(2, 275)]
+    [Arguments(3, 5300)]
+    [Arguments(4, 104342)]
+    [Arguments(5, 2161211)]
+    [Arguments(6, 44956585)]
     public void Position55_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1067,13 +1067,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 36)]
-    [InlineData(2, 1027)]
-    [InlineData(3, 29215)]
-    [InlineData(4, 771461)]
-    [InlineData(5, 20506480)]
-    [InlineData(6, 525169084)]
+    [Test]
+    [Arguments(1, 36)]
+    [Arguments(2, 1027)]
+    [Arguments(3, 29215)]
+    [Arguments(4, 771461)]
+    [Arguments(5, 20506480)]
+    [Arguments(6, 525169084)]
     public void Position56_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1086,13 +1086,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 19)]
-    [InlineData(2, 275)]
-    [InlineData(3, 5300)]
-    [InlineData(4, 104342)]
-    [InlineData(5, 2161211)]
-    [InlineData(6, 44956585)]
+    [Test]
+    [Arguments(1, 19)]
+    [Arguments(2, 275)]
+    [Arguments(3, 5300)]
+    [Arguments(4, 104342)]
+    [Arguments(5, 2161211)]
+    [Arguments(6, 44956585)]
     public void Position57_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1105,13 +1105,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 36)]
-    [InlineData(2, 1027)]
-    [InlineData(3, 29227)]
-    [InlineData(4, 771368)]
-    [InlineData(5, 20521342)]
-    [InlineData(6, 524966748)]
+    [Test]
+    [Arguments(1, 36)]
+    [Arguments(2, 1027)]
+    [Arguments(3, 29227)]
+    [Arguments(4, 771368)]
+    [Arguments(5, 20521342)]
+    [Arguments(6, 524966748)]
     public void Position58_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1124,13 +1124,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 2)]
-    [InlineData(2, 36)]
-    [InlineData(3, 143)]
-    [InlineData(4, 3637)]
-    [InlineData(5, 14893)]
-    [InlineData(6, 391507)]
+    [Test]
+    [Arguments(1, 2)]
+    [Arguments(2, 36)]
+    [Arguments(3, 143)]
+    [Arguments(4, 3637)]
+    [Arguments(5, 14893)]
+    [Arguments(6, 391507)]
     public void Position59_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1143,13 +1143,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 2)]
-    [InlineData(2, 36)]
-    [InlineData(3, 143)]
-    [InlineData(4, 3637)]
-    [InlineData(5, 14893)]
-    [InlineData(6, 391507)]
+    [Test]
+    [Arguments(1, 2)]
+    [Arguments(2, 36)]
+    [Arguments(3, 143)]
+    [Arguments(4, 3637)]
+    [Arguments(5, 14893)]
+    [Arguments(6, 391507)]
     public void Position60_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1162,13 +1162,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 6)]
-    [InlineData(2, 35)]
-    [InlineData(3, 495)]
-    [InlineData(4, 8349)]
-    [InlineData(5, 166741)]
-    [InlineData(6, 3370175)]
+    [Test]
+    [Arguments(1, 6)]
+    [Arguments(2, 35)]
+    [Arguments(3, 495)]
+    [Arguments(4, 8349)]
+    [Arguments(5, 166741)]
+    [Arguments(6, 3370175)]
     public void Position61_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1181,13 +1181,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 22)]
-    [InlineData(2, 43)]
-    [InlineData(3, 1015)]
-    [InlineData(4, 4167)]
-    [InlineData(5, 105749)]
-    [InlineData(6, 419369)]
+    [Test]
+    [Arguments(1, 22)]
+    [Arguments(2, 43)]
+    [Arguments(3, 1015)]
+    [Arguments(4, 4167)]
+    [Arguments(5, 105749)]
+    [Arguments(6, 419369)]
     public void Position62_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1200,13 +1200,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 2)]
-    [InlineData(2, 36)]
-    [InlineData(3, 143)]
-    [InlineData(4, 3637)]
-    [InlineData(5, 14893)]
-    [InlineData(6, 391507)]
+    [Test]
+    [Arguments(1, 2)]
+    [Arguments(2, 36)]
+    [Arguments(3, 143)]
+    [Arguments(4, 3637)]
+    [Arguments(5, 14893)]
+    [Arguments(6, 391507)]
     public void Position63_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1219,13 +1219,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 6)]
-    [InlineData(2, 35)]
-    [InlineData(3, 495)]
-    [InlineData(4, 8349)]
-    [InlineData(5, 166741)]
-    [InlineData(6, 3370175)]
+    [Test]
+    [Arguments(1, 6)]
+    [Arguments(2, 35)]
+    [Arguments(3, 495)]
+    [Arguments(4, 8349)]
+    [Arguments(5, 166741)]
+    [Arguments(6, 3370175)]
     public void Position64_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1238,13 +1238,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 3)]
-    [InlineData(2, 7)]
-    [InlineData(3, 43)]
-    [InlineData(4, 199)]
-    [InlineData(5, 1347)]
-    [InlineData(6, 6249)]
+    [Test]
+    [Arguments(1, 3)]
+    [Arguments(2, 7)]
+    [Arguments(3, 43)]
+    [Arguments(4, 199)]
+    [Arguments(5, 1347)]
+    [Arguments(6, 6249)]
     public void Position65_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1257,13 +1257,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 3)]
-    [InlineData(2, 7)]
-    [InlineData(3, 43)]
-    [InlineData(4, 199)]
-    [InlineData(5, 1347)]
-    [InlineData(6, 6249)]
+    [Test]
+    [Arguments(1, 3)]
+    [Arguments(2, 7)]
+    [Arguments(3, 43)]
+    [Arguments(4, 199)]
+    [Arguments(5, 1347)]
+    [Arguments(6, 6249)]
     public void Position66_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1276,13 +1276,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 1)]
-    [InlineData(2, 3)]
-    [InlineData(3, 12)]
-    [InlineData(4, 80)]
-    [InlineData(5, 342)]
-    [InlineData(6, 2343)]
+    [Test]
+    [Arguments(1, 1)]
+    [Arguments(2, 3)]
+    [Arguments(3, 12)]
+    [Arguments(4, 80)]
+    [Arguments(5, 342)]
+    [Arguments(6, 2343)]
     public void Position67_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1295,13 +1295,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 1)]
-    [InlineData(2, 3)]
-    [InlineData(3, 12)]
-    [InlineData(4, 80)]
-    [InlineData(5, 342)]
-    [InlineData(6, 2343)]
+    [Test]
+    [Arguments(1, 1)]
+    [Arguments(2, 3)]
+    [Arguments(3, 12)]
+    [Arguments(4, 80)]
+    [Arguments(5, 342)]
+    [Arguments(6, 2343)]
     public void Position68_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1314,13 +1314,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 7)]
-    [InlineData(2, 35)]
-    [InlineData(3, 210)]
-    [InlineData(4, 1091)]
-    [InlineData(5, 7028)]
-    [InlineData(6, 34834)]
+    [Test]
+    [Arguments(1, 7)]
+    [Arguments(2, 35)]
+    [Arguments(3, 210)]
+    [Arguments(4, 1091)]
+    [Arguments(5, 7028)]
+    [Arguments(6, 34834)]
     public void Position69_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1333,13 +1333,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 1)]
-    [InlineData(2, 3)]
-    [InlineData(3, 12)]
-    [InlineData(4, 80)]
-    [InlineData(5, 342)]
-    [InlineData(6, 2343)]
+    [Test]
+    [Arguments(1, 1)]
+    [Arguments(2, 3)]
+    [Arguments(3, 12)]
+    [Arguments(4, 80)]
+    [Arguments(5, 342)]
+    [Arguments(6, 2343)]
     public void Position70_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1352,13 +1352,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 1)]
-    [InlineData(2, 3)]
-    [InlineData(3, 12)]
-    [InlineData(4, 80)]
-    [InlineData(5, 342)]
-    [InlineData(6, 2343)]
+    [Test]
+    [Arguments(1, 1)]
+    [Arguments(2, 3)]
+    [Arguments(3, 12)]
+    [Arguments(4, 80)]
+    [Arguments(5, 342)]
+    [Arguments(6, 2343)]
     public void Position71_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1371,13 +1371,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 3)]
-    [InlineData(2, 7)]
-    [InlineData(3, 43)]
-    [InlineData(4, 199)]
-    [InlineData(5, 1347)]
-    [InlineData(6, 6249)]
+    [Test]
+    [Arguments(1, 3)]
+    [Arguments(2, 7)]
+    [Arguments(3, 43)]
+    [Arguments(4, 199)]
+    [Arguments(5, 1347)]
+    [Arguments(6, 6249)]
     public void Position72_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1390,13 +1390,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 3)]
-    [InlineData(2, 7)]
-    [InlineData(3, 43)]
-    [InlineData(4, 199)]
-    [InlineData(5, 1347)]
-    [InlineData(6, 6249)]
+    [Test]
+    [Arguments(1, 3)]
+    [Arguments(2, 7)]
+    [Arguments(3, 43)]
+    [Arguments(4, 199)]
+    [Arguments(5, 1347)]
+    [Arguments(6, 6249)]
     public void Position73_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1409,13 +1409,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 35)]
-    [InlineData(3, 182)]
-    [InlineData(4, 1091)]
-    [InlineData(5, 5408)]
-    [InlineData(6, 34822)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 35)]
+    [Arguments(3, 182)]
+    [Arguments(4, 1091)]
+    [Arguments(5, 5408)]
+    [Arguments(6, 34822)]
     public void Position74_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1428,13 +1428,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 2)]
-    [InlineData(2, 8)]
-    [InlineData(3, 44)]
-    [InlineData(4, 282)]
-    [InlineData(5, 1814)]
-    [InlineData(6, 11848)]
+    [Test]
+    [Arguments(1, 2)]
+    [Arguments(2, 8)]
+    [Arguments(3, 44)]
+    [Arguments(4, 282)]
+    [Arguments(5, 1814)]
+    [Arguments(6, 11848)]
     public void Position75_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1447,13 +1447,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 2)]
-    [InlineData(2, 8)]
-    [InlineData(3, 44)]
-    [InlineData(4, 282)]
-    [InlineData(5, 1814)]
-    [InlineData(6, 11848)]
+    [Test]
+    [Arguments(1, 2)]
+    [Arguments(2, 8)]
+    [Arguments(3, 44)]
+    [Arguments(4, 282)]
+    [Arguments(5, 1814)]
+    [Arguments(6, 11848)]
     public void Position76_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1466,13 +1466,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 3)]
-    [InlineData(2, 9)]
-    [InlineData(3, 57)]
-    [InlineData(4, 360)]
-    [InlineData(5, 1969)]
-    [InlineData(6, 10724)]
+    [Test]
+    [Arguments(1, 3)]
+    [Arguments(2, 9)]
+    [Arguments(3, 57)]
+    [Arguments(4, 360)]
+    [Arguments(5, 1969)]
+    [Arguments(6, 10724)]
     public void Position77_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1485,13 +1485,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 3)]
-    [InlineData(2, 9)]
-    [InlineData(3, 57)]
-    [InlineData(4, 360)]
-    [InlineData(5, 1969)]
-    [InlineData(6, 10724)]
+    [Test]
+    [Arguments(1, 3)]
+    [Arguments(2, 9)]
+    [Arguments(3, 57)]
+    [Arguments(4, 360)]
+    [Arguments(5, 1969)]
+    [Arguments(6, 10724)]
     public void Position78_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1504,13 +1504,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 25)]
-    [InlineData(3, 180)]
-    [InlineData(4, 1294)]
-    [InlineData(5, 8296)]
-    [InlineData(6, 53138)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 25)]
+    [Arguments(3, 180)]
+    [Arguments(4, 1294)]
+    [Arguments(5, 8296)]
+    [Arguments(6, 53138)]
     public void Position79_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1523,13 +1523,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 8)]
-    [InlineData(2, 61)]
-    [InlineData(3, 483)]
-    [InlineData(4, 3213)]
-    [InlineData(5, 23599)]
-    [InlineData(6, 157093)]
+    [Test]
+    [Arguments(1, 8)]
+    [Arguments(2, 61)]
+    [Arguments(3, 483)]
+    [Arguments(4, 3213)]
+    [Arguments(5, 23599)]
+    [Arguments(6, 157093)]
     public void Position80_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1542,13 +1542,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 8)]
-    [InlineData(2, 61)]
-    [InlineData(3, 411)]
-    [InlineData(4, 3213)]
-    [InlineData(5, 21637)]
-    [InlineData(6, 158065)]
+    [Test]
+    [Arguments(1, 8)]
+    [Arguments(2, 61)]
+    [Arguments(3, 411)]
+    [Arguments(4, 3213)]
+    [Arguments(5, 21637)]
+    [Arguments(6, 158065)]
     public void Position81_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1561,13 +1561,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 4)]
-    [InlineData(2, 15)]
-    [InlineData(3, 90)]
-    [InlineData(4, 534)]
-    [InlineData(5, 3450)]
-    [InlineData(6, 20960)]
+    [Test]
+    [Arguments(1, 4)]
+    [Arguments(2, 15)]
+    [Arguments(3, 90)]
+    [Arguments(4, 534)]
+    [Arguments(5, 3450)]
+    [Arguments(6, 20960)]
     public void Position82_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1580,13 +1580,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 3)]
-    [InlineData(2, 9)]
-    [InlineData(3, 57)]
-    [InlineData(4, 360)]
-    [InlineData(5, 1969)]
-    [InlineData(6, 10724)]
+    [Test]
+    [Arguments(1, 3)]
+    [Arguments(2, 9)]
+    [Arguments(3, 57)]
+    [Arguments(4, 360)]
+    [Arguments(5, 1969)]
+    [Arguments(6, 10724)]
     public void Position83_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1599,13 +1599,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 3)]
-    [InlineData(2, 9)]
-    [InlineData(3, 57)]
-    [InlineData(4, 360)]
-    [InlineData(5, 1969)]
-    [InlineData(6, 10724)]
+    [Test]
+    [Arguments(1, 3)]
+    [Arguments(2, 9)]
+    [Arguments(3, 57)]
+    [Arguments(4, 360)]
+    [Arguments(5, 1969)]
+    [Arguments(6, 10724)]
     public void Position84_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1618,13 +1618,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 25)]
-    [InlineData(3, 180)]
-    [InlineData(4, 1294)]
-    [InlineData(5, 8296)]
-    [InlineData(6, 53138)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 25)]
+    [Arguments(3, 180)]
+    [Arguments(4, 1294)]
+    [Arguments(5, 8296)]
+    [Arguments(6, 53138)]
     public void Position85_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1637,13 +1637,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 8)]
-    [InlineData(2, 61)]
-    [InlineData(3, 411)]
-    [InlineData(4, 3213)]
-    [InlineData(5, 21637)]
-    [InlineData(6, 158065)]
+    [Test]
+    [Arguments(1, 8)]
+    [Arguments(2, 61)]
+    [Arguments(3, 411)]
+    [Arguments(4, 3213)]
+    [Arguments(5, 21637)]
+    [Arguments(6, 158065)]
     public void Position86_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1656,13 +1656,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 8)]
-    [InlineData(2, 61)]
-    [InlineData(3, 483)]
-    [InlineData(4, 3213)]
-    [InlineData(5, 23599)]
-    [InlineData(6, 157093)]
+    [Test]
+    [Arguments(1, 8)]
+    [Arguments(2, 61)]
+    [Arguments(3, 483)]
+    [Arguments(4, 3213)]
+    [Arguments(5, 23599)]
+    [Arguments(6, 157093)]
     public void Position87_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1675,13 +1675,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 4)]
-    [InlineData(2, 15)]
-    [InlineData(3, 89)]
-    [InlineData(4, 537)]
-    [InlineData(5, 3309)]
-    [InlineData(6, 21104)]
+    [Test]
+    [Arguments(1, 4)]
+    [Arguments(2, 15)]
+    [Arguments(3, 89)]
+    [Arguments(4, 537)]
+    [Arguments(5, 3309)]
+    [Arguments(6, 21104)]
     public void Position88_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1694,13 +1694,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 4)]
-    [InlineData(2, 19)]
-    [InlineData(3, 117)]
-    [InlineData(4, 720)]
-    [InlineData(5, 4661)]
-    [InlineData(6, 32191)]
+    [Test]
+    [Arguments(1, 4)]
+    [Arguments(2, 19)]
+    [Arguments(3, 117)]
+    [Arguments(4, 720)]
+    [Arguments(5, 4661)]
+    [Arguments(6, 32191)]
     public void Position89_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1713,13 +1713,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 19)]
-    [InlineData(3, 116)]
-    [InlineData(4, 716)]
-    [InlineData(5, 4786)]
-    [InlineData(6, 30980)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 19)]
+    [Arguments(3, 116)]
+    [Arguments(4, 716)]
+    [Arguments(5, 4786)]
+    [Arguments(6, 30980)]
     public void Position90_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1732,13 +1732,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 22)]
-    [InlineData(3, 139)]
-    [InlineData(4, 877)]
-    [InlineData(5, 6112)]
-    [InlineData(6, 41874)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 22)]
+    [Arguments(3, 139)]
+    [Arguments(4, 877)]
+    [Arguments(5, 6112)]
+    [Arguments(6, 41874)]
     public void Position91_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1751,13 +1751,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 4)]
-    [InlineData(2, 16)]
-    [InlineData(3, 101)]
-    [InlineData(4, 637)]
-    [InlineData(5, 4354)]
-    [InlineData(6, 29679)]
+    [Test]
+    [Arguments(1, 4)]
+    [Arguments(2, 16)]
+    [Arguments(3, 101)]
+    [Arguments(4, 637)]
+    [Arguments(5, 4354)]
+    [Arguments(6, 29679)]
     public void Position92_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1770,13 +1770,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 22)]
-    [InlineData(3, 139)]
-    [InlineData(4, 877)]
-    [InlineData(5, 6112)]
-    [InlineData(6, 41874)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 22)]
+    [Arguments(3, 139)]
+    [Arguments(4, 877)]
+    [Arguments(5, 6112)]
+    [Arguments(6, 41874)]
     public void Position93_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1789,13 +1789,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 4)]
-    [InlineData(2, 16)]
-    [InlineData(3, 101)]
-    [InlineData(4, 637)]
-    [InlineData(5, 4354)]
-    [InlineData(6, 29679)]
+    [Test]
+    [Arguments(1, 4)]
+    [Arguments(2, 16)]
+    [Arguments(3, 101)]
+    [Arguments(4, 637)]
+    [Arguments(5, 4354)]
+    [Arguments(6, 29679)]
     public void Position94_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1808,13 +1808,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 3)]
-    [InlineData(2, 15)]
-    [InlineData(3, 84)]
-    [InlineData(4, 573)]
-    [InlineData(5, 3013)]
-    [InlineData(6, 22886)]
+    [Test]
+    [Arguments(1, 3)]
+    [Arguments(2, 15)]
+    [Arguments(3, 84)]
+    [Arguments(4, 573)]
+    [Arguments(5, 3013)]
+    [Arguments(6, 22886)]
     public void Position95_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1827,13 +1827,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 4)]
-    [InlineData(2, 16)]
-    [InlineData(3, 101)]
-    [InlineData(4, 637)]
-    [InlineData(5, 4271)]
-    [InlineData(6, 28662)]
+    [Test]
+    [Arguments(1, 4)]
+    [Arguments(2, 16)]
+    [Arguments(3, 101)]
+    [Arguments(4, 637)]
+    [Arguments(5, 4271)]
+    [Arguments(6, 28662)]
     public void Position96_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1846,13 +1846,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 19)]
-    [InlineData(3, 117)]
-    [InlineData(4, 720)]
-    [InlineData(5, 5014)]
-    [InlineData(6, 32167)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 19)]
+    [Arguments(3, 117)]
+    [Arguments(4, 720)]
+    [Arguments(5, 5014)]
+    [Arguments(6, 32167)]
     public void Position97_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1865,13 +1865,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 4)]
-    [InlineData(2, 19)]
-    [InlineData(3, 117)]
-    [InlineData(4, 712)]
-    [InlineData(5, 4658)]
-    [InlineData(6, 30749)]
+    [Test]
+    [Arguments(1, 4)]
+    [Arguments(2, 19)]
+    [Arguments(3, 117)]
+    [Arguments(4, 712)]
+    [Arguments(5, 4658)]
+    [Arguments(6, 30749)]
     public void Position98_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1884,13 +1884,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 22)]
-    [InlineData(3, 139)]
-    [InlineData(4, 877)]
-    [InlineData(5, 6112)]
-    [InlineData(6, 41874)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 22)]
+    [Arguments(3, 139)]
+    [Arguments(4, 877)]
+    [Arguments(5, 6112)]
+    [Arguments(6, 41874)]
     public void Position99_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1903,13 +1903,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 4)]
-    [InlineData(2, 16)]
-    [InlineData(3, 101)]
-    [InlineData(4, 637)]
-    [InlineData(5, 4354)]
-    [InlineData(6, 29679)]
+    [Test]
+    [Arguments(1, 4)]
+    [Arguments(2, 16)]
+    [Arguments(3, 101)]
+    [Arguments(4, 637)]
+    [Arguments(5, 4354)]
+    [Arguments(6, 29679)]
     public void Position100_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1922,13 +1922,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 22)]
-    [InlineData(3, 139)]
-    [InlineData(4, 877)]
-    [InlineData(5, 6112)]
-    [InlineData(6, 41874)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 22)]
+    [Arguments(3, 139)]
+    [Arguments(4, 877)]
+    [Arguments(5, 6112)]
+    [Arguments(6, 41874)]
     public void Position101_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1941,13 +1941,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 4)]
-    [InlineData(2, 16)]
-    [InlineData(3, 101)]
-    [InlineData(4, 637)]
-    [InlineData(5, 4354)]
-    [InlineData(6, 29679)]
+    [Test]
+    [Arguments(1, 4)]
+    [Arguments(2, 16)]
+    [Arguments(3, 101)]
+    [Arguments(4, 637)]
+    [Arguments(5, 4354)]
+    [Arguments(6, 29679)]
     public void Position102_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1960,13 +1960,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 15)]
-    [InlineData(3, 102)]
-    [InlineData(4, 569)]
-    [InlineData(5, 4337)]
-    [InlineData(6, 22579)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 15)]
+    [Arguments(3, 102)]
+    [Arguments(4, 569)]
+    [Arguments(5, 4337)]
+    [Arguments(6, 22579)]
     public void Position103_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1979,13 +1979,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 4)]
-    [InlineData(2, 16)]
-    [InlineData(3, 101)]
-    [InlineData(4, 637)]
-    [InlineData(5, 4271)]
-    [InlineData(6, 28662)]
+    [Test]
+    [Arguments(1, 4)]
+    [Arguments(2, 16)]
+    [Arguments(3, 101)]
+    [Arguments(4, 637)]
+    [Arguments(5, 4271)]
+    [Arguments(6, 28662)]
     public void Position104_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -1998,13 +1998,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 22)]
-    [InlineData(3, 139)]
-    [InlineData(4, 877)]
-    [InlineData(5, 6112)]
-    [InlineData(6, 41874)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 22)]
+    [Arguments(3, 139)]
+    [Arguments(4, 877)]
+    [Arguments(5, 6112)]
+    [Arguments(6, 41874)]
     public void Position105_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -2017,13 +2017,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 4)]
-    [InlineData(2, 16)]
-    [InlineData(3, 101)]
-    [InlineData(4, 637)]
-    [InlineData(5, 4354)]
-    [InlineData(6, 29679)]
+    [Test]
+    [Arguments(1, 4)]
+    [Arguments(2, 16)]
+    [Arguments(3, 101)]
+    [Arguments(4, 637)]
+    [Arguments(5, 4354)]
+    [Arguments(6, 29679)]
     public void Position106_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -2036,13 +2036,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 22)]
-    [InlineData(3, 139)]
-    [InlineData(4, 877)]
-    [InlineData(5, 6112)]
-    [InlineData(6, 41874)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 22)]
+    [Arguments(3, 139)]
+    [Arguments(4, 877)]
+    [Arguments(5, 6112)]
+    [Arguments(6, 41874)]
     public void Position107_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -2055,13 +2055,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 4)]
-    [InlineData(2, 16)]
-    [InlineData(3, 101)]
-    [InlineData(4, 637)]
-    [InlineData(5, 4354)]
-    [InlineData(6, 29679)]
+    [Test]
+    [Arguments(1, 4)]
+    [Arguments(2, 16)]
+    [Arguments(3, 101)]
+    [Arguments(4, 637)]
+    [Arguments(5, 4354)]
+    [Arguments(6, 29679)]
     public void Position108_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -2074,13 +2074,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 25)]
-    [InlineData(3, 161)]
-    [InlineData(4, 1035)]
-    [InlineData(5, 7574)]
-    [InlineData(6, 55338)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 25)]
+    [Arguments(3, 161)]
+    [Arguments(4, 1035)]
+    [Arguments(5, 7574)]
+    [Arguments(6, 55338)]
     public void Position109_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -2093,13 +2093,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 25)]
-    [InlineData(3, 161)]
-    [InlineData(4, 1035)]
-    [InlineData(5, 7574)]
-    [InlineData(6, 55338)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 25)]
+    [Arguments(3, 161)]
+    [Arguments(4, 1035)]
+    [Arguments(5, 7574)]
+    [Arguments(6, 55338)]
     public void Position110_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -2112,13 +2112,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 7)]
-    [InlineData(2, 49)]
-    [InlineData(3, 378)]
-    [InlineData(4, 2902)]
-    [InlineData(5, 24122)]
-    [InlineData(6, 199002)]
+    [Test]
+    [Arguments(1, 7)]
+    [Arguments(2, 49)]
+    [Arguments(3, 378)]
+    [Arguments(4, 2902)]
+    [Arguments(5, 24122)]
+    [Arguments(6, 199002)]
     public void Position111_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -2131,13 +2131,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 22)]
-    [InlineData(3, 139)]
-    [InlineData(4, 877)]
-    [InlineData(5, 6112)]
-    [InlineData(6, 41874)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 22)]
+    [Arguments(3, 139)]
+    [Arguments(4, 877)]
+    [Arguments(5, 6112)]
+    [Arguments(6, 41874)]
     public void Position112_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -2150,13 +2150,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 4)]
-    [InlineData(2, 16)]
-    [InlineData(3, 101)]
-    [InlineData(4, 637)]
-    [InlineData(5, 4354)]
-    [InlineData(6, 29679)]
+    [Test]
+    [Arguments(1, 4)]
+    [Arguments(2, 16)]
+    [Arguments(3, 101)]
+    [Arguments(4, 637)]
+    [Arguments(5, 4354)]
+    [Arguments(6, 29679)]
     public void Position113_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -2169,13 +2169,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 22)]
-    [InlineData(3, 139)]
-    [InlineData(4, 877)]
-    [InlineData(5, 6112)]
-    [InlineData(6, 41874)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 22)]
+    [Arguments(3, 139)]
+    [Arguments(4, 877)]
+    [Arguments(5, 6112)]
+    [Arguments(6, 41874)]
     public void Position114_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -2188,13 +2188,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 4)]
-    [InlineData(2, 16)]
-    [InlineData(3, 101)]
-    [InlineData(4, 637)]
-    [InlineData(5, 4354)]
-    [InlineData(6, 29679)]
+    [Test]
+    [Arguments(1, 4)]
+    [Arguments(2, 16)]
+    [Arguments(3, 101)]
+    [Arguments(4, 637)]
+    [Arguments(5, 4354)]
+    [Arguments(6, 29679)]
     public void Position115_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -2207,13 +2207,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 25)]
-    [InlineData(3, 161)]
-    [InlineData(4, 1035)]
-    [InlineData(5, 7574)]
-    [InlineData(6, 55338)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 25)]
+    [Arguments(3, 161)]
+    [Arguments(4, 1035)]
+    [Arguments(5, 7574)]
+    [Arguments(6, 55338)]
     public void Position116_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -2226,13 +2226,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 5)]
-    [InlineData(2, 25)]
-    [InlineData(3, 161)]
-    [InlineData(4, 1035)]
-    [InlineData(5, 7574)]
-    [InlineData(6, 55338)]
+    [Test]
+    [Arguments(1, 5)]
+    [Arguments(2, 25)]
+    [Arguments(3, 161)]
+    [Arguments(4, 1035)]
+    [Arguments(5, 7574)]
+    [Arguments(6, 55338)]
     public void Position117_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -2245,13 +2245,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 7)]
-    [InlineData(2, 49)]
-    [InlineData(3, 378)]
-    [InlineData(4, 2902)]
-    [InlineData(5, 24122)]
-    [InlineData(6, 199002)]
+    [Test]
+    [Arguments(1, 7)]
+    [Arguments(2, 49)]
+    [Arguments(3, 378)]
+    [Arguments(4, 2902)]
+    [Arguments(5, 24122)]
+    [Arguments(6, 199002)]
     public void Position118_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -2264,13 +2264,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 11)]
-    [InlineData(2, 97)]
-    [InlineData(3, 887)]
-    [InlineData(4, 8048)]
-    [InlineData(5, 90606)]
-    [InlineData(6, 1030499)]
+    [Test]
+    [Arguments(1, 11)]
+    [Arguments(2, 97)]
+    [Arguments(3, 887)]
+    [Arguments(4, 8048)]
+    [Arguments(5, 90606)]
+    [Arguments(6, 1030499)]
     public void Position119_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -2283,13 +2283,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 24)]
-    [InlineData(2, 421)]
-    [InlineData(3, 7421)]
-    [InlineData(4, 124608)]
-    [InlineData(5, 2193768)]
-    [InlineData(6, 37665329)]
+    [Test]
+    [Arguments(1, 24)]
+    [Arguments(2, 421)]
+    [Arguments(3, 7421)]
+    [Arguments(4, 124608)]
+    [Arguments(5, 2193768)]
+    [Arguments(6, 37665329)]
     public void Position120_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -2302,13 +2302,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 18)]
-    [InlineData(2, 270)]
-    [InlineData(3, 4699)]
-    [InlineData(4, 79355)]
-    [InlineData(5, 1533145)]
-    [InlineData(6, 28859283)]
+    [Test]
+    [Arguments(1, 18)]
+    [Arguments(2, 270)]
+    [Arguments(3, 4699)]
+    [Arguments(4, 79355)]
+    [Arguments(5, 1533145)]
+    [Arguments(6, 28859283)]
     public void Position121_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -2321,13 +2321,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 24)]
-    [InlineData(2, 496)]
-    [InlineData(3, 9483)]
-    [InlineData(4, 182838)]
-    [InlineData(5, 3605103)]
-    [InlineData(6, 71179139)]
+    [Test]
+    [Arguments(1, 24)]
+    [Arguments(2, 496)]
+    [Arguments(3, 9483)]
+    [Arguments(4, 182838)]
+    [Arguments(5, 3605103)]
+    [Arguments(6, 71179139)]
     public void Position122_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -2340,13 +2340,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 11)]
-    [InlineData(2, 97)]
-    [InlineData(3, 887)]
-    [InlineData(4, 8048)]
-    [InlineData(5, 90606)]
-    [InlineData(6, 1030499)]
+    [Test]
+    [Arguments(1, 11)]
+    [Arguments(2, 97)]
+    [Arguments(3, 887)]
+    [Arguments(4, 8048)]
+    [Arguments(5, 90606)]
+    [Arguments(6, 1030499)]
     public void Position123_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -2359,13 +2359,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 24)]
-    [InlineData(2, 421)]
-    [InlineData(3, 7421)]
-    [InlineData(4, 124608)]
-    [InlineData(5, 2193768)]
-    [InlineData(6, 37665329)]
+    [Test]
+    [Arguments(1, 24)]
+    [Arguments(2, 421)]
+    [Arguments(3, 7421)]
+    [Arguments(4, 124608)]
+    [Arguments(5, 2193768)]
+    [Arguments(6, 37665329)]
     public void Position124_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -2378,13 +2378,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 18)]
-    [InlineData(2, 270)]
-    [InlineData(3, 4699)]
-    [InlineData(4, 79355)]
-    [InlineData(5, 1533145)]
-    [InlineData(6, 28859283)]
+    [Test]
+    [Arguments(1, 18)]
+    [Arguments(2, 270)]
+    [Arguments(3, 4699)]
+    [Arguments(4, 79355)]
+    [Arguments(5, 1533145)]
+    [Arguments(6, 28859283)]
     public void Position125_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -2397,13 +2397,13 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(1, 24)]
-    [InlineData(2, 496)]
-    [InlineData(3, 9483)]
-    [InlineData(4, 182838)]
-    [InlineData(5, 3605103)]
-    [InlineData(6, 71179139)]
+    [Test]
+    [Arguments(1, 24)]
+    [Arguments(2, 496)]
+    [Arguments(3, 9483)]
+    [Arguments(4, 182838)]
+    [Arguments(5, 3605103)]
+    [Arguments(6, 71179139)]
     public void Position126_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -2416,10 +2416,10 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(4, 43238)]
-    [InlineData(5, 674624)]
-    [InlineData(6, 11030083)]
+    [Test]
+    [Arguments(4, 43238)]
+    [Arguments(5, 674624)]
+    [Arguments(6, 11030083)]
     public void Position127_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange
@@ -2432,8 +2432,8 @@ public class PerftTests
         nodes.ShouldBe(expectedNodes);
     }
 
-    [Theory]
-    [InlineData(5, 11139762)]
+    [Test]
+    [Arguments(5, 11139762)]
     public void Position128_ShouldReturnCorrectPerftCount(int depth, long expectedNodes)
     {
         // Arrange

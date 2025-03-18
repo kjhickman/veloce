@@ -1,11 +1,11 @@
 ﻿using Shouldly;
 using Veloce.Models;
 
-namespace Veloce.Tests.Engine.MoveGeneratorTests;
+namespace Veloce.UnitTests.Engine.MoveGeneration;
 
 public class GenerateLegalMovesTests
 {
-    [Fact]
+    [Test]
     public void GenerateLegalMoves_InitialPosition_Returns20Moves()
     {
         // Arrange
@@ -13,13 +13,13 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        var moveCount = MoveGeneration.GenerateLegalMoves(position, moves);
+        var moveCount = Veloce.MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moveCount.ShouldBe(20);
     }
 
-    [Fact]
+    [Test]
     public void GenerateLegalMoves_PetrovicPosition_Returns218Moves()
     {
         // Arrange
@@ -27,13 +27,13 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        var moveCount = MoveGeneration.GenerateLegalMoves(position, moves);
+        var moveCount = Veloce.MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moveCount.ShouldBe(218);
     }
 
-    [Fact]
+    [Test]
     public void GenerateLegalMoves_WhenCastlingWouldBeIntoCheck_CannotCastle()
     {
         // Arrange
@@ -41,14 +41,14 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        var moveCount = MoveGeneration.GenerateLegalMoves(position, moves);
+        var moveCount = Veloce.MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moveCount.ShouldBe(37);
         moves.ToArray().ShouldNotContain(x => x.SpecialMoveType == SpecialMoveType.ShortCastle);
     }
 
-    [Fact]
+    [Test]
     public void GenerateLegalMoves_WhenInCheckAsWhite_CannotCastle()
     {
         // Arrange
@@ -56,14 +56,14 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        var moveCount = MoveGeneration.GenerateLegalMoves(position, moves);
+        var moveCount = Veloce.MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moveCount.ShouldBe(4);
         moves.ToArray().ShouldNotContain(x => x.SpecialMoveType == SpecialMoveType.ShortCastle);
     }
 
-    [Fact]
+    [Test]
     public void GenerateLegalMoves_WhenPieceIsPinned_PieceCannotMove()
     {
         // Arrange
@@ -71,13 +71,13 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        MoveGeneration.GenerateLegalMoves(position, moves);
+        Veloce.MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moves.ToArray().ShouldNotContain(x => x.From == Square.c3);
     }
 
-    [Fact]
+    [Test]
     public void GenerateLegalMoves_WhenEnPassantAvailable_FindsEnPassantMove()
     {
         // Arrange
@@ -85,7 +85,7 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        var moveCount = MoveGeneration.GenerateLegalMoves(position, moves);
+        var moveCount = Veloce.MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moveCount.ShouldBe(7);
