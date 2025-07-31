@@ -1,4 +1,6 @@
-using Veloce.Models;
+using Veloce.Core.Models;
+using Veloce.Movement;
+using Veloce.State;
 
 namespace Veloce.Perft;
 

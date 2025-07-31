@@ -1,5 +1,6 @@
 ﻿using Shouldly;
-using Veloce.Models;
+using Veloce.Core.Models;
+using Veloce.State;
 
 namespace Veloce.UnitTests.Engine.MoveGeneration;
 
@@ -13,7 +14,7 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        var moveCount = Veloce.MoveGeneration.GenerateLegalMoves(position, moves);
+        var moveCount = Movement.MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moveCount.ShouldBe(20);
@@ -27,7 +28,7 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        var moveCount = Veloce.MoveGeneration.GenerateLegalMoves(position, moves);
+        var moveCount = Movement.MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moveCount.ShouldBe(218);
@@ -41,7 +42,7 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        var moveCount = Veloce.MoveGeneration.GenerateLegalMoves(position, moves);
+        var moveCount = Movement.MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moveCount.ShouldBe(37);
@@ -56,7 +57,7 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        var moveCount = Veloce.MoveGeneration.GenerateLegalMoves(position, moves);
+        var moveCount = Movement.MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moveCount.ShouldBe(4);
@@ -71,7 +72,7 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        Veloce.MoveGeneration.GenerateLegalMoves(position, moves);
+        Movement.MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moves.ToArray().ShouldNotContain(x => x.From == Square.c3);
@@ -85,7 +86,7 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        var moveCount = Veloce.MoveGeneration.GenerateLegalMoves(position, moves);
+        var moveCount = Movement.MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moveCount.ShouldBe(7);

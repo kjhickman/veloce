@@ -1,4 +1,5 @@
-using Veloce.Models;
+using Veloce.Core.Models;
+using Veloce.State;
 
 namespace Veloce.Uci.Lib.Extensions;
 

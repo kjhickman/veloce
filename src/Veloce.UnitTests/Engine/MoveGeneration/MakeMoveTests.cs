@@ -1,5 +1,6 @@
-﻿using Veloce.Extensions;
-using Veloce.Models;
+﻿using Veloce.Core.Extensions;
+using Veloce.Core.Models;
+using Veloce.State;
 using Veloce.Uci.Lib.Extensions;
 
 namespace Veloce.UnitTests.Engine.MoveGeneration;

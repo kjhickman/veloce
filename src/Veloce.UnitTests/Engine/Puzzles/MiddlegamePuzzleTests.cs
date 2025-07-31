@@ -1,11 +1,12 @@
-﻿using Veloce.Uci.Lib;
+﻿using Veloce.Engine;
+using Veloce.State;
 using Veloce.Uci.Lib.Extensions;
 
 namespace Veloce.UnitTests.Engine.Puzzles;
 
 public class MiddlegamePuzzleTests
 {
-    private readonly Search _search = new(settings: new EngineSettings { MaxDepth = 4 });
+    private readonly Search.Search _search = new(settings: new EngineSettings { MaxDepth = 4 });
 
     // https://lichess.org/training/CNQTv
     [Test]

@@ -1,3 +1,5 @@
+using Veloce.State;
+
 namespace Veloce.Uci.Lib.Extensions;
 
 public static class MoveExecutorExtensions

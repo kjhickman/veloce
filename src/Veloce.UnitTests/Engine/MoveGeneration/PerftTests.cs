@@ -1,5 +1,6 @@
 ﻿using Shouldly;
-using Veloce.Models;
+using Veloce.Core.Models;
+using Veloce.State;
 using static Veloce.Perft.Perft;
 
 namespace Veloce.UnitTests.Engine.MoveGeneration;
@@ -17,7 +18,7 @@ public class PerftTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        var moveCount = Veloce.MoveGeneration.GenerateLegalMoves(position, moves);
+        var moveCount = Movement.MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moveCount.ShouldBe(6);

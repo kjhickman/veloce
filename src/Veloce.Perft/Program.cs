@@ -1,5 +1,5 @@
-﻿using Veloce;
-using Veloce.Perft;
+﻿using Veloce.Perft;
+using Veloce.State;
 using Veloce.Uci.Lib.Extensions;
 
 var depth = int.Parse(args[0]);

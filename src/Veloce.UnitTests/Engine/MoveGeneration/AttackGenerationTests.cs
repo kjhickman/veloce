@@ -1,4 +1,5 @@
-﻿using Veloce;
+﻿using Veloce.Movement;
+using Veloce.State;
 
 namespace Veloce.UnitTests.Engine.MoveGeneration;
 

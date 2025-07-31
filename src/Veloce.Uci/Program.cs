@@ -1,4 +1,6 @@
-﻿using Veloce.Models;
+﻿using Veloce.Core.Models;
+using Veloce.Engine;
+using Veloce.State;
 using Veloce.Uci.Lib;
 
 namespace Veloce.Uci;
@@ -9,7 +11,7 @@ public static class Program
     {
         var logger = new UciEngineLogger();
         var settings = EngineSettings.Default;
-        var engine = new Engine(logger, settings);
+        var engine = new Engine.Engine(logger, settings);
         while (true)
         {
             var line = Console.ReadLine()?.Trim().ToLower();
@@ -103,7 +105,7 @@ public static class Program
         return new TimeControl(timeLeft, increment, movesToGo);
     }
 
-    private static void SetPosition(Engine engine, string[] commandParts)
+    private static void SetPosition(Engine.Engine engine, string[] commandParts)
     {
         if (commandParts.Length < 2)
             return;
