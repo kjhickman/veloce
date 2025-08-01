@@ -11,7 +11,7 @@ public static class Program
     {
         var logger = new UciEngineLogger();
         var settings = EngineSettings.Default;
-        var engine = new Engine.Engine(logger, settings);
+        var engine = new Engine.VeloceEngine(logger, settings);
         while (true)
         {
             var line = Console.ReadLine()?.Trim().ToLower();
@@ -105,7 +105,7 @@ public static class Program
         return new TimeControl(timeLeft, increment, movesToGo);
     }
 
-    private static void SetPosition(Engine.Engine engine, string[] commandParts)
+    private static void SetPosition(Engine.VeloceEngine veloceEngine, string[] commandParts)
     {
         if (commandParts.Length < 2)
             return;
@@ -139,7 +139,7 @@ public static class Program
             return;
         }
 
-        engine.SetPosition(position);
+        veloceEngine.SetPosition(position);
 
         if (index >= commandParts.Length || commandParts[index] != "moves") return;
 
@@ -152,7 +152,7 @@ public static class Program
 
             if (move != Move.NullMove)
             {
-                engine.MakeMove(move);
+                veloceEngine.MakeMove(move);
             }
             else
             {

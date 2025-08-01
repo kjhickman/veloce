@@ -12,14 +12,14 @@ namespace Veloce.Benchmarks.Benchmarks;
 [SimpleJob(RuntimeMoniker.Net10_0)]
 public class SearchBenchmarks
 {
-    private Engine.Engine _engine = null!;
+    private Engine.VeloceEngine _veloceEngine = null!;
 
     [IterationSetup]
     public void IterationSetup()
     {
-        _engine = new Engine.Engine(new NullEngineLogger(), new EngineSettings { MaxDepth = 6 });
-        var move = _engine.FindBestMove();
-        _engine.MakeMove(move!.Value);
+        _veloceEngine = new Engine.VeloceEngine(new NullEngineLogger(), new EngineSettings { MaxDepth = 6 });
+        var move = _veloceEngine.FindBestMove();
+        _veloceEngine.MakeMove(move!.Value);
     }
 
     [Benchmark]
@@ -28,9 +28,9 @@ public class SearchBenchmarks
         var i = 0;
         while (i++ < 10)
         {
-            var bestMove = _engine.FindBestMove();
+            var bestMove = _veloceEngine.FindBestMove();
             if (bestMove == null) throw new Exception("Game ended unexpectedly");
-            _engine.MakeMove(bestMove.Value);
+            _veloceEngine.MakeMove(bestMove.Value);
         }
     }
 }

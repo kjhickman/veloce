@@ -8,7 +8,7 @@ var settings = new EngineSettings
     TranspositionTableSizeMb = 128,
     Threads = 1
 };
-var engine = new Engine(new ConsoleEngineLogger(), settings);
+var engine = new VeloceEngine(new ConsoleEngineLogger(), settings);
 var i = 0;
 
 var sw = Stopwatch.StartNew();
