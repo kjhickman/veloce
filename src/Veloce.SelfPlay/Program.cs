@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Veloce.Engine;
 using Veloce.Search;
+using Veloce.Search.Logging;
 
 var settings = new EngineSettings
 {

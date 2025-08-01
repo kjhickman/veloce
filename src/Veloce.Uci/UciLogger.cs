@@ -1,6 +1,8 @@
 ﻿using System.Text;
 using Veloce.Core.Models;
 using Veloce.Search;
+using Veloce.Search.Interfaces;
+using Veloce.Search.Logging;
 
 namespace Veloce.Uci;
 
