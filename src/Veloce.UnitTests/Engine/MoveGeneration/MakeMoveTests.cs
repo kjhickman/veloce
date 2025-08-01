@@ -1,5 +1,4 @@
-﻿using Veloce.Core.Extensions;
-using Veloce.Core.Models;
+﻿using Veloce.Core;
 using Veloce.State;
 using Veloce.Uci.Lib.Extensions;
 

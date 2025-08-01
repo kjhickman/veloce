@@ -1,5 +1,5 @@
 using BenchmarkDotNet.Attributes;
-using Veloce.Core.Models;
+using Veloce.Core;
 using Veloce.Movement;
 using Veloce.State;
 

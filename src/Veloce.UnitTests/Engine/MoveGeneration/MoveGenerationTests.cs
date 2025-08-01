@@ -1,5 +1,5 @@
 ﻿using Shouldly;
-using Veloce.Core.Models;
+using Veloce.Core;
 using Veloce.State;
 
 namespace Veloce.UnitTests.Engine.MoveGeneration;

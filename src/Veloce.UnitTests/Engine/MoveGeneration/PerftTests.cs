@@ -1,5 +1,5 @@
 ﻿using Shouldly;
-using Veloce.Core.Models;
+using Veloce.Core;
 using Veloce.State;
 using static Veloce.Perft.Perft;
 
