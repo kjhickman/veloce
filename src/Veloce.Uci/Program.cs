@@ -11,7 +11,7 @@ public static class Program
     {
         var logger = new UciEngineLogger();
         var settings = EngineSettings.Default;
-        var engine = new Engine.VeloceEngine(logger, settings);
+        var engine = new VeloceEngine(logger, settings);
         while (true)
         {
             var line = Console.ReadLine()?.Trim().ToLower();
@@ -105,7 +105,7 @@ public static class Program
         return new TimeControl(timeLeft, increment, movesToGo);
     }
 
-    private static void SetPosition(Engine.VeloceEngine veloceEngine, string[] commandParts)
+    private static void SetPosition(VeloceEngine veloceEngine, string[] commandParts)
     {
         if (commandParts.Length < 2)
             return;

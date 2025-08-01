@@ -12,12 +12,12 @@ namespace Veloce.Benchmarks.Benchmarks;
 [SimpleJob(RuntimeMoniker.Net10_0)]
 public class SearchBenchmarks
 {
-    private Engine.VeloceEngine _veloceEngine = null!;
+    private VeloceEngine _veloceEngine = null!;
 
     [IterationSetup]
     public void IterationSetup()
     {
-        _veloceEngine = new Engine.VeloceEngine(new NullEngineLogger(), new EngineSettings { MaxDepth = 6 });
+        _veloceEngine = new VeloceEngine(new NullEngineLogger(), new EngineSettings { MaxDepth = 6 });
         var move = _veloceEngine.FindBestMove();
         _veloceEngine.MakeMove(move!.Value);
     }
