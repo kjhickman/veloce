@@ -31,7 +31,7 @@ public static class Program
                     break;
 
                 case "setoption":
-                    // TODO: implement setoption logic
+                    SetOption(engine, parts);
                     break;
 
                 case "isready":
@@ -103,6 +103,53 @@ public static class Program
         }
 
         return new TimeControl(timeLeft, increment, movesToGo);
+    }
+
+    private static void SetOption(VeloceEngine veloceEngine, string[] commandParts)
+    {
+        // Expected format: setoption name <option_name> value <option_value>
+        if (commandParts.Length < 5)
+            return;
+
+        var nameIndex = Array.IndexOf(commandParts, "name");
+        var valueIndex = Array.IndexOf(commandParts, "value");
+
+        if (nameIndex == -1 || valueIndex == -1 || nameIndex >= valueIndex)
+            return;
+
+        // Extract option name (might be multiple words between "name" and "value")
+        var optionNameParts = new List<string>();
+        for (var i = nameIndex + 1; i < valueIndex; i++)
+        {
+            optionNameParts.Add(commandParts[i]);
+        }
+        var optionName = string.Join(" ", optionNameParts).ToLower();
+
+        // Extract option value (everything after "value")
+        var optionValueParts = new List<string>();
+        for (var i = valueIndex + 1; i < commandParts.Length; i++)
+        {
+            optionValueParts.Add(commandParts[i]);
+        }
+        var optionValue = string.Join(" ", optionValueParts);
+
+        // Handle specific options
+        switch (optionName)
+        {
+            case "threads":
+                if (int.TryParse(optionValue, out var threads))
+                {
+                    veloceEngine.SetThreads(threads);
+                }
+                break;
+
+            case "hash":
+                if (int.TryParse(optionValue, out var hashSize))
+                {
+                    veloceEngine.SetHashSize(hashSize);
+                }
+                break;
+        }
     }
 
     private static void SetPosition(VeloceEngine veloceEngine, string[] commandParts)
