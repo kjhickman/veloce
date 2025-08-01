@@ -2,7 +2,6 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using Veloce.Engine;
 using Veloce.Search;
-using Veloce.Search.Logging;
 
 namespace Veloce.Benchmarks.Benchmarks;
 
@@ -18,7 +17,7 @@ public class SearchBenchmarks
     [IterationSetup]
     public void IterationSetup()
     {
-        _veloceEngine = new VeloceEngine(new NullEngineLogger(), new EngineSettings { MaxDepth = 6 });
+        _veloceEngine = new VeloceEngine(new EngineSettings { MaxDepth = 6 });
         var move = _veloceEngine.FindBestMove();
         _veloceEngine.MakeMove(move!.Value);
     }

@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using Veloce.Engine;
 using Veloce.Search;
-using Veloce.Search.Logging;
 
 var settings = new EngineSettings
 {
@@ -9,7 +8,7 @@ var settings = new EngineSettings
     TranspositionTableSizeMb = 128,
     Threads = Environment.ProcessorCount,
 };
-var engine = new VeloceEngine(new NullEngineLogger(), settings);
+var engine = new VeloceEngine(settings);
 var i = 0;
 
 var sw = Stopwatch.StartNew();

@@ -2,7 +2,6 @@
 using Veloce.Core;
 using Veloce.Search;
 using Veloce.Search.Interfaces;
-using Veloce.Search.Logging;
 
 namespace Veloce.Uci;
 

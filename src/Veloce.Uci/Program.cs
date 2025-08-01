@@ -11,7 +11,7 @@ public static class Program
     {
         var logger = new UciEngineLogger();
         var settings = EngineSettings.Default;
-        var engine = new VeloceEngine(logger, settings);
+        var engine = new VeloceEngine(settings, logger);
         while (true)
         {
             var line = Console.ReadLine()?.Trim().ToLower();
