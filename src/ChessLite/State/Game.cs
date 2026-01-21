@@ -19,12 +19,23 @@ public class Game
         _currentPly = 0;
     }
 
+    // todo: delete this
     public Game(string fen)
     {
         Position = new Position(fen);
         _moveExecutor = new MoveExecutor();
         _repetitionTable = new ulong[512];
         _currentPly = 0;
+    }
+
+    public static Game FromFen(string fen)
+    {
+        return new Game(fen);
+    }
+
+    public int WriteLegalMoves(Span<Move> moves)
+    {
+        return MoveGeneration.GenerateLegalMoves(Position, moves);
     }
 
     public void MakeMove(Move move)

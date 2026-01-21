@@ -1,5 +1,8 @@
 <Solution>
-  <Project Path="src/ChessLite/ChessLite.csproj" />
+  <Folder Name="/ChessLite/">
+    <Project Path="src/ChessLite.Tests/ChessLite.Tests.csproj" />
+    <Project Path="src/ChessLite/ChessLite.csproj" />
+  </Folder>
   <Project Path="src/Veloce.Benchmarks/Veloce.Benchmarks.csproj" />
   <Project Path="src/Veloce.Perft/Veloce.Perft.csproj" />
   <Project Path="src/Veloce.SelfPlay/Veloce.SelfPlay.csproj" />
