@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="src/Veloce.Benchmarks/Veloce.Benchmarks.csproj" />
+  <Project Path="src/Veloce.Perft/Veloce.Perft.csproj" />
+  <Project Path="src/Veloce.SelfPlay/Veloce.SelfPlay.csproj" />
+  <Project Path="src/Veloce.Uci.Lib/Veloce.Uci.Lib.csproj" />
+  <Project Path="src/Veloce.Uci/Veloce.Uci.csproj" />
+  <Project Path="src/Veloce.UnitTests/Veloce.UnitTests.csproj" />
+  <Project Path="src/Veloce/Veloce.csproj" />
+</Solution>
