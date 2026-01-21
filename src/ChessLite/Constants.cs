@@ -11,7 +11,6 @@ public static class Constants
     public const ulong FileH = 0x8080808080808080;
 
     // Castling Squares
-
     public const ulong A1Mask = 1;
     public const ulong B1Mask = 2;
     public const ulong C1Mask = 4;

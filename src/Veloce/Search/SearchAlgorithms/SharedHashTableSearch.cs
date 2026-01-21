@@ -253,7 +253,7 @@ public class SharedHashTableSearch : ISearchAlgorithm
         {
             _sharedTranspositionTable.Store(
                 game.Position.ZobristHash,
-                bestMove.ToCompactMove(),
+                new CompactMove(bestMove),
                 (short)bestScore,
                 (short)game.Position.Evaluate(),
                 (byte)depth,
@@ -408,7 +408,7 @@ public class SharedHashTableSearch : ISearchAlgorithm
 
             _sharedTranspositionTable.Store(
                 position.ZobristHash,
-                bestMove.ToCompactMove(),
+                new CompactMove(bestMove),
                 (short)bestScore,
                 (short)position.Evaluate(),
                 (byte)context.Depth,

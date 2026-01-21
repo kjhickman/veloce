@@ -203,7 +203,7 @@ public class SingleThreadedAlphaBetaSearch : ISearchAlgorithm
         {
             _transpositionTable.Store(
                 position.ZobristHash,
-                bestMove.ToCompactMove(),
+                new CompactMove(bestMove),
                 (short)bestScore,
                 (short)position.Evaluate(),
                 (byte)depth,
@@ -376,7 +376,7 @@ public class SingleThreadedAlphaBetaSearch : ISearchAlgorithm
 
         _transpositionTable.Store(
             position.ZobristHash,
-            bestMove.ToCompactMove(),
+            new CompactMove(bestMove),
             (short)bestScore,
             (short)position.Evaluate(), // Evaluate position for static evaluation
             (byte)context.Depth,

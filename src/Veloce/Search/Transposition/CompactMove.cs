@@ -13,6 +13,30 @@ public readonly struct CompactMove : IEquatable<CompactMove>
     public override int GetHashCode() => _packed;
     public CompactMove(ushort packed) => _packed = packed;
 
+    public CompactMove(Move move)
+    {
+        if (move == Move.NullMove)
+        {
+            _packed = 0;
+            return;
+        }
+
+        var from = (int)move.From;
+        var to = (int)move.To;
+
+        // Basic encoding: 6 bits for from (0-63), 6 bits for to (0-63),
+        // and 4 bits for promotion
+        var compact = (ushort)(from | (to << 6));
+
+        // Add promotion info in the high 4 bits
+        if (move.PromotedPieceType != PromotedPieceType.None)
+        {
+            compact |= (ushort)((int)move.PromotedPieceType << 12);
+        }
+
+        _packed = compact;
+    }
+
     /// <summary>
     /// Finds a move in the move list that matches the given CompactMove
     /// </summary>

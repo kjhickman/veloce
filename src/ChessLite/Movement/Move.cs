@@ -109,27 +109,4 @@ public readonly struct Move : IEquatable<Move>
     {
         return new Move(from, to, PromotedPieceType.None, pieceType, PieceType.None, false, SpecialMoveType.DoublePawnPush);
     }
-
-    /// <summary>
-    /// Converts a Move to a CompactMove for storage in the transposition table
-    /// </summary>
-    public CompactMove ToCompactMove()
-    {
-        if (this == NullMove) return 0;
-
-        var from = (int)From;
-        var to = (int)To;
-
-        // Basic encoding: 6 bits for from (0-63), 6 bits for to (0-63),
-        // and 4 bits for promotion
-        var compact = (ushort)(from | (to << 6));
-
-        // Add promotion info in the high 4 bits
-        if (PromotedPieceType != PromotedPieceType.None)
-        {
-            compact |= (ushort)((int)PromotedPieceType << 12);
-        }
-
-        return new CompactMove(compact);
-    }
 }
