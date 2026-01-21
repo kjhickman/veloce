@@ -1,5 +1,6 @@
-using Veloce.Core;
-using Veloce.State;
+using ChessLite.Movement;
+using ChessLite.Primitives;
+using ChessLite.State;
 
 namespace ChessLite.Parsing;
 

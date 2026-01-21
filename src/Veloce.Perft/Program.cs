@@ -1,5 +1,6 @@
-﻿using Veloce.Perft;
-using Veloce.State;
+﻿using ChessLite.Movement;
+using ChessLite.State;
+using Veloce.Perft;
 using Veloce.Uci.Lib.Extensions;
 
 var depth = int.Parse(args[0]);

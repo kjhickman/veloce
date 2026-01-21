@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
-using Veloce.Core;
+using ChessLite.Primitives;
 
-namespace Veloce.State;
+namespace ChessLite.Movement;
 
 [StructLayout(LayoutKind.Auto)]
 public struct MoveHistory

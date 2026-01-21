@@ -1,4 +1,4 @@
-namespace Veloce.Core;
+namespace ChessLite.Primitives;
 
 [Flags]
 public enum PromotedPieceType : byte

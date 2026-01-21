@@ -1,7 +1,8 @@
-﻿using Shouldly;
+﻿using ChessLite;
+using ChessLite.Primitives;
+using Shouldly;
 using Veloce.Core;
 using Veloce.Engine;
-using Veloce.State;
 using Veloce.Uci.Lib.Extensions;
 
 namespace Veloce.UnitTests.Engine.Puzzles;

@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
-using Veloce.Core;
+using ChessLite.Primitives;
 
-namespace Veloce.Movement;
+namespace ChessLite.Movement;
 
 public static class MagicBitboards
 {

@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace Veloce.Core;
+namespace ChessLite.Primitives;
 
 /// <summary>
 /// Represents a 64‐bit board for chess pieces.

@@ -1,4 +1,6 @@
-﻿namespace Veloce.Core;
+﻿using ChessLite.Primitives;
+
+namespace ChessLite.Movement;
 
 public readonly struct Move : IEquatable<Move>
 {

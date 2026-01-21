@@ -1,6 +1,7 @@
-using Veloce.Core;
+using ChessLite.Primitives;
+using ChessLite.State;
 
-namespace Veloce.State;
+namespace ChessLite.Movement;
 
 public class MoveExecutor
 {

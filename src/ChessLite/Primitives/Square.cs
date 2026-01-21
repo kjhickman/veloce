@@ -2,7 +2,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace Veloce.Core;
+namespace ChessLite.Primitives;
 
 //  noWe        north         noEa
 //         +7    +8    +9

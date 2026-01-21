@@ -1,6 +1,6 @@
-using Veloce.Core;
+using ChessLite.Primitives;
 
-namespace Veloce.State;
+namespace ChessLite.Parsing;
 
 public static class FenParser
 {

@@ -1,7 +1,7 @@
 using System.Numerics;
-using Veloce.Core;
+using ChessLite.Primitives;
 
-namespace Veloce.State;
+namespace ChessLite.State;
 
 public static class Zobrist
 {

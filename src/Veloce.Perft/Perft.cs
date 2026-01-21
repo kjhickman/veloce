@@ -1,6 +1,6 @@
+using ChessLite.Movement;
+using ChessLite.State;
 using Veloce.Core;
-using Veloce.Movement;
-using Veloce.State;
 
 namespace Veloce.Perft;
 

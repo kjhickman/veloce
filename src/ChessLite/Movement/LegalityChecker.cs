@@ -1,8 +1,8 @@
 using System.Runtime.CompilerServices;
-using Veloce.Core;
-using Veloce.State;
+using ChessLite.Primitives;
+using ChessLite.State;
 
-namespace Veloce.Movement;
+namespace ChessLite.Movement;
 
 public static class LegalityChecker
 {

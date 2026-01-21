@@ -1,4 +1,4 @@
-﻿namespace Veloce.Core;
+﻿namespace ChessLite;
 
 public static class Constants
 {

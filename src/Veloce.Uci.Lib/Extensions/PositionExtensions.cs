@@ -1,5 +1,6 @@
+using ChessLite.Primitives;
+using ChessLite.State;
 using Veloce.Core;
-using Veloce.State;
 
 namespace Veloce.Uci.Lib.Extensions;
 

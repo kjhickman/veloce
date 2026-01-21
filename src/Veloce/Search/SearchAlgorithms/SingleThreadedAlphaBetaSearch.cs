@@ -1,11 +1,12 @@
 using System.Diagnostics;
+using ChessLite;
+using ChessLite.Movement;
+using ChessLite.Primitives;
 using Veloce.Core;
 using Veloce.Engine;
 using Veloce.Evaluation;
-using Veloce.Movement;
 using Veloce.Search.Interfaces;
 using Veloce.Search.Transposition;
-using Veloce.State;
 
 namespace Veloce.Search.SearchAlgorithms;
 

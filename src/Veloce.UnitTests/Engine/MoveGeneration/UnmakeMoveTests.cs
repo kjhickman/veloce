@@ -1,4 +1,5 @@
-﻿using Veloce.State;
+﻿using ChessLite.Movement;
+using ChessLite.State;
 using Veloce.Uci.Lib.Extensions;
 
 namespace Veloce.UnitTests.Engine.MoveGeneration;

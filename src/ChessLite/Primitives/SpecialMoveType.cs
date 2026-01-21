@@ -1,4 +1,4 @@
-namespace Veloce.Core;
+namespace ChessLite.Primitives;
 
 public enum SpecialMoveType
 {

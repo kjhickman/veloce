@@ -1,5 +1,4 @@
-using Veloce.Core;
-using Veloce.State;
+using ChessLite.Movement;
 
 namespace ChessLite.Tests;
 

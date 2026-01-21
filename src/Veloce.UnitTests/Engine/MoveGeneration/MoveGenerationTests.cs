@@ -1,6 +1,8 @@
-﻿using Shouldly;
+﻿using ChessLite.Movement;
+using ChessLite.Primitives;
+using ChessLite.State;
+using Shouldly;
 using Veloce.Core;
-using Veloce.State;
 
 namespace Veloce.UnitTests.Engine.MoveGeneration;
 
@@ -14,7 +16,7 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        var moveCount = Movement.MoveGeneration.GenerateLegalMoves(position, moves);
+        var moveCount = ChessLite.Movement.MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moveCount.ShouldBe(20);
@@ -28,7 +30,7 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        var moveCount = Movement.MoveGeneration.GenerateLegalMoves(position, moves);
+        var moveCount = ChessLite.Movement.MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moveCount.ShouldBe(218);
@@ -42,7 +44,7 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        var moveCount = Movement.MoveGeneration.GenerateLegalMoves(position, moves);
+        var moveCount = ChessLite.Movement.MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moveCount.ShouldBe(37);
@@ -57,7 +59,7 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        var moveCount = Movement.MoveGeneration.GenerateLegalMoves(position, moves);
+        var moveCount = ChessLite.Movement.MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moveCount.ShouldBe(4);
@@ -72,7 +74,7 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        Movement.MoveGeneration.GenerateLegalMoves(position, moves);
+        ChessLite.Movement.MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moves.ToArray().ShouldNotContain(x => x.From == Square.c3);
@@ -86,7 +88,7 @@ public class GenerateLegalMovesTests
 
         // Act
         Span<Move> moves = stackalloc Move[218];
-        var moveCount = Movement.MoveGeneration.GenerateLegalMoves(position, moves);
+        var moveCount = ChessLite.Movement.MoveGeneration.GenerateLegalMoves(position, moves);
 
         // Assert
         moveCount.ShouldBe(7);

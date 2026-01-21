@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 
-namespace Veloce.Core;
+namespace ChessLite.Primitives;
 
 [Flags]
 public enum CastlingRights : byte

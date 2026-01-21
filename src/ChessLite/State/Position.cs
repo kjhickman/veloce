@@ -1,8 +1,9 @@
 using System.Text;
-using Veloce.Core;
-using Veloce.Movement;
+using ChessLite.Movement;
+using ChessLite.Parsing;
+using ChessLite.Primitives;
 
-namespace Veloce.State;
+namespace ChessLite.State;
 
 public class Position
 {

@@ -1,4 +1,7 @@
-﻿namespace Veloce.Core;
+﻿using ChessLite.Movement;
+using ChessLite.Primitives;
+
+namespace Veloce.Core;
 
 public readonly struct CompactMove : IEquatable<CompactMove>
 {

@@ -1,5 +1,5 @@
-﻿using Veloce.Engine;
-using Veloce.State;
+﻿using ChessLite;
+using Veloce.Engine;
 using Veloce.Uci.Lib.Extensions;
 
 namespace Veloce.UnitTests.Engine.Puzzles;

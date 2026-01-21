@@ -1,6 +1,7 @@
-﻿using Veloce.Core;
+﻿using ChessLite.Movement;
+using ChessLite.State;
+using Veloce.Core;
 using Veloce.Engine;
-using Veloce.State;
 using Veloce.Uci.Lib;
 
 namespace Veloce.Uci;

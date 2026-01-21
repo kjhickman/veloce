@@ -1,8 +1,8 @@
+using ChessLite.Movement;
 using ChessLite.Parsing;
-using Veloce.Core;
-using Veloce.Movement;
+using ChessLite.State;
 
-namespace Veloce.State;
+namespace ChessLite;
 
 public class Game
 {
