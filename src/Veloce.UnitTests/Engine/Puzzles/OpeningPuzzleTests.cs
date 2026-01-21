@@ -12,7 +12,7 @@ public class OpeningPuzzleTests
     [Test]
     public async Task Puzzle1()
     {
-        var game = new Game("r1b2rk1/ppp1qpp1/2p1Pn1p/2b5/2Q5/2N2N1P/PPP2PP1/R1B1R1K1 w - - 1 14");
+        var game = Game.FromFen("r1b2rk1/ppp1qpp1/2p1Pn1p/2b5/2Q5/2N2N1P/PPP2PP1/R1B1R1K1 w - - 1 14");
         var bestMove = _moveFinder.FindBestMove(game).BestMove;
         await Assert.That(bestMove.ToString()).IsEqualTo("e6f7");
 

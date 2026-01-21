@@ -1,3 +1,4 @@
+using ChessLite.Parsing;
 using Veloce.Core;
 using Veloce.Movement;
 
@@ -19,10 +20,9 @@ public class Game
         _currentPly = 0;
     }
 
-    // todo: delete this
-    public Game(string fen)
+    private Game(Position position)
     {
-        Position = new Position(fen);
+        Position = position;
         _moveExecutor = new MoveExecutor();
         _repetitionTable = new ulong[512];
         _currentPly = 0;
@@ -30,7 +30,7 @@ public class Game
 
     public static Game FromFen(string fen)
     {
-        return new Game(fen);
+        return new Game(new Position(fen));
     }
 
     public int WriteLegalMoves(Span<Move> moves)
@@ -38,10 +38,26 @@ public class Game
         return MoveGeneration.GenerateLegalMoves(Position, moves);
     }
 
+    public IEnumerable<Move> GetLegalMoves()
+    {
+        var moves = new Move[218];
+        var count = MoveGeneration.GenerateLegalMoves(Position, moves);
+        for (var i = 0; i < count; i++)
+        {
+            yield return moves[i];
+        }
+    }
+
     public void MakeMove(Move move)
     {
         _moveExecutor.MakeMove(Position, move);
         _repetitionTable[_currentPly++] = Position.ZobristHash;
+    }
+
+    public void MakeUciMove(string uciMove)
+    {
+        var move = Helpers.MoveFromUci(Position, uciMove);
+        MakeMove(move);
     }
 
     public void UndoMove()
