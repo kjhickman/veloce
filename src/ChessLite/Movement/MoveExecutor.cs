@@ -100,6 +100,10 @@ internal class MoveExecutor
         // Set en passant target
         var offset = move.PieceType == PieceType.WhitePawn ? -8 : 8;
         position.EnPassantTarget = move.To + offset;
+
+        // Update mailbox
+        position.Mailbox[(int)move.From] = PieceType.None;
+        position.Mailbox[(int)move.To] = move.PieceType;
     }
 
     private static void HandleEnPassant(Position position, Move move)
@@ -113,6 +117,11 @@ internal class MoveExecutor
         var offset = move.PieceType == PieceType.WhitePawn ? -8 : 8;
         var capturedPieceSquare = position.EnPassantTarget + offset;
         capturedPiece = capturedPiece.ClearSquare(capturedPieceSquare);
+
+        // Update mailbox
+        position.Mailbox[(int)move.From] = PieceType.None;
+        position.Mailbox[(int)move.To] = move.PieceType;
+        position.Mailbox[(int)capturedPieceSquare] = PieceType.None;
     }
 
     private static void HandleShortCastle(Position position, Move move)
@@ -129,6 +138,12 @@ internal class MoveExecutor
             ref var whiteRookBitboard = ref position.WhiteRooks;
             whiteRookBitboard = whiteRookBitboard.ClearSquares(Constants.H1Mask);
             whiteRookBitboard = whiteRookBitboard.SetSquares(Constants.F1Mask);
+
+            // Update mailbox
+            position.Mailbox[(int)Square.e1] = PieceType.None;
+            position.Mailbox[(int)Square.g1] = PieceType.WhiteKing;
+            position.Mailbox[(int)Square.h1] = PieceType.None;
+            position.Mailbox[(int)Square.f1] = PieceType.WhiteRook;
         }
         else
         {
@@ -141,6 +156,12 @@ internal class MoveExecutor
             ref var blackRookBitboard = ref position.BlackRooks;
             blackRookBitboard = blackRookBitboard.ClearSquares(Constants.H8Mask);
             blackRookBitboard = blackRookBitboard.SetSquares(Constants.F8Mask);
+
+            // Update mailbox
+            position.Mailbox[(int)Square.e8] = PieceType.None;
+            position.Mailbox[(int)Square.g8] = PieceType.BlackKing;
+            position.Mailbox[(int)Square.h8] = PieceType.None;
+            position.Mailbox[(int)Square.f8] = PieceType.BlackRook;
         }
     }
 
@@ -158,6 +179,12 @@ internal class MoveExecutor
             ref var whiteRookBitboard = ref position.WhiteRooks;
             whiteRookBitboard = whiteRookBitboard.ClearSquares(Constants.A1Mask);
             whiteRookBitboard = whiteRookBitboard.SetSquares(Constants.D1Mask);
+
+            // Update mailbox
+            position.Mailbox[(int)Square.e1] = PieceType.None;
+            position.Mailbox[(int)Square.c1] = PieceType.WhiteKing;
+            position.Mailbox[(int)Square.a1] = PieceType.None;
+            position.Mailbox[(int)Square.d1] = PieceType.WhiteRook;
         }
         else
         {
@@ -170,6 +197,12 @@ internal class MoveExecutor
             ref var blackRookBitboard = ref position.BlackRooks;
             blackRookBitboard = blackRookBitboard.ClearSquares(Constants.A8Mask);
             blackRookBitboard = blackRookBitboard.SetSquares(Constants.D8Mask);
+
+            // Update mailbox
+            position.Mailbox[(int)Square.e8] = PieceType.None;
+            position.Mailbox[(int)Square.c8] = PieceType.BlackKing;
+            position.Mailbox[(int)Square.a8] = PieceType.None;
+            position.Mailbox[(int)Square.d8] = PieceType.BlackRook;
         }
     }
 
@@ -213,6 +246,10 @@ internal class MoveExecutor
 
         ref var promotedPieceBitboard = ref position.GetPieceBitboard(promotedPieceType);
         promotedPieceBitboard = promotedPieceBitboard.SetSquare(move.To);
+
+        // Update mailbox
+        position.Mailbox[(int)move.From] = PieceType.None;
+        position.Mailbox[(int)move.To] = promotedPieceType;
     }
 
     private static void HandleRegularMove(Position position, Move move)
@@ -227,6 +264,10 @@ internal class MoveExecutor
             ref var capturedPieceType = ref position.GetPieceBitboard(move.CapturedPieceType);
             capturedPieceType = capturedPieceType.ClearSquare(move.To);
         }
+
+        // Update mailbox
+        position.Mailbox[(int)move.From] = PieceType.None;
+        position.Mailbox[(int)move.To] = move.PieceType;
     }
 
     private static void UpdateCastlingRights(Position position, Move move)
@@ -409,6 +450,10 @@ internal class MoveExecutor
             ref var capturedPieceType = ref position.GetPieceBitboard(previousMove.CapturedPieceType);
             capturedPieceType = capturedPieceType.SetSquare(previousMove.To);
         }
+
+        // Update mailbox
+        position.Mailbox[(int)previousMove.From] = previousMove.PieceType;
+        position.Mailbox[(int)previousMove.To] = previousMove.IsCapture ? previousMove.CapturedPieceType : PieceType.None;
     }
 
     private static void UndoRegularMove(Position position, Move previousMove)
@@ -423,6 +468,10 @@ internal class MoveExecutor
             ref var capturedPieceType = ref position.GetPieceBitboard(previousMove.CapturedPieceType);
             capturedPieceType = capturedPieceType.SetSquare(previousMove.To);
         }
+
+        // Update mailbox
+        position.Mailbox[(int)previousMove.To] = previousMove.IsCapture ? previousMove.CapturedPieceType : PieceType.None;
+        position.Mailbox[(int)previousMove.From] = previousMove.PieceType;
     }
 
     private static void UndoEnPassant(Position position, Move previousMove)
@@ -436,6 +485,11 @@ internal class MoveExecutor
         var offset = previousMove.PieceType == PieceType.WhitePawn ? -8 : 8;
         var capturedPieceSquare = previousMove.To + offset;
         capturedPieceType = capturedPieceType.SetSquare(capturedPieceSquare);
+
+        // Update mailbox
+        position.Mailbox[(int)previousMove.From] = previousMove.PieceType;
+        position.Mailbox[(int)previousMove.To] = PieceType.None;
+        position.Mailbox[(int)capturedPieceSquare] = previousMove.CapturedPieceType;
     }
 
     private static void UndoShortCastle(Position position, Move previousMove)
@@ -451,6 +505,12 @@ internal class MoveExecutor
             ref var whiteRookBitboard = ref position.WhiteRooks;
             whiteRookBitboard = whiteRookBitboard.ClearSquares(Constants.F1Mask);
             whiteRookBitboard = whiteRookBitboard.SetSquares(Constants.H1Mask);
+
+            // Update mailbox
+            position.Mailbox[(int)Square.g1] = PieceType.None;
+            position.Mailbox[(int)Square.e1] = PieceType.WhiteKing;
+            position.Mailbox[(int)Square.f1] = PieceType.None;
+            position.Mailbox[(int)Square.h1] = PieceType.WhiteRook;
         }
         else
         {
@@ -463,6 +523,12 @@ internal class MoveExecutor
             ref var blackRookBitboard = ref position.BlackRooks;
             blackRookBitboard = blackRookBitboard.ClearSquares(Constants.F8Mask);
             blackRookBitboard = blackRookBitboard.SetSquares(Constants.H8Mask);
+
+            // Update mailbox
+            position.Mailbox[(int)Square.g8] = PieceType.None;
+            position.Mailbox[(int)Square.e8] = PieceType.BlackKing;
+            position.Mailbox[(int)Square.f8] = PieceType.None;
+            position.Mailbox[(int)Square.h8] = PieceType.BlackRook;
         }
     }
 
@@ -479,6 +545,12 @@ internal class MoveExecutor
             ref var whiteRookBitboard = ref position.WhiteRooks;
             whiteRookBitboard = whiteRookBitboard.ClearSquares(Constants.D1Mask);
             whiteRookBitboard = whiteRookBitboard.SetSquares(Constants.A1Mask);
+
+            // Update mailbox
+            position.Mailbox[(int)Square.c1] = PieceType.None;
+            position.Mailbox[(int)Square.e1] = PieceType.WhiteKing;
+            position.Mailbox[(int)Square.d1] = PieceType.None;
+            position.Mailbox[(int)Square.a1] = PieceType.WhiteRook;
         }
         else
         {
@@ -491,6 +563,12 @@ internal class MoveExecutor
             ref var blackRookBitboard = ref position.BlackRooks;
             blackRookBitboard = blackRookBitboard.ClearSquares(Constants.D8Mask);
             blackRookBitboard = blackRookBitboard.SetSquares(Constants.A8Mask);
+
+            // Update mailbox
+            position.Mailbox[(int)Square.c8] = PieceType.None;
+            position.Mailbox[(int)Square.e8] = PieceType.BlackKing;
+            position.Mailbox[(int)Square.d8] = PieceType.None;
+            position.Mailbox[(int)Square.a8] = PieceType.BlackRook;
         }
     }
 }

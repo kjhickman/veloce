@@ -55,12 +55,19 @@ public class Position
 
     #endregion
 
+    #region Mailbox
+
+    public PieceType[] Mailbox = new PieceType[64];
+
+    #endregion
+
     /// <summary>
     /// Default constructor: sets up the standard starting position.
     /// </summary>
     public Position() : this(Constants.StartingPosition)
     {
         UpdateCombinedBitboards();
+        UpdateMailbox();
         UpdateAttacks();
         UpdatePinnedPieces();
         ZobristHash = Zobrist.ComputeHash(this);
@@ -91,6 +98,7 @@ public class Position
 
         // Update combined bitboards
         UpdateCombinedBitboards();
+        UpdateMailbox();
         UpdateAttacks();
         UpdatePinnedPieces();
         ZobristHash = Zobrist.ComputeHash(this);
@@ -198,6 +206,33 @@ public class Position
         PinnedPieces = ComputePinnedPieces();
     }
 
+    public void UpdateMailbox()
+    {
+        Array.Fill(Mailbox, PieceType.None);
+        SetMailboxForPieces(WhitePawns, PieceType.WhitePawn);
+        SetMailboxForPieces(WhiteKnights, PieceType.WhiteKnight);
+        SetMailboxForPieces(WhiteBishops, PieceType.WhiteBishop);
+        SetMailboxForPieces(WhiteRooks, PieceType.WhiteRook);
+        SetMailboxForPieces(WhiteQueens, PieceType.WhiteQueen);
+        SetMailboxForPieces(WhiteKing, PieceType.WhiteKing);
+        SetMailboxForPieces(BlackPawns, PieceType.BlackPawn);
+        SetMailboxForPieces(BlackKnights, PieceType.BlackKnight);
+        SetMailboxForPieces(BlackBishops, PieceType.BlackBishop);
+        SetMailboxForPieces(BlackRooks, PieceType.BlackRook);
+        SetMailboxForPieces(BlackQueens, PieceType.BlackQueen);
+        SetMailboxForPieces(BlackKing, PieceType.BlackKing);
+    }
+
+    private void SetMailboxForPieces(Bitboard bb, PieceType pieceType)
+    {
+        while (bb != 0)
+        {
+            var square = bb.GetFirstSquare();
+            Mailbox[(int)square] = pieceType;
+            bb &= bb - 1;
+        }
+    }
+
     private Bitboard ComputePinnedPieces()
     {
         Bitboard pinnedPieces = 0;
@@ -297,6 +332,9 @@ public class Position
             BlackKnightAttacks = BlackKnightAttacks,
             BlackKingAttacks = BlackKingAttacks,
         };
+
+        // Copy mailbox
+        Array.Copy(Mailbox, clone.Mailbox, 64);
 
         return clone;
     }

@@ -140,64 +140,11 @@ internal static class MoveGeneration
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static PieceType DetermineCapturedPieceType(Position position, Bitboard toMask, bool isWhite)
     {
-        if (isWhite)
-        {
-            if ((position.BlackPawns & toMask) != 0)
-            {
-                return PieceType.BlackPawn;
-            }
-            if ((position.BlackKnights & toMask) != 0)
-            {
-                return PieceType.BlackKnight;
-            }
-            if ((position.BlackBishops & toMask) != 0)
-            {
-                return PieceType.BlackBishop;
-            }
-            if ((position.BlackRooks & toMask) != 0)
-            {
-                return PieceType.BlackRook;
-            }
-            if ((position.BlackQueens & toMask) != 0)
-            {
-                return PieceType.BlackQueen;
-            }
-            if ((position.BlackKing & toMask) != 0)
-            {
-                return PieceType.None; // Cannot capture king
-            }
-        }
-        else
-        {
-            if ((position.WhitePawns & toMask) != 0)
-            {
-                return PieceType.WhitePawn;
-            }
-            if ((position.WhiteKnights & toMask) != 0)
-            {
-                return PieceType.WhiteKnight;
-            }
-            if ((position.WhiteBishops & toMask) != 0)
-            {
-                return PieceType.WhiteBishop;
-            }
-            if ((position.WhiteRooks & toMask) != 0)
-            {
-                return PieceType.WhiteRook;
-            }
-            if ((position.WhiteQueens & toMask) != 0)
-            {
-                return PieceType.WhiteQueen;
-            }
-            if ((position.WhiteKing & toMask) != 0)
-            {
-                return PieceType.None; // Cannot capture king
-            }
-        }
-
-        throw new InvalidOperationException("No piece found at the target square.");
+        var square = toMask.GetFirstSquare();
+        return position.Mailbox[(int)square];
     }
 
     private static void GenerateKnightMoves(Position position, ref int bufferIndex, Span<Move> movesBuffer)
