@@ -4,17 +4,17 @@ using ChessLite.State;
 
 namespace ChessLite.Movement;
 
-public class MoveExecutor
+internal class MoveExecutor
 {
     private readonly Stack<MoveHistory> _moveHistory = new(256);
 
-    public void ClearMoveHistory()
+    internal void ClearMoveHistory()
     {
         _moveHistory.Clear();
     }
 
     // TODO: pass properties in to avoid recalculating masks
-    public void MakeMove(Position position, Move move)
+    internal void MakeMove(Position position, Move move)
     {
         SaveMoveHistory(position, move);
 
@@ -41,7 +41,7 @@ public class MoveExecutor
         position.ZobristHash = Zobrist.ComputeHash(position);
     }
 
-    public void MakeMove(Position position, string uciMove)
+    internal void MakeMove(Position position, string uciMove)
     {
         var move = Helpers.MoveFromUci(position, uciMove);
         MakeMove(position, move);
@@ -311,7 +311,7 @@ public class MoveExecutor
         position.AllPieces = position.WhitePieces | position.BlackPieces;
     }
 
-    public void UndoMove(Position position)
+    internal void UndoMove(Position position)
     {
         var moveHistory = _moveHistory.Pop();
         var previousMove = moveHistory.Move;

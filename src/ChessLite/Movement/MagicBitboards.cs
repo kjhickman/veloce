@@ -3,7 +3,7 @@ using ChessLite.Primitives;
 
 namespace ChessLite.Movement;
 
-public static class MagicBitboards
+internal static class MagicBitboards
 {
     private static readonly ulong[] BishopMagics =
     [
@@ -102,7 +102,7 @@ public static class MagicBitboards
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Bitboard GetBishopAttacks(Square square, Bitboard blockers)
+    internal static Bitboard GetBishopAttacks(Square square, Bitboard blockers)
     {
         var squareIndex = (int)square;
         var relevantBlockers = blockers & BishopMasks[squareIndex];
@@ -111,7 +111,7 @@ public static class MagicBitboards
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Bitboard GetRookAttacks(Square square, Bitboard blockers)
+    internal static Bitboard GetRookAttacks(Square square, Bitboard blockers)
     {
         var squareIndex = (int)square;
         var relevantBlockers = blockers & RookMasks[squareIndex];
@@ -120,7 +120,7 @@ public static class MagicBitboards
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Bitboard GetQueenAttacks(Square square, Bitboard blockers)
+    internal static Bitboard GetQueenAttacks(Square square, Bitboard blockers)
     {
         return GetBishopAttacks(square, blockers) | GetRookAttacks(square, blockers);
     }

@@ -4,9 +4,9 @@ using ChessLite.State;
 
 namespace ChessLite.Movement;
 
-public static class MoveGeneration
+internal static class MoveGeneration
 {
-    public static int GenerateLegalMoves(Position position, Span<Move> legalMovesBuffer)
+    internal static int GenerateLegalMoves(Position position, Span<Move> legalMovesBuffer)
     {
         Span<Move> pseudoLegalMovesBuffer = stackalloc Move[256];
         var pseudoLegalMoveCount = GeneratePseudoLegalMoves(position, pseudoLegalMovesBuffer);
@@ -427,7 +427,7 @@ public static class MoveGeneration
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsSquareAttacked(Position position, Square square, bool byWhite)
+    internal static bool IsSquareAttacked(Position position, Square square, bool byWhite)
     {
         var enemyAttacks = byWhite ? position.WhiteAttacks : position.BlackAttacks;
         return enemyAttacks.Intersects(square);

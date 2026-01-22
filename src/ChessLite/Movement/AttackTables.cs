@@ -2,12 +2,12 @@ using ChessLite.Primitives;
 
 namespace ChessLite.Movement;
 
-public static class AttackTables
+internal static class AttackTables
 {
-    public static readonly Bitboard[] KnightAttacks = new Bitboard[64];
-    public static readonly Bitboard[] KingAttacks = new Bitboard[64];
-    public static readonly Bitboard[] WhitePawnAttacks = new Bitboard[64];
-    public static readonly Bitboard[] BlackPawnAttacks = new Bitboard[64];
+    internal static readonly Bitboard[] KnightAttacks = new Bitboard[64];
+    internal static readonly Bitboard[] KingAttacks = new Bitboard[64];
+    internal static readonly Bitboard[] WhitePawnAttacks = new Bitboard[64];
+    internal static readonly Bitboard[] BlackPawnAttacks = new Bitboard[64];
 
     static AttackTables()
     {

@@ -4,9 +4,9 @@ using ChessLite.State;
 
 namespace ChessLite.Movement;
 
-public static class LegalityChecker
+internal static class LegalityChecker
 {
-    public static bool IsMoveLegal(Position position, Move move)
+    internal static bool IsMoveLegal(Position position, Move move)
     {
         var isWhite = position.WhiteToMove;
         var kingSquare = isWhite ? position.WhiteKing.GetFirstSquare() : position.BlackKing.GetFirstSquare();

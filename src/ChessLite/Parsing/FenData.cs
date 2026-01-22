@@ -2,22 +2,22 @@ using ChessLite.Primitives;
 
 namespace ChessLite.Parsing;
 
-public class FenData
+internal class FenData
 {
-    public Bitboard WhitePawns { get; set; }
-    public Bitboard WhiteKnights { get; set; }
-    public Bitboard WhiteBishops { get; set; }
-    public Bitboard WhiteRooks { get; set; }
-    public Bitboard WhiteQueens { get; set; }
-    public Bitboard WhiteKing { get; set; }
-    public Bitboard BlackPawns { get; set; }
-    public Bitboard BlackKnights { get; set; }
-    public Bitboard BlackBishops { get; set; }
-    public Bitboard BlackRooks { get; set; }
-    public Bitboard BlackQueens { get; set; }
-    public Bitboard BlackKing { get; set; }
-    public bool WhiteToMove { get; set; }
-    public CastlingRights CastlingRights { get; set; }
-    public Square EnPassantTarget { get; set; }
-    public int HalfmoveClock { get; set; }
+    internal Bitboard WhitePawns { get; set; }
+    internal Bitboard WhiteKnights { get; set; }
+    internal Bitboard WhiteBishops { get; set; }
+    internal Bitboard WhiteRooks { get; set; }
+    internal Bitboard WhiteQueens { get; set; }
+    internal Bitboard WhiteKing { get; set; }
+    internal Bitboard BlackPawns { get; set; }
+    internal Bitboard BlackKnights { get; set; }
+    internal Bitboard BlackBishops { get; set; }
+    internal Bitboard BlackRooks { get; set; }
+    internal Bitboard BlackQueens { get; set; }
+    internal Bitboard BlackKing { get; set; }
+    internal bool WhiteToMove { get; set; }
+    internal CastlingRights CastlingRights { get; set; }
+    internal Square EnPassantTarget { get; set; }
+    internal int HalfmoveClock { get; set; }
 }

@@ -118,7 +118,7 @@ public class SingleThreadedAlphaBetaSearch : ISearchAlgorithm
     private SearchResult SearchAtDepth(Game game, int depth)
     {
         Span<Move> movesBuffer = stackalloc Move[218];
-        var moveCount = MoveGeneration.GenerateLegalMoves(game.Position, movesBuffer);
+        var moveCount = game.WriteLegalMoves(movesBuffer);
 
         if (moveCount == 0)
         {
@@ -278,7 +278,7 @@ public class SingleThreadedAlphaBetaSearch : ISearchAlgorithm
 
         // Check for leaf nodes
         Span<Move> movesBuffer = stackalloc Move[218];
-        var moveCount = MoveGeneration.GenerateLegalMoves(position, movesBuffer);
+        var moveCount = game.WriteLegalMoves(movesBuffer);
 
         if (moveCount == 0)
         {
@@ -438,7 +438,7 @@ public class SingleThreadedAlphaBetaSearch : ISearchAlgorithm
 
         // Generate all legal moves
         Span<Move> allMoves = stackalloc Move[218];
-        var allMoveCount = MoveGeneration.GenerateLegalMoves(position, allMoves);
+        var allMoveCount = game.WriteLegalMoves(allMoves);
 
         if (allMoveCount == 0)
         {

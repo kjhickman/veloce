@@ -2,9 +2,9 @@ using ChessLite.Primitives;
 
 namespace ChessLite.Parsing;
 
-public static class FenParser
+internal static class FenParser
 {
-    public static FenData ParseFen(ReadOnlySpan<char> fen)
+    internal static FenData ParseFen(ReadOnlySpan<char> fen)
     {
         var result = new FenData();
 

@@ -3,9 +3,9 @@ using ChessLite.State;
 
 namespace ChessLite.Movement;
 
-public static class AttackGeneration
+internal static class AttackGeneration
 {
-    public static Bitboard CalculateAttacks(Position position, bool forWhite)
+    internal static Bitboard CalculateAttacks(Position position, bool forWhite)
     {
         Bitboard attacks = 0;
 
@@ -30,7 +30,7 @@ public static class AttackGeneration
         return attacks;
     }
 
-    public static Bitboard CalculateAttacksWithoutOpposingKing(Position position, bool forWhite)
+    internal static Bitboard CalculateAttacksWithoutOpposingKing(Position position, bool forWhite)
     {
         Bitboard attacks = 0;
 
@@ -56,7 +56,7 @@ public static class AttackGeneration
         return attacks;
     }
 
-    public static Bitboard CalculatePawnAttacks(Bitboard pawns, bool forWhite)
+    internal static Bitboard CalculatePawnAttacks(Bitboard pawns, bool forWhite)
     {
         var attackTable = forWhite ? AttackTables.WhitePawnAttacks : AttackTables.BlackPawnAttacks;
         Bitboard attacks = 0;
@@ -72,7 +72,7 @@ public static class AttackGeneration
         return attacks;
     }
 
-    public static Bitboard CalculateKnightAttacks(Bitboard knights)
+    internal static Bitboard CalculateKnightAttacks(Bitboard knights)
     {
         Bitboard attacks = 0;
         var currentKnights = knights;
@@ -87,14 +87,14 @@ public static class AttackGeneration
         return attacks;
     }
 
-    public static Bitboard CalculateKingAttacks(Bitboard king)
+    internal static Bitboard CalculateKingAttacks(Bitboard king)
     {
         if (king.IsEmpty()) return 0;
         var square = king.GetFirstSquare();
         return AttackTables.KingAttacks[(int)square];
     }
 
-    public static Bitboard CalculateBishopAttacks(Bitboard bishops, Bitboard allPieces)
+    internal static Bitboard CalculateBishopAttacks(Bitboard bishops, Bitboard allPieces)
     {
         Bitboard attacks = 0;
         var currentBishops = bishops;
@@ -109,7 +109,7 @@ public static class AttackGeneration
         return attacks;
     }
 
-    public static Bitboard CalculateRookAttacks(Bitboard rooks, Bitboard allPieces)
+    internal static Bitboard CalculateRookAttacks(Bitboard rooks, Bitboard allPieces)
     {
         Bitboard attacks = 0;
         var currentRooks = rooks;
@@ -124,7 +124,7 @@ public static class AttackGeneration
         return attacks;
     }
 
-    public static Bitboard CalculateQueenAttacks(Bitboard queens, Bitboard allPieces)
+    internal static Bitboard CalculateQueenAttacks(Bitboard queens, Bitboard allPieces)
     {
         Bitboard attacks = 0;
         var currentQueens = queens;
