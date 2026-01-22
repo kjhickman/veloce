@@ -1,3 +1,5 @@
+using ChessLite.Movement;
+using ChessLite.Primitives;
 using Veloce.Core;
 
 namespace Veloce.Search;

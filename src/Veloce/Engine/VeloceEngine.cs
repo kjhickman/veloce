@@ -1,7 +1,9 @@
-﻿using Veloce.Core;
+﻿using ChessLite;
+using ChessLite.Movement;
+using ChessLite.State;
+using Veloce.Core;
 using Veloce.Search;
 using Veloce.Search.Interfaces;
-using Veloce.State;
 
 namespace Veloce.Engine;
 

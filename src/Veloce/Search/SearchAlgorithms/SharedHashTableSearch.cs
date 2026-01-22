@@ -1,11 +1,12 @@
 using System.Diagnostics;
+using ChessLite;
+using ChessLite.Movement;
+using ChessLite.Primitives;
 using Veloce.Core;
 using Veloce.Engine;
 using Veloce.Evaluation;
-using Veloce.Movement;
 using Veloce.Search.Interfaces;
 using Veloce.Search.Transposition;
-using Veloce.State;
 
 namespace Veloce.Search.SearchAlgorithms;
 
@@ -171,7 +172,7 @@ public class SharedHashTableSearch : ISearchAlgorithm
     private SearchResult SearchAtDepth(Game game, int depth, int threadId)
     {
         Span<Move> movesBuffer = stackalloc Move[218];
-        var moveCount = MoveGeneration.GenerateLegalMoves(game.Position, movesBuffer);
+        var moveCount = game.WriteLegalMoves(movesBuffer);
 
         if (moveCount == 0)
         {
@@ -253,7 +254,7 @@ public class SharedHashTableSearch : ISearchAlgorithm
         {
             _sharedTranspositionTable.Store(
                 game.Position.ZobristHash,
-                bestMove.ToCompactMove(),
+                new CompactMove(bestMove),
                 (short)bestScore,
                 (short)game.Position.Evaluate(),
                 (byte)depth,
@@ -318,7 +319,7 @@ public class SharedHashTableSearch : ISearchAlgorithm
 
         // Generate moves
         Span<Move> movesBuffer = stackalloc Move[218];
-        var moveCount = MoveGeneration.GenerateLegalMoves(position, movesBuffer);
+        var moveCount = game.WriteLegalMoves(movesBuffer);
 
         if (moveCount == 0)
         {
@@ -408,7 +409,7 @@ public class SharedHashTableSearch : ISearchAlgorithm
 
             _sharedTranspositionTable.Store(
                 position.ZobristHash,
-                bestMove.ToCompactMove(),
+                new CompactMove(bestMove),
                 (short)bestScore,
                 (short)position.Evaluate(),
                 (byte)context.Depth,
@@ -468,7 +469,7 @@ public class SharedHashTableSearch : ISearchAlgorithm
 
         // Generate all legal moves
         Span<Move> allMoves = stackalloc Move[218];
-        var allMoveCount = MoveGeneration.GenerateLegalMoves(position, allMoves);
+        var allMoveCount = game.WriteLegalMoves(allMoves);
 
         if (allMoveCount == 0)
         {

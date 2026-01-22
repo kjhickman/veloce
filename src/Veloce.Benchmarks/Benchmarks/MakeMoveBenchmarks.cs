@@ -1,6 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
-using Veloce.State;
-using Veloce.Uci.Lib.Extensions;
+using ChessLite.Movement;
+using ChessLite.State;
 
 namespace Veloce.Benchmarks.Benchmarks;
 

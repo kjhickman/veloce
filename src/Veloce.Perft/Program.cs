@@ -1,6 +1,5 @@
-﻿using Veloce.Perft;
-using Veloce.State;
-using Veloce.Uci.Lib.Extensions;
+﻿using ChessLite;
+using Veloce.Perft;
 
 var depth = int.Parse(args[0]);
 var fen = args[1];
@@ -10,18 +9,17 @@ if (args.Length == 3)
     movesList = args[2];
 }
 
-var position = new Position(fen);
-var executor = new MoveExecutor();
+var game = Game.FromFen(fen);
 if (movesList is not null)
 {
     var moves = movesList.Split(' ');
     foreach (var move in moves)
     {
-        executor.MakeMove(position, move);
+        game.MakeUciMove(move);
     }
 }
 
-var division = Perft.DividePerft(position, executor, depth);
+var division = Perft.DividePerft(game, depth);
 
 foreach (var move in division)
 {
