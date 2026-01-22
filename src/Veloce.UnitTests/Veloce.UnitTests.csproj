@@ -14,7 +14,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Veloce.Perft\Veloce.Perft.csproj" />
-      <ProjectReference Include="..\Veloce.Uci.Lib\Veloce.Uci.Lib.csproj" />
       <ProjectReference Include="..\Veloce\Veloce.csproj" />
     </ItemGroup>
 

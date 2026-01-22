@@ -2,7 +2,6 @@
 using ChessLite.Primitives;
 using Shouldly;
 using Veloce.Engine;
-using Veloce.Uci.Lib.Extensions;
 
 namespace Veloce.UnitTests;
 
@@ -19,7 +18,7 @@ public class EndgamePuzzleTests
         await Assert.That(bestMove.ToString()).IsEqualTo("f7f5");
 
         game.MakeMove(bestMove!.Value);
-        game.MakeMove("e4f5");
+        game.MakeUciMove("e4f5");
 
         bestMove = _moveFinder.FindBestMove(game).BestMove;
         await Assert.That(bestMove.ToString()).IsEqualTo("d6d5");

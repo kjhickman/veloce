@@ -1,6 +1,5 @@
 ﻿using ChessLite;
 using Veloce.Engine;
-using Veloce.Uci.Lib.Extensions;
 
 namespace Veloce.UnitTests;
 
@@ -17,7 +16,7 @@ public class MiddlegamePuzzleTests
         await Assert.That(bestMove.ToString()).IsEqualTo("f4e3");
 
         game.MakeMove(bestMove!.Value);
-        game.MakeMove("e2e3");
+        game.MakeUciMove("e2e3");
 
         bestMove = _moveFinder.FindBestMove(game).BestMove;
         await Assert.That(bestMove.ToString()).IsEqualTo("h4c4");

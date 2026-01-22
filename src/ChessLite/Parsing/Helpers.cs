@@ -4,9 +4,9 @@ using ChessLite.State;
 
 namespace ChessLite.Parsing;
 
-internal class Helpers
+public static class Helpers
 {
-    internal static Move MoveFromUci(Position position, ReadOnlySpan<char> uciMove)
+    public static Move MoveFromUci(Position position, ReadOnlySpan<char> uciMove)
     {
         if (uciMove.Length is < 4 or > 5)
             throw new ArgumentException("Invalid UCI move format.", nameof(uciMove));
