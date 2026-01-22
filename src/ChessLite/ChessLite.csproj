@@ -19,6 +19,10 @@
       <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
         <_Parameter1>ChessLite.Tests</_Parameter1>
       </AssemblyAttribute>
+
+      <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+        <_Parameter1>Veloce.Benchmarks</_Parameter1>
+      </AssemblyAttribute>
     </ItemGroup>
 
 </Project>
