@@ -1,10 +1,8 @@
 ﻿using ChessLite.Movement;
 using ChessLite.Primitives;
 using ChessLite.State;
-using Veloce.Core;
-using Veloce.Uci.Lib.Extensions;
 
-namespace Veloce.UnitTests.Engine.MoveGeneration;
+namespace ChessLite.Tests;
 
 public class MakeMoveTests
 {

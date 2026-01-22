@@ -1,7 +1,7 @@
 ﻿using ChessLite.Movement;
 using ChessLite.State;
 
-namespace Veloce.UnitTests.Engine.MoveGeneration;
+namespace ChessLite.Tests;
 
 public class AttackGenerationTests
 {

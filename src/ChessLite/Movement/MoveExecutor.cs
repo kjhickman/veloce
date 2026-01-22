@@ -1,3 +1,4 @@
+using ChessLite.Parsing;
 using ChessLite.Primitives;
 using ChessLite.State;
 
@@ -38,6 +39,12 @@ public class MoveExecutor
         position.WhiteToMove = !position.WhiteToMove;
         position.UpdatePinnedPieces(); // Must be called after toggling the turn
         position.ZobristHash = Zobrist.ComputeHash(position);
+    }
+
+    public void MakeMove(Position position, string uciMove)
+    {
+        var move = Helpers.MoveFromUci(position, uciMove);
+        MakeMove(position, move);
     }
 
     private void SaveMoveHistory(Position position, Move move)

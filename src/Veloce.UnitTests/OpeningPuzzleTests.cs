@@ -2,7 +2,7 @@
 using Veloce.Engine;
 using Veloce.Uci.Lib.Extensions;
 
-namespace Veloce.UnitTests.Engine.Puzzles;
+namespace Veloce.UnitTests;
 
 public class OpeningPuzzleTests
 {
