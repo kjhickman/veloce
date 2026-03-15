@@ -25,4 +25,14 @@ public class EngineSettings
 
         Threads = threads;
     }
+
+    public void SetTranspositionTableSizeMb(int sizeMb)
+    {
+        if (sizeMb < 1)
+        {
+            sizeMb = 1;
+        }
+
+        TranspositionTableSizeMb = sizeMb;
+    }
 }

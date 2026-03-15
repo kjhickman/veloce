@@ -65,6 +65,6 @@ public class VeloceEngine
 
     public void SetHashSize(int hashSizeMb)
     {
-        _engineSettings.TranspositionTableSizeMb = Math.Max(1, Math.Min(128, hashSizeMb));
+        _engineSettings.SetTranspositionTableSizeMb(hashSizeMb);
     }
 }
