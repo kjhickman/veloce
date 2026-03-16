@@ -1,4 +1,4 @@
-using Veloce.Core;
+using ChessLite.Movement;
 
 namespace Veloce.Search.Interfaces;
 

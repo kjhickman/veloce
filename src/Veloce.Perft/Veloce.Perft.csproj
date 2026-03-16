@@ -9,7 +9,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Veloce\Veloce.csproj" />
-      <ProjectReference Include="..\Veloce.Uci.Lib\Veloce.Uci.Lib.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-using Veloce.State;
+using ChessLite;
 
 namespace Veloce.Search.Interfaces;
 

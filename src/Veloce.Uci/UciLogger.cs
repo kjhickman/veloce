@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using Veloce.Core;
+using ChessLite.Movement;
 using Veloce.Search;
 using Veloce.Search.Interfaces;
 

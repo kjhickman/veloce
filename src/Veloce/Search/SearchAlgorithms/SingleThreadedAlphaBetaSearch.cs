@@ -1,11 +1,11 @@
 using System.Diagnostics;
-using Veloce.Core;
+using ChessLite;
+using ChessLite.Movement;
+using ChessLite.Primitives;
 using Veloce.Engine;
 using Veloce.Evaluation;
-using Veloce.Movement;
 using Veloce.Search.Interfaces;
 using Veloce.Search.Transposition;
-using Veloce.State;
 
 namespace Veloce.Search.SearchAlgorithms;
 
@@ -117,7 +117,7 @@ public class SingleThreadedAlphaBetaSearch : ISearchAlgorithm
     private SearchResult SearchAtDepth(Game game, int depth)
     {
         Span<Move> movesBuffer = stackalloc Move[218];
-        var moveCount = MoveGeneration.GenerateLegalMoves(game.Position, movesBuffer);
+        var moveCount = game.WriteLegalMoves(movesBuffer);
 
         if (moveCount == 0)
         {
@@ -203,7 +203,7 @@ public class SingleThreadedAlphaBetaSearch : ISearchAlgorithm
         {
             _transpositionTable.Store(
                 position.ZobristHash,
-                bestMove.ToCompactMove(),
+                new CompactMove(bestMove),
                 (short)bestScore,
                 (short)position.Evaluate(),
                 (byte)depth,
@@ -230,19 +230,10 @@ public class SingleThreadedAlphaBetaSearch : ISearchAlgorithm
             return new EvaluationResult(0, GameState.Ongoing);
         }
 
-        if (game.IsDrawByFiftyMoves())
+        var gameState = game.GetState();
+        if (gameState.IsDraw())
         {
-            return new EvaluationResult(0, GameState.DrawFiftyMove);
-        }
-
-        if (game.IsDrawByInsufficientMaterial())
-        {
-            return new EvaluationResult(0, GameState.DrawInsufficientMaterial);
-        }
-
-        if (game.IsDrawByRepetition())
-        {
-            return new EvaluationResult(0, GameState.DrawRepetition);
+            return new EvaluationResult(0, gameState);
         }
 
         // Transposition table lookup
@@ -277,7 +268,7 @@ public class SingleThreadedAlphaBetaSearch : ISearchAlgorithm
 
         // Check for leaf nodes
         Span<Move> movesBuffer = stackalloc Move[218];
-        var moveCount = MoveGeneration.GenerateLegalMoves(position, movesBuffer);
+        var moveCount = game.WriteLegalMoves(movesBuffer);
 
         if (moveCount == 0)
         {
@@ -376,7 +367,7 @@ public class SingleThreadedAlphaBetaSearch : ISearchAlgorithm
 
         _transpositionTable.Store(
             position.ZobristHash,
-            bestMove.ToCompactMove(),
+            new CompactMove(bestMove),
             (short)bestScore,
             (short)position.Evaluate(), // Evaluate position for static evaluation
             (byte)context.Depth,
@@ -410,12 +401,6 @@ public class SingleThreadedAlphaBetaSearch : ISearchAlgorithm
             return game.Position.Evaluate();
         }
 
-        // Check for draws
-        if (game.IsDrawByFiftyMoves() || game.IsDrawByInsufficientMaterial() || game.IsDrawByRepetition())
-        {
-            return 0;
-        }
-
         var position = game.Position;
         var standPat = position.Evaluate();
 
@@ -437,7 +422,7 @@ public class SingleThreadedAlphaBetaSearch : ISearchAlgorithm
 
         // Generate all legal moves
         Span<Move> allMoves = stackalloc Move[218];
-        var allMoveCount = MoveGeneration.GenerateLegalMoves(position, allMoves);
+        var allMoveCount = game.WriteLegalMoves(allMoves);
 
         if (allMoveCount == 0)
         {

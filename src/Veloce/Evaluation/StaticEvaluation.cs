@@ -1,5 +1,5 @@
-using Veloce.Core;
-using Veloce.State;
+using ChessLite.Primitives;
+using ChessLite.State;
 
 namespace Veloce.Evaluation;
 

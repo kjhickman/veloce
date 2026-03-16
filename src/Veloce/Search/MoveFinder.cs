@@ -1,6 +1,6 @@
-﻿using Veloce.Engine;
+﻿using ChessLite;
+using Veloce.Engine;
 using Veloce.Search.Interfaces;
-using Veloce.State;
 
 namespace Veloce.Search;
 

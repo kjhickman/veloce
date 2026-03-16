@@ -1,7 +1,8 @@
-﻿using Veloce.Core;
+﻿using ChessLite;
+using ChessLite.Movement;
+using ChessLite.State;
 using Veloce.Search;
 using Veloce.Search.Interfaces;
-using Veloce.State;
 
 namespace Veloce.Engine;
 
@@ -35,16 +36,14 @@ public class VeloceEngine
         return searchResult;
     }
 
-    public SearchResult FindBestMove(int timeToSearchMs)
-    {
-        var searchResult = _moveFinder.FindBestMove(_game, timeToSearchMs);
-        _engineLogger?.LogBestMove(searchResult.BestMove);
-        return searchResult;
-    }
-
     public void MakeMove(Move move)
     {
         _game.MakeMove(move);
+    }
+
+    public void MakeUciMove(string uciMove)
+    {
+        _game.MakeUciMove(uciMove);
     }
 
     public void NewGame()
@@ -55,7 +54,7 @@ public class VeloceEngine
 
     public void SetPosition(Position position)
     {
-        _game.SetPosition(position);
+        _game.ResetPosition(position);
     }
 
     public void SetThreads(int threads)

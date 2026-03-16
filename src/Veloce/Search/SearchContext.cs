@@ -1,5 +1,5 @@
 using System.Runtime.InteropServices;
-using Veloce.Core;
+using ChessLite.Movement;
 
 namespace Veloce.Search;
 

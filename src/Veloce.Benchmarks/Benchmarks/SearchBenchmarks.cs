@@ -1,7 +1,6 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using Veloce.Engine;
-using Veloce.Search;
 
 namespace Veloce.Benchmarks.Benchmarks;
 
