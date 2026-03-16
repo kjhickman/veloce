@@ -13,7 +13,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Veloce\Veloce.csproj" />
-      <ProjectReference Include="..\Veloce.Perft\Veloce.Perft.csproj" />
     </ItemGroup>
 
 </Project>

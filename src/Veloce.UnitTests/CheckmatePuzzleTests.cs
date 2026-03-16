@@ -1,4 +1,5 @@
-﻿using ChessLite;
+using ChessLite;
+using ChessLite.Parsing;
 using Veloce.Engine;
 
 namespace Veloce.UnitTests;
@@ -11,7 +12,7 @@ public class CheckmatePuzzleTests
     [Test]
     public async Task Puzzle1()
     {
-        var game = Game.FromFen("2rq3r/3kbpp1/3p3p/4p1P1/p1Q4P/P1n1BN2/2P2P2/2KR3R w - - 2 22");
+        var game = new Game(Fen.Parse("2rq3r/3kbpp1/3p3p/4p1P1/p1Q4P/P1n1BN2/2P2P2/2KR3R w - - 2 22"));
         var bestMove = _moveFinder.FindBestMove(game).BestMove;
         await Assert.That(bestMove).IsNotNull();
         await Assert.That(bestMove.ToString()).IsEqualTo("f3e5");

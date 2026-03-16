@@ -1,6 +1,5 @@
 ﻿using System.Numerics;
 using System.Runtime.CompilerServices;
-using Veloce.Core;
 
 namespace Veloce.Search.Transposition;
 

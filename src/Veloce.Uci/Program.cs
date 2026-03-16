@@ -1,7 +1,5 @@
-﻿using ChessLite.Movement;
 using ChessLite.Parsing;
 using ChessLite.State;
-using Veloce.Core;
 using Veloce.Engine;
 
 namespace Veloce.Uci;
@@ -179,7 +177,7 @@ public static class Program
             }
 
             var fen = fenBuilder.ToString().Trim();
-            position = new Position(fen);
+            position = Fen.Parse(fen);
         }
         else
         {
@@ -196,15 +194,12 @@ public static class Program
         while (index < commandParts.Length)
         {
             var moveUci = commandParts[index++];
-            var move = Helpers.MoveFromUci(position, moveUci);
-
-            if (move != Move.NullMove)
+            try
             {
-                veloceEngine.MakeMove(move);
+                veloceEngine.MakeUciMove(moveUci);
             }
-            else
+            catch (ArgumentException)
             {
-                // Invalid move
                 break;
             }
         }

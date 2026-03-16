@@ -2,7 +2,6 @@ using System.Diagnostics;
 using ChessLite;
 using ChessLite.Movement;
 using ChessLite.Primitives;
-using Veloce.Core;
 using Veloce.Engine;
 using Veloce.Evaluation;
 using Veloce.Search.Interfaces;
@@ -98,7 +97,7 @@ public class SharedHashTableSearch : ISearchAlgorithm
     {
         // Create a copy of the game for this thread
         var threadGame = new Game();
-        threadGame.SetPosition(game.Position.Clone());
+        threadGame.ResetPosition(game.Position.Clone());
 
         var threadMoveCount = 0;
 
@@ -290,8 +289,8 @@ public class SharedHashTableSearch : ISearchAlgorithm
 
         if (_shouldStop) return 0;
 
-        // Check for draws
-        if (game.IsDrawByFiftyMoves() || game.IsDrawByInsufficientMaterial() || game.IsDrawByRepetition())
+        var gamesState = game.GetState();
+        if (gamesState.IsDraw())
         {
             return 0;
         }
@@ -441,12 +440,6 @@ public class SharedHashTableSearch : ISearchAlgorithm
         }
 
         if (_shouldStop) return 0;
-
-        // Check for draws
-        if (game.IsDrawByFiftyMoves() || game.IsDrawByInsufficientMaterial() || game.IsDrawByRepetition())
-        {
-            return 0;
-        }
 
         var position = game.Position;
         var standPat = position.Evaluate();

@@ -1,16 +1,11 @@
 ﻿using System.Runtime.InteropServices;
+using ChessLite;
 
-namespace Veloce.Core;
+namespace Veloce.Search;
 
 [StructLayout(LayoutKind.Auto)]
-public struct EvaluationResult
+public readonly struct EvaluationResult(int score, GameState state)
 {
-    public int Score { get; }
-    public GameState State { get; init; }
-
-    public EvaluationResult(int score, GameState state)
-    {
-        Score = score;
-        State = state;
-    }
+    public int Score { get; } = score;
+    public GameState State { get; init; } = state;
 }

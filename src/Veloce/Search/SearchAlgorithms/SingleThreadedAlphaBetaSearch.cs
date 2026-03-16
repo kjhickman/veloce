@@ -2,7 +2,6 @@ using System.Diagnostics;
 using ChessLite;
 using ChessLite.Movement;
 using ChessLite.Primitives;
-using Veloce.Core;
 using Veloce.Engine;
 using Veloce.Evaluation;
 using Veloce.Search.Interfaces;
@@ -231,19 +230,10 @@ public class SingleThreadedAlphaBetaSearch : ISearchAlgorithm
             return new EvaluationResult(0, GameState.Ongoing);
         }
 
-        if (game.IsDrawByFiftyMoves())
+        var gameState = game.GetState();
+        if (gameState.IsDraw())
         {
-            return new EvaluationResult(0, GameState.DrawFiftyMove);
-        }
-
-        if (game.IsDrawByInsufficientMaterial())
-        {
-            return new EvaluationResult(0, GameState.DrawInsufficientMaterial);
-        }
-
-        if (game.IsDrawByRepetition())
-        {
-            return new EvaluationResult(0, GameState.DrawRepetition);
+            return new EvaluationResult(0, gameState);
         }
 
         // Transposition table lookup
@@ -409,12 +399,6 @@ public class SingleThreadedAlphaBetaSearch : ISearchAlgorithm
         if (context.Ply >= maxQuiescenceDepth)
         {
             return game.Position.Evaluate();
-        }
-
-        // Check for draws
-        if (game.IsDrawByFiftyMoves() || game.IsDrawByInsufficientMaterial() || game.IsDrawByRepetition())
-        {
-            return 0;
         }
 
         var position = game.Position;

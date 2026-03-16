@@ -1,7 +1,7 @@
 ﻿using ChessLite.Movement;
 using ChessLite.Primitives;
 
-namespace Veloce.Core;
+namespace Veloce.Search.Transposition;
 
 public readonly struct CompactMove : IEquatable<CompactMove>
 {
