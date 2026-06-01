@@ -44,9 +44,9 @@ public static class Program
                     break;
 
                 case "go":
-                    var bestMove = engine.FindBestMove();
-                    Console.WriteLine("info depth 1 score cp 0 nodes 1 time 0");
-                    Console.WriteLine($"bestmove {(bestMove.HasValue ? UciMoveFormatter.Format(bestMove.Value) : "0000")}");
+                    var result = engine.FindBestMove(ParseSearchSettings(parts));
+                    Console.WriteLine($"info depth {result.Depth} score cp {result.Score} nodes {result.Nodes} time {(long)result.Elapsed.TotalMilliseconds}");
+                    Console.WriteLine($"bestmove {(result.BestMove.HasValue ? UciMoveFormatter.Format(result.BestMove.Value) : "0000")}");
                     break;
 
                 case "stop":
@@ -58,6 +58,23 @@ public static class Program
 
             Console.Out.Flush();
         }
+    }
+
+    private static SearchSettings ParseSearchSettings(string[] commandParts)
+    {
+        var depth = SearchSettings.Default.Depth;
+
+        for (var i = 1; i < commandParts.Length - 1; i++)
+        {
+            if (commandParts[i].Equals("depth", StringComparison.OrdinalIgnoreCase)
+                && int.TryParse(commandParts[i + 1], out var parsedDepth))
+            {
+                depth = Math.Max(1, parsedDepth);
+                break;
+            }
+        }
+
+        return new SearchSettings(depth);
     }
 
     private static void SetPosition(VeloceEngine engine, string[] commandParts)

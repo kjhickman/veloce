@@ -1,21 +1,18 @@
 using ChessLite;
 using ChessLite.Movement;
 using ChessLite.State;
+using Veloce.Search;
 
 namespace Veloce.Engine;
 
-public class VeloceEngine(Random? random = null)
+public class VeloceEngine
 {
-    private readonly Random _random = random ?? Random.Shared;
+    private readonly NegamaxSearch _search = new();
     private Game _game = new();
 
-    public Move? FindBestMove()
+    public SearchResult FindBestMove(SearchSettings? settings = null)
     {
-        Span<Move> moves = stackalloc Move[218];
-        var moveCount = _game.WriteLegalMoves(moves);
-        if (moveCount == 0) return null;
-
-        return moves[_random.Next(moveCount)];
+        return _search.FindBestMove(_game, settings ?? SearchSettings.Default);
     }
 
     public void MakeMove(Move move)
