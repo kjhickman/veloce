@@ -1,12 +1,16 @@
 param(
     [switch]$Dirty,
     [int]$Rounds = 10000,
-    [int]$Concurrency = 4
+    [int]$Concurrency = 0
 )
 
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..')
+
+if ($Concurrency -le 0) {
+    $Concurrency = [Environment]::ProcessorCount
+}
 
 if (-not $Dirty) {
     $status = & git -C $repoRoot status --porcelain
