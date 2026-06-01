@@ -44,6 +44,37 @@ public class VeloceEngineTests
     }
 
     [Test]
+    public async Task FindBestMove_WhenCaptureLosesQueen_AvoidsCaptureAfterQuiescence()
+    {
+        var engine = new VeloceEngine();
+        engine.SetPosition(Fen.Parse("rk6/8/8/8/8/8/8/Q3K3 w - - 0 1"));
+
+        var result = engine.FindBestMove(new SearchSettings(1));
+
+        await Assert.That(result.BestMove?.ToString()).IsNotEqualTo("a1a8");
+    }
+
+    [Test]
+    public async Task FindBestMove_WhenCurrentPositionIsDrawnByRepetition_ScoresDraw()
+    {
+        var engine = new VeloceEngine();
+        engine.SetPosition(Fen.Parse("4k1n1/8/8/8/8/8/8/1N2K3 w - - 0 1"));
+        engine.MakeUciMove("b1d2");
+        engine.MakeUciMove("g8f6");
+        engine.MakeUciMove("d2b1");
+        engine.MakeUciMove("f6g8");
+        engine.MakeUciMove("b1d2");
+        engine.MakeUciMove("g8f6");
+        engine.MakeUciMove("d2b1");
+        engine.MakeUciMove("f6g8");
+
+        var result = engine.FindBestMove(new SearchSettings(1));
+
+        await Assert.That(result.BestMove.HasValue).IsFalse();
+        await Assert.That(result.Score).IsEqualTo(0);
+    }
+
+    [Test]
     public async Task FindBestMove_WithMoveTime_ReturnsLegalMove()
     {
         var engine = new VeloceEngine();

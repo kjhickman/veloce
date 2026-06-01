@@ -9,6 +9,7 @@ namespace Veloce.Search;
 public sealed class NegamaxSearch
 {
     private const int MateScore = 100_000;
+    private const int MaxQuiescencePly = 8;
     private long _nodes;
 
     public SearchResult FindBestMove(Game game, SearchSettings settings, CancellationToken cancellationToken = default)
@@ -21,6 +22,11 @@ public sealed class NegamaxSearch
             ? null
             : CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeLimit.Token);
         var effectiveCancellation = linkedCancellation?.Token ?? cancellationToken;
+
+        if (game.GetDrawState().IsDraw())
+        {
+            return new SearchResult(null, 0, 0, _nodes, Stopwatch.GetElapsedTime(now));
+        }
 
         Span<Move> moves = stackalloc Move[218];
         var moveCount = game.WriteLegalMoves(moves);
@@ -90,9 +96,14 @@ public sealed class NegamaxSearch
         cancellationToken.ThrowIfCancellationRequested();
         _nodes++;
 
+        if (game.GetDrawState().IsDraw())
+        {
+            return 0;
+        }
+
         if (depth == 0)
         {
-            return MaterialEvaluator.Evaluate(game.Position);
+            return Quiescence(game, alpha, beta, ply, 0, cancellationToken);
         }
 
         Span<Move> moves = stackalloc Move[218];
@@ -134,6 +145,76 @@ public sealed class NegamaxSearch
         }
 
         return bestScore;
+    }
+
+    private int Quiescence(Game game, int alpha, int beta, int ply, int qPly, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        _nodes++;
+
+        if (game.GetDrawState().IsDraw())
+        {
+            return 0;
+        }
+
+        if (qPly >= MaxQuiescencePly)
+        {
+            return MaterialEvaluator.Evaluate(game.Position);
+        }
+
+        var inCheck = game.IsInCheck();
+        if (!inCheck)
+        {
+            var standPat = MaterialEvaluator.Evaluate(game.Position);
+            if (standPat >= beta)
+            {
+                return beta;
+            }
+
+            if (standPat > alpha)
+            {
+                alpha = standPat;
+            }
+        }
+
+        Span<Move> moves = stackalloc Move[218];
+        var moveCount = game.WriteLegalMoves(moves);
+        if (moveCount == 0)
+        {
+            return EvaluateTerminal(game, ply);
+        }
+
+        for (var i = 0; i < moveCount; i++)
+        {
+            var move = moves[i];
+            if (!inCheck && !move.IsCapture)
+            {
+                continue;
+            }
+
+            game.MakeMove(move);
+            int score;
+            try
+            {
+                score = -Quiescence(game, -beta, -alpha, ply + 1, qPly + 1, cancellationToken);
+            }
+            finally
+            {
+                game.UndoMove();
+            }
+
+            if (score > alpha)
+            {
+                alpha = score;
+            }
+
+            if (alpha >= beta)
+            {
+                break;
+            }
+        }
+
+        return alpha;
     }
 
     private static int EvaluateTerminal(Game game, int ply)
