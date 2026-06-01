@@ -2,10 +2,10 @@ using Veloce.Engine;
 
 namespace Veloce.Uci;
 
-internal sealed class UciSearchSession
+internal sealed class UciSearchSession(UciOutput output)
 {
     private readonly Lock _stateLock = new();
-    private readonly Lock _consoleLock = new();
+    private readonly UciOutput _output = output;
     private Task? _activeSearch;
     private CancellationTokenSource? _activeSearchCancellation;
     private int _activeSearchId;
@@ -53,16 +53,13 @@ internal sealed class UciSearchSession
                 wroteSearchInfo = true;
                 WriteSearchInfo(info);
             });
-            lock (_consoleLock)
+            if (!wroteSearchInfo)
             {
-                if (!wroteSearchInfo)
-                {
-                    Console.WriteLine($"info depth {result.Depth} score cp {result.Score} nodes {result.Nodes} time {(long)result.Elapsed.TotalMilliseconds}");
-                }
-
-                Console.WriteLine($"bestmove {(result.BestMove.HasValue ? UciMoveFormatter.Format(result.BestMove.Value) : "0000")}");
-                Console.Out.Flush();
+                _output.WriteLine($"info depth {result.Depth} score cp {result.Score} nodes {result.Nodes} time {(long)result.Elapsed.TotalMilliseconds}");
             }
+
+            _output.WriteLine($"bestmove {(result.BestMove.HasValue ? UciMoveFormatter.Format(result.BestMove.Value) : "0000")}");
+            _output.Flush();
         }
         finally
         {
@@ -82,11 +79,8 @@ internal sealed class UciSearchSession
 
     private void WriteSearchInfo(SearchInfo info)
     {
-        lock (_consoleLock)
-        {
-            Console.WriteLine(
-                $"info depth {info.Depth} score cp {info.Score} nodes {info.Nodes} time {(long)info.Elapsed.TotalMilliseconds} pv {UciMoveFormatter.Format(info.BestMove)}");
-            Console.Out.Flush();
-        }
+        _output.WriteLine(
+            $"info depth {info.Depth} score cp {info.Score} nodes {info.Nodes} time {(long)info.Elapsed.TotalMilliseconds} pv {UciMoveFormatter.Format(info.BestMove)}");
+        _output.Flush();
     }
 }

@@ -7,7 +7,8 @@ public static class Program
     public static async Task Main()
     {
         var engine = new VeloceEngine();
-        var searchSession = new UciSearchSession();
+        var output = new UciOutput();
+        var searchSession = new UciSearchSession(output);
 
         while (true)
         {
@@ -20,11 +21,11 @@ public static class Program
             switch (command)
             {
                 case "uci":
-                    Console.WriteLine("id name Veloce");
-                    Console.WriteLine("id author Kyle Hickman");
-                    Console.WriteLine("option name Threads type spin default 1 min 1 max 1");
-                    Console.WriteLine("option name Hash type spin default 16 min 1 max 1024");
-                    Console.WriteLine("uciok");
+                    output.WriteLine("id name Veloce");
+                    output.WriteLine("id author Kyle Hickman");
+                    output.WriteLine("option name Threads type spin default 1 min 1 max 1");
+                    output.WriteLine("option name Hash type spin default 16 min 1 max 1024");
+                    output.WriteLine("uciok");
                     break;
 
                 case "setoption":
@@ -33,7 +34,7 @@ public static class Program
                     break;
 
                 case "isready":
-                    Console.WriteLine("readyok");
+                    output.WriteLine("readyok");
                     break;
 
                 case "ucinewgame":
@@ -59,7 +60,7 @@ public static class Program
                     return;
             }
 
-            Console.Out.Flush();
+            output.Flush();
         }
     }
 }
