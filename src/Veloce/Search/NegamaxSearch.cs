@@ -75,6 +75,7 @@ public sealed class NegamaxSearch
                 var rootTableMove = _transpositions.TryGet(rootKey, out var rootEntry)
                     ? rootEntry.Move.FindMatchingMove(moves, moveCount)
                     : Move.NullMove;
+                var searchedMoves = 0;
 
                 for (var i = 0; i < moveCount; i++)
                 {
@@ -85,12 +86,25 @@ public sealed class NegamaxSearch
                     int score;
                     try
                     {
-                        score = -Search(game, depth - 1, -beta, -alpha, 1, effectiveCancellation);
+                        if (searchedMoves == 0)
+                        {
+                            score = -Search(game, depth - 1, -beta, -alpha, 1, effectiveCancellation);
+                        }
+                        else
+                        {
+                            score = -Search(game, depth - 1, -alpha - 1, -alpha, 1, effectiveCancellation);
+                            if (score > alpha && score < beta)
+                            {
+                                score = -Search(game, depth - 1, -beta, -alpha, 1, effectiveCancellation);
+                            }
+                        }
                     }
                     finally
                     {
                         game.UndoMove();
                     }
+
+                    searchedMoves++;
 
                     if (score > depthBestScore)
                     {
@@ -170,6 +184,7 @@ public sealed class NegamaxSearch
 
         var bestScore = int.MinValue + 1;
         var bestMove = Move.NullMove;
+        var searchedMoves = 0;
 
         for (var i = 0; i < moveCount; i++)
         {
@@ -178,12 +193,25 @@ public sealed class NegamaxSearch
             int score;
             try
             {
-                score = -Search(game, depth - 1, -beta, -alpha, ply + 1, cancellationToken);
+                if (searchedMoves == 0)
+                {
+                    score = -Search(game, depth - 1, -beta, -alpha, ply + 1, cancellationToken);
+                }
+                else
+                {
+                    score = -Search(game, depth - 1, -alpha - 1, -alpha, ply + 1, cancellationToken);
+                    if (score > alpha && score < beta)
+                    {
+                        score = -Search(game, depth - 1, -beta, -alpha, ply + 1, cancellationToken);
+                    }
+                }
             }
             finally
             {
                 game.UndoMove();
             }
+
+            searchedMoves++;
 
             if (score > bestScore)
             {
