@@ -330,7 +330,7 @@ fastchess \
   -rounds 10000 \
   -repeat \
   -concurrency 4 \
-  -openings file=data/openings/quiet-lanes.epd format=epd order=random \
+  -openings file=data/openings/8moves_v3.pgn format=pgn order=random plies=16 \
   -sprt elo0=0 elo1=5 alpha=0.05 beta=0.05 \
   -pgnout file=artifacts/results/sprt/<timestamp>.pgn
 ```
