@@ -10,7 +10,7 @@ internal sealed class UciSearchSession
     private CancellationTokenSource? _activeSearchCancellation;
     private int _activeSearchId;
 
-    public async ValueTask StartAsync(Func<CancellationToken, SearchResult> search)
+    public async ValueTask StartAsync(Func<CancellationToken, Action<SearchInfo>, SearchResult> search)
     {
         await StopAsync();
 
@@ -40,14 +40,26 @@ internal sealed class UciSearchSession
         await activeSearch;
     }
 
-    private Task CompleteSearchAsync(Func<CancellationToken, SearchResult> search, CancellationTokenSource searchCancellation, int searchId)
+    private Task CompleteSearchAsync(
+        Func<CancellationToken, Action<SearchInfo>, SearchResult> search,
+        CancellationTokenSource searchCancellation,
+        int searchId)
     {
         try
         {
-            var result = search(searchCancellation.Token);
+            var wroteSearchInfo = false;
+            var result = search(searchCancellation.Token, info =>
+            {
+                wroteSearchInfo = true;
+                WriteSearchInfo(info);
+            });
             lock (_consoleLock)
             {
-                Console.WriteLine($"info depth {result.Depth} score cp {result.Score} nodes {result.Nodes} time {(long)result.Elapsed.TotalMilliseconds}");
+                if (!wroteSearchInfo)
+                {
+                    Console.WriteLine($"info depth {result.Depth} score cp {result.Score} nodes {result.Nodes} time {(long)result.Elapsed.TotalMilliseconds}");
+                }
+
                 Console.WriteLine($"bestmove {(result.BestMove.HasValue ? UciMoveFormatter.Format(result.BestMove.Value) : "0000")}");
                 Console.Out.Flush();
             }
@@ -66,5 +78,15 @@ internal sealed class UciSearchSession
         }
 
         return Task.CompletedTask;
+    }
+
+    private void WriteSearchInfo(SearchInfo info)
+    {
+        lock (_consoleLock)
+        {
+            Console.WriteLine(
+                $"info depth {info.Depth} score cp {info.Score} nodes {info.Nodes} time {(long)info.Elapsed.TotalMilliseconds} pv {UciMoveFormatter.Format(info.BestMove)}");
+            Console.Out.Flush();
+        }
     }
 }

@@ -7,7 +7,7 @@ internal static class GoCommand
     public static ValueTask HandleAsync(VeloceEngine engine, UciSearchSession searchSession, string[] commandParts)
     {
         var settings = ParseSearchSettings(engine, commandParts);
-        return searchSession.StartAsync(cancellationToken => engine.FindBestMove(settings, cancellationToken));
+        return searchSession.StartAsync((cancellationToken, searchInfo) => engine.FindBestMove(settings, searchInfo, cancellationToken));
     }
 
     private static SearchSettings ParseSearchSettings(VeloceEngine engine, string[] commandParts)

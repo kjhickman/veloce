@@ -48,6 +48,31 @@ public class UciProcessTests
     }
 
     [Test]
+    public async Task UciProcess_GoDepth_EmitsSearchInfoBeforeBestMove()
+    {
+        using var process = StartUciProcess();
+
+        await SendLine(process, "uci");
+        await ReadUntil(process, line => line == "uciok");
+
+        await SendLine(process, "position startpos");
+        await SendLine(process, "go depth 2");
+        var output = await ReadUntilBestMove(process);
+
+        await SendLine(process, "quit");
+        await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
+
+        var bestMoveIndex = output.FindIndex(line => line.StartsWith("bestmove ", StringComparison.Ordinal));
+        var infoIndex = output.FindIndex(line => Regex.IsMatch(
+            line,
+            "^info depth 1 score cp -?\\d+ nodes \\d+ time \\d+ pv [a-h][1-8][a-h][1-8][qrbn]?$"));
+
+        await Assert.That(infoIndex).IsGreaterThanOrEqualTo(0);
+        await Assert.That(infoIndex).IsLessThan(bestMoveIndex);
+        await Assert.That(process.ExitCode).IsEqualTo(0);
+    }
+
+    [Test]
     public async Task UciProcess_SetOptionHash_RemainsReady()
     {
         using var process = StartUciProcess();
@@ -122,6 +147,25 @@ public class UciProcessTests
 
         var error = await process.StandardError.ReadToEndAsync(cts.Token);
         throw new TimeoutException($"Timed out waiting for UCI output. stderr: {error}");
+    }
+
+    private static async Task<List<string>> ReadUntilBestMove(Process process)
+    {
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(20));
+        var output = new List<string>();
+
+        while (!cts.IsCancellationRequested)
+        {
+            var lineTask = process.StandardOutput.ReadLineAsync(cts.Token).AsTask();
+            var line = await lineTask;
+            if (line is null) break;
+
+            output.Add(line);
+            if (line.StartsWith("bestmove ", StringComparison.Ordinal)) return output;
+        }
+
+        var error = await process.StandardError.ReadToEndAsync(cts.Token);
+        throw new TimeoutException($"Timed out waiting for UCI bestmove. stderr: {error}");
     }
 
     private static string FindRepoRoot()
