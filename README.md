@@ -30,6 +30,8 @@ just promote-baseline
 
 `just compliance` uses `fastchess --compliance`. `just sprt` compares the current committed `HEAD` against the `baseline` branch worktree. `just sprt-dirty` allows uncommitted candidate testing, but those results should be rerun from a commit before promotion.
 
+See `AGENTS.md` for the full search iteration workflow and baseline rules.
+
 ## Acknowledgments
 
 - For the inspiration to start this project, [this video](https://youtu.be/w4FFX_otR-4?si=gOWyYTxIoEBOXrBn) by [Bartek Spitza](https://github.com/bartekspitza)
