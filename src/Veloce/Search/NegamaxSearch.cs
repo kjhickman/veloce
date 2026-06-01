@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using ChessLite;
 using ChessLite.Movement;
+using ChessLite.Primitives;
 using Veloce.Engine;
 using Veloce.Evaluation;
 using Veloce.Search.Transposition;
@@ -12,8 +13,15 @@ public sealed class NegamaxSearch
     private const int MateScore = 100_000;
     private const int MateThreshold = MateScore - 1_000;
     private const int MaxQuiescencePly = 8;
+    private const int MaxSearchPly = 128;
+    private const int TableMoveScore = 1_000_000;
+    private const int CaptureMoveScore = 100_000;
+    private const int PrimaryKillerScore = 90_000;
+    private const int SecondaryKillerScore = 80_000;
     private const ulong HalfmoveHashMultiplier = 0x9E37_79B9_7F4A_7C15UL;
     private readonly TranspositionTable _transpositions = new();
+    private readonly CompactMove[] _primaryKillers = new CompactMove[MaxSearchPly];
+    private readonly CompactMove[] _secondaryKillers = new CompactMove[MaxSearchPly];
     private long _nodes;
 
     public void SetHashSize(int megabytes)
@@ -25,6 +33,8 @@ public sealed class NegamaxSearch
     {
         var now = Stopwatch.GetTimestamp();
         _nodes = 0;
+        Array.Clear(_primaryKillers);
+        Array.Clear(_secondaryKillers);
 
         using var timeLimit = settings.MoveTime.HasValue ? new CancellationTokenSource(settings.MoveTime.Value) : null;
         using var linkedCancellation = timeLimit is null
@@ -62,16 +72,15 @@ public sealed class NegamaxSearch
                 var alpha = int.MinValue + 1;
                 const int beta = int.MaxValue;
 
-                if (_transpositions.TryGet(rootKey, out var rootEntry))
-                {
-                    MoveToFront(moves, moveCount, rootEntry.Move.FindMatchingMove(moves, moveCount));
-                }
+                var rootTableMove = _transpositions.TryGet(rootKey, out var rootEntry)
+                    ? rootEntry.Move.FindMatchingMove(moves, moveCount)
+                    : Move.NullMove;
 
                 for (var i = 0; i < moveCount; i++)
                 {
                     effectiveCancellation.ThrowIfCancellationRequested();
 
-                    var move = moves[i];
+                    var move = PickNextMove(moves, moveCount, i, rootTableMove, 0, useKillers: false);
                     game.MakeMove(move);
                     int score;
                     try
@@ -155,17 +164,16 @@ public sealed class NegamaxSearch
             return EvaluateTerminal(game, ply);
         }
 
-        if (_transpositions.TryGet(key, out entry))
-        {
-            MoveToFront(moves, moveCount, entry.Move.FindMatchingMove(moves, moveCount));
-        }
+        var tableMove = _transpositions.TryGet(key, out entry)
+            ? entry.Move.FindMatchingMove(moves, moveCount)
+            : Move.NullMove;
 
         var bestScore = int.MinValue + 1;
         var bestMove = Move.NullMove;
 
         for (var i = 0; i < moveCount; i++)
         {
-            var move = moves[i];
+            var move = PickNextMove(moves, moveCount, i, tableMove, ply, useKillers: true);
             game.MakeMove(move);
             int score;
             try
@@ -190,6 +198,11 @@ public sealed class NegamaxSearch
 
             if (alpha >= beta)
             {
+                if (!move.IsCapture)
+                {
+                    StoreKiller(ply, move);
+                }
+
                 break;
             }
         }
@@ -243,7 +256,7 @@ public sealed class NegamaxSearch
 
         for (var i = 0; i < moveCount; i++)
         {
-            var move = moves[i];
+            var move = PickNextMove(moves, moveCount, i, Move.NullMove, ply, useKillers: false);
             if (!inCheck && !move.IsCapture)
             {
                 continue;
@@ -299,22 +312,84 @@ public sealed class NegamaxSearch
         return score;
     }
 
-    private static void MoveToFront(Span<Move> moves, int moveCount, Move move)
+    private Move PickNextMove(Span<Move> moves, int moveCount, int startIndex, Move tableMove, int ply, bool useKillers)
     {
-        if (move == Move.NullMove)
-        {
-            return;
-        }
+        var bestIndex = startIndex;
+        var bestScore = ScoreMove(moves[startIndex], tableMove, ply, useKillers);
 
-        for (var i = 0; i < moveCount; i++)
+        for (var i = startIndex + 1; i < moveCount; i++)
         {
-            if (moves[i] != move)
+            var score = ScoreMove(moves[i], tableMove, ply, useKillers);
+            if (score > bestScore)
             {
-                continue;
+                bestScore = score;
+                bestIndex = i;
             }
+        }
 
-            (moves[0], moves[i]) = (moves[i], moves[0]);
+        (moves[startIndex], moves[bestIndex]) = (moves[bestIndex], moves[startIndex]);
+        return moves[startIndex];
+    }
+
+    private int ScoreMove(Move move, Move tableMove, int ply, bool useKillers)
+    {
+        if (move == tableMove)
+        {
+            return TableMoveScore;
+        }
+
+        if (move.IsCapture)
+        {
+            return CaptureMoveScore + GetPieceValue(move.CapturedPieceType) * 16 - GetPieceValue(move.PieceType);
+        }
+
+        if (!useKillers || ply >= MaxSearchPly)
+        {
+            return 0;
+        }
+
+        var compactMove = new CompactMove(move);
+        if (compactMove == _primaryKillers[ply])
+        {
+            return PrimaryKillerScore;
+        }
+
+        if (compactMove == _secondaryKillers[ply])
+        {
+            return SecondaryKillerScore;
+        }
+
+        return 0;
+    }
+
+    private void StoreKiller(int ply, Move move)
+    {
+        if (ply >= MaxSearchPly)
+        {
             return;
         }
+
+        var compactMove = new CompactMove(move);
+        if (compactMove == _primaryKillers[ply])
+        {
+            return;
+        }
+
+        _secondaryKillers[ply] = _primaryKillers[ply];
+        _primaryKillers[ply] = compactMove;
+    }
+
+    private static int GetPieceValue(PieceType pieceType)
+    {
+        return pieceType switch
+        {
+            PieceType.WhitePawn or PieceType.BlackPawn => 100,
+            PieceType.WhiteKnight or PieceType.BlackKnight => 320,
+            PieceType.WhiteBishop or PieceType.BlackBishop => 330,
+            PieceType.WhiteRook or PieceType.BlackRook => 500,
+            PieceType.WhiteQueen or PieceType.BlackQueen => 900,
+            PieceType.WhiteKing or PieceType.BlackKing => 20_000,
+            _ => 0,
+        };
     }
 }
