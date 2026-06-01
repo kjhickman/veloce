@@ -10,10 +10,12 @@ public class VeloceEngine
     private readonly NegamaxSearch _search = new();
     private Game _game = new();
 
-    public SearchResult FindBestMove(SearchSettings? settings = null)
+    public SearchResult FindBestMove(SearchSettings? settings = null, CancellationToken cancellationToken = default)
     {
-        return _search.FindBestMove(_game, settings ?? SearchSettings.Default);
+        return _search.FindBestMove(_game, settings ?? SearchSettings.Default, cancellationToken);
     }
+
+    public bool WhiteToMove => _game.Position.WhiteToMove;
 
     public void MakeMove(Move move)
     {

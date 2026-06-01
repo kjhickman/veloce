@@ -43,6 +43,18 @@ public class VeloceEngineTests
         await Assert.That(result.Score).IsGreaterThan(0);
     }
 
+    [Test]
+    public async Task FindBestMove_WithMoveTime_ReturnsLegalMove()
+    {
+        var engine = new VeloceEngine();
+
+        var result = engine.FindBestMove(SearchSettings.Timed(TimeSpan.FromMilliseconds(20)));
+
+        await Assert.That(result.BestMove.HasValue).IsTrue();
+        await Assert.That(IsLegal(engine, result.BestMove!.Value)).IsTrue();
+        await Assert.That(result.Depth).IsGreaterThanOrEqualTo(1);
+    }
+
     private static bool IsLegal(VeloceEngine engine, Move move)
     {
         Span<Move> moves = stackalloc Move[218];

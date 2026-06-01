@@ -28,6 +28,46 @@ public class UciProcessTests
         await Assert.That(process.ExitCode).IsEqualTo(0);
     }
 
+    [Test]
+    public async Task UciProcess_GoMoveTime_ReturnsBestMove()
+    {
+        using var process = StartUciProcess();
+
+        await SendLine(process, "uci");
+        await ReadUntil(process, line => line == "uciok");
+
+        await SendLine(process, "position startpos");
+        await SendLine(process, "go movetime 50");
+        var bestMove = await ReadUntil(process, line => line.StartsWith("bestmove ", StringComparison.Ordinal));
+
+        await SendLine(process, "quit");
+        await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
+
+        await Assert.That(Regex.IsMatch(bestMove, "^bestmove ([a-h][1-8][a-h][1-8][qrbn]?|0000)$")).IsTrue();
+        await Assert.That(process.ExitCode).IsEqualTo(0);
+    }
+
+    [Test]
+    public async Task UciProcess_GoInfiniteStop_ReturnsBestMove()
+    {
+        using var process = StartUciProcess();
+
+        await SendLine(process, "uci");
+        await ReadUntil(process, line => line == "uciok");
+
+        await SendLine(process, "position startpos");
+        await SendLine(process, "go infinite");
+        await Task.Delay(50);
+        await SendLine(process, "stop");
+        var bestMove = await ReadUntil(process, line => line.StartsWith("bestmove ", StringComparison.Ordinal));
+
+        await SendLine(process, "quit");
+        await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
+
+        await Assert.That(Regex.IsMatch(bestMove, "^bestmove ([a-h][1-8][a-h][1-8][qrbn]?|0000)$")).IsTrue();
+        await Assert.That(process.ExitCode).IsEqualTo(0);
+    }
+
     private static Process StartUciProcess()
     {
         var repoRoot = FindRepoRoot();

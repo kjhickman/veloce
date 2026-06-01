@@ -11,47 +11,83 @@ public sealed class NegamaxSearch
     private const int MateScore = 100_000;
     private long _nodes;
 
-    public SearchResult FindBestMove(Game game, SearchSettings settings)
+    public SearchResult FindBestMove(Game game, SearchSettings settings, CancellationToken cancellationToken = default)
     {
         var now = Stopwatch.GetTimestamp();
         _nodes = 0;
+
+        using var timeLimit = settings.MoveTime.HasValue ? new CancellationTokenSource(settings.MoveTime.Value) : null;
+        using var linkedCancellation = timeLimit is null
+            ? null
+            : CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeLimit.Token);
+        var effectiveCancellation = linkedCancellation?.Token ?? cancellationToken;
 
         Span<Move> moves = stackalloc Move[218];
         var moveCount = game.WriteLegalMoves(moves);
         if (moveCount == 0)
         {
-            return new SearchResult(null, EvaluateTerminal(game, 0), settings.Depth, _nodes, Stopwatch.GetElapsedTime(now));
+            return new SearchResult(null, EvaluateTerminal(game, 0), 0, _nodes, Stopwatch.GetElapsedTime(now));
         }
 
         var bestMove = moves[0];
-        var bestScore = int.MinValue + 1;
-        var alpha = int.MinValue + 1;
-        const int beta = int.MaxValue;
+        var bestScore = MaterialEvaluator.Evaluate(game.Position);
+        var completedDepth = 0;
 
-        for (var i = 0; i < moveCount; i++)
+        for (var depth = 1; depth <= settings.Depth; depth++)
         {
-            var move = moves[i];
-            game.MakeMove(move);
-            var score = -Search(game, settings.Depth - 1, -beta, -alpha, 1);
-            game.UndoMove();
-
-            if (score > bestScore)
+            try
             {
-                bestScore = score;
-                bestMove = move;
+                effectiveCancellation.ThrowIfCancellationRequested();
+
+                var depthBestMove = bestMove;
+                var depthBestScore = int.MinValue + 1;
+                var alpha = int.MinValue + 1;
+                const int beta = int.MaxValue;
+
+                for (var i = 0; i < moveCount; i++)
+                {
+                    effectiveCancellation.ThrowIfCancellationRequested();
+
+                    var move = moves[i];
+                    game.MakeMove(move);
+                    int score;
+                    try
+                    {
+                        score = -Search(game, depth - 1, -beta, -alpha, 1, effectiveCancellation);
+                    }
+                    finally
+                    {
+                        game.UndoMove();
+                    }
+
+                    if (score > depthBestScore)
+                    {
+                        depthBestScore = score;
+                        depthBestMove = move;
+                    }
+
+                    if (score > alpha)
+                    {
+                        alpha = score;
+                    }
+                }
+
+                bestMove = depthBestMove;
+                bestScore = depthBestScore;
+                completedDepth = depth;
             }
-
-            if (score > alpha)
+            catch (OperationCanceledException) when (effectiveCancellation.IsCancellationRequested)
             {
-                alpha = score;
+                break;
             }
         }
 
-        return new SearchResult(bestMove, bestScore, settings.Depth, _nodes, Stopwatch.GetElapsedTime(now));
+        return new SearchResult(bestMove, bestScore, completedDepth, _nodes, Stopwatch.GetElapsedTime(now));
     }
 
-    private int Search(Game game, int depth, int alpha, int beta, int ply)
+    private int Search(Game game, int depth, int alpha, int beta, int ply, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         _nodes++;
 
         if (depth == 0)
@@ -71,8 +107,15 @@ public sealed class NegamaxSearch
         for (var i = 0; i < moveCount; i++)
         {
             game.MakeMove(moves[i]);
-            var score = -Search(game, depth - 1, -beta, -alpha, ply + 1);
-            game.UndoMove();
+            int score;
+            try
+            {
+                score = -Search(game, depth - 1, -beta, -alpha, ply + 1, cancellationToken);
+            }
+            finally
+            {
+                game.UndoMove();
+            }
 
             if (score > bestScore)
             {

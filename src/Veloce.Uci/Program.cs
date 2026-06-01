@@ -1,14 +1,13 @@
-using ChessLite.Parsing;
-using ChessLite.State;
 using Veloce.Engine;
 
 namespace Veloce.Uci;
 
 public static class Program
 {
-    public static void Main()
+    public static async Task Main()
     {
         var engine = new VeloceEngine();
+        var searchSession = new UciSearchSession();
 
         while (true)
         {
@@ -36,92 +35,29 @@ public static class Program
                     break;
 
                 case "ucinewgame":
+                    await searchSession.StopAsync();
                     engine.NewGame();
                     break;
 
                 case "position":
-                    SetPosition(engine, parts);
+                    await searchSession.StopAsync();
+                    PositionCommand.Handle(engine, parts);
                     break;
 
                 case "go":
-                    var result = engine.FindBestMove(ParseSearchSettings(parts));
-                    Console.WriteLine($"info depth {result.Depth} score cp {result.Score} nodes {result.Nodes} time {(long)result.Elapsed.TotalMilliseconds}");
-                    Console.WriteLine($"bestmove {(result.BestMove.HasValue ? UciMoveFormatter.Format(result.BestMove.Value) : "0000")}");
+                    await GoCommand.HandleAsync(engine, searchSession, parts);
                     break;
 
                 case "stop":
+                    await searchSession.StopAsync();
                     break;
 
                 case "quit":
+                    await searchSession.StopAsync();
                     return;
             }
 
             Console.Out.Flush();
-        }
-    }
-
-    private static SearchSettings ParseSearchSettings(string[] commandParts)
-    {
-        var depth = SearchSettings.Default.Depth;
-
-        for (var i = 1; i < commandParts.Length - 1; i++)
-        {
-            if (commandParts[i].Equals("depth", StringComparison.OrdinalIgnoreCase)
-                && int.TryParse(commandParts[i + 1], out var parsedDepth))
-            {
-                depth = Math.Max(1, parsedDepth);
-                break;
-            }
-        }
-
-        return new SearchSettings(depth);
-    }
-
-    private static void SetPosition(VeloceEngine engine, string[] commandParts)
-    {
-        if (commandParts.Length < 2) return;
-
-        var index = 1;
-        Position position;
-
-        if (commandParts[index].Equals("startpos", StringComparison.OrdinalIgnoreCase))
-        {
-            position = new Position();
-            index++;
-        }
-        else if (commandParts[index].Equals("fen", StringComparison.OrdinalIgnoreCase) && index + 1 < commandParts.Length)
-        {
-            var fenBuilder = new System.Text.StringBuilder();
-            index++;
-
-            while (index < commandParts.Length && !commandParts[index].Equals("moves", StringComparison.OrdinalIgnoreCase))
-            {
-                fenBuilder.Append(commandParts[index++]);
-                fenBuilder.Append(' ');
-            }
-
-            position = Fen.Parse(fenBuilder.ToString().Trim());
-        }
-        else
-        {
-            return;
-        }
-
-        engine.SetPosition(position);
-
-        if (index >= commandParts.Length || !commandParts[index].Equals("moves", StringComparison.OrdinalIgnoreCase)) return;
-
-        index++;
-        while (index < commandParts.Length)
-        {
-            try
-            {
-                engine.MakeUciMove(commandParts[index++]);
-            }
-            catch (ArgumentException)
-            {
-                break;
-            }
         }
     }
 }
