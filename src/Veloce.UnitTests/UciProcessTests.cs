@@ -48,6 +48,24 @@ public class UciProcessTests
     }
 
     [Test]
+    public async Task UciProcess_SetOptionHash_RemainsReady()
+    {
+        using var process = StartUciProcess();
+
+        await SendLine(process, "uci");
+        await ReadUntil(process, line => line == "uciok");
+
+        await SendLine(process, "setoption name Hash value 32");
+        await SendLine(process, "isready");
+        await ReadUntil(process, line => line == "readyok");
+
+        await SendLine(process, "quit");
+        await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
+
+        await Assert.That(process.ExitCode).IsEqualTo(0);
+    }
+
+    [Test]
     public async Task UciProcess_GoInfiniteStop_ReturnsBestMove()
     {
         using var process = StartUciProcess();

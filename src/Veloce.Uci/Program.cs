@@ -23,11 +23,13 @@ public static class Program
                     Console.WriteLine("id name Veloce");
                     Console.WriteLine("id author Kyle Hickman");
                     Console.WriteLine("option name Threads type spin default 1 min 1 max 1");
-                    Console.WriteLine("option name Hash type spin default 16 min 1 max 16");
+                    Console.WriteLine("option name Hash type spin default 16 min 1 max 1024");
                     Console.WriteLine("uciok");
                     break;
 
                 case "setoption":
+                    await searchSession.StopAsync();
+                    SetOptionCommand.Handle(engine, parts);
                     break;
 
                 case "isready":

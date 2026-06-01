@@ -86,6 +86,19 @@ public class VeloceEngineTests
         await Assert.That(result.Depth).IsGreaterThanOrEqualTo(1);
     }
 
+    [Test]
+    public async Task FindBestMove_WhenPositionSearchedAgain_UsesTranspositionTable()
+    {
+        var engine = new VeloceEngine();
+        engine.SetPosition(Fen.Parse("r2q1rk1/3n1pb1/pp1p1np1/3Pp2p/2P5/1N2BP2/PP1QB1PP/R4RK1 w - - 1 15"));
+
+        var first = engine.FindBestMove(new SearchSettings(3));
+        var second = engine.FindBestMove(new SearchSettings(3));
+
+        await Assert.That(second.BestMove).IsEqualTo(first.BestMove);
+        await Assert.That(second.Nodes).IsLessThan(first.Nodes);
+    }
+
     private static bool IsLegal(VeloceEngine engine, Move move)
     {
         Span<Move> moves = stackalloc Move[218];

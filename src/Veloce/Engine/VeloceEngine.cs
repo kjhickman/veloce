@@ -15,6 +15,11 @@ public class VeloceEngine
         return _search.FindBestMove(_game, settings ?? SearchSettings.Default, cancellationToken);
     }
 
+    public void SetHashSize(int megabytes)
+    {
+        _search.SetHashSize(megabytes);
+    }
+
     public bool WhiteToMove => _game.Position.WhiteToMove;
 
     public void MakeMove(Move move)
