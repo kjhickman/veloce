@@ -12,14 +12,23 @@ Veloce aims to be a modern, high-performance chess engine implemented in C#. The
 
 ## Project Structure
 
-The solution is organized into several projects:
+The solution is organized into a small engine core, a UCI executable, and tests:
 
-- **Veloce**: Core engine library with move generation, evaluation, and search
-- **Veloce.Uci**: UCI-compliant CLI
-- **Veloce.Perft**: Performance/correctness testing tool
-- **Veloce.SelfPlay**: Temporary self-play testing application
-- **Veloce.UnitTests**: Unit tests
-- **Veloce.Benchmarks**: Performance benchmarks
+- **Veloce**: Core engine library using ChessLite
+- **Veloce.Uci**: UCI-compatible CLI
+- **Veloce.UnitTests**: Unit and process-level smoke tests
+
+## Development Commands
+
+```bash
+just test
+just compliance
+just sprt-dirty
+just sprt
+just promote-baseline
+```
+
+`just compliance` uses `fastchess --compliance`. `just sprt` compares the current committed `HEAD` against the `baseline` branch worktree. `just sprt-dirty` allows uncommitted candidate testing, but those results should be rerun from a commit before promotion.
 
 ## Acknowledgments
 

@@ -5,6 +5,7 @@
 _ReSharper.*
 packages/
 artifacts/
+worktrees/
 *.user
 *.suo
 *.userprefs

@@ -8,29 +8,27 @@ public static class Program
 {
     public static void Main()
     {
-        var logger = new UciEngineLogger();
-        var settings = EngineSettings.Default;
-        var engine = new VeloceEngine(settings, logger);
+        var engine = new VeloceEngine();
+
         while (true)
         {
-            var line = Console.ReadLine()?.Trim().ToLower();
+            var line = Console.ReadLine()?.Trim();
             if (string.IsNullOrEmpty(line)) continue;
 
             var parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            var command = parts[0];
+            var command = parts[0].ToLowerInvariant();
 
             switch (command)
             {
                 case "uci":
                     Console.WriteLine("id name Veloce");
                     Console.WriteLine("id author Kyle Hickman");
-                    Console.WriteLine("option name Threads type spin default 1 min 1 max 32");
-                    Console.WriteLine("option name Hash type spin default 16 min 1 max 128");
+                    Console.WriteLine("option name Threads type spin default 1 min 1 max 1");
+                    Console.WriteLine("option name Hash type spin default 16 min 1 max 16");
                     Console.WriteLine("uciok");
                     break;
 
                 case "setoption":
-                    SetOption(engine, parts);
                     break;
 
                 case "isready":
@@ -46,157 +44,62 @@ public static class Program
                     break;
 
                 case "go":
-                    var timeControl = ParseTimeControl(parts);
-                    engine.FindBestMove(timeControl);
+                    var bestMove = engine.FindBestMove();
+                    Console.WriteLine("info depth 1 score cp 0 nodes 1 time 0");
+                    Console.WriteLine($"bestmove {(bestMove.HasValue ? UciMoveFormatter.Format(bestMove.Value) : "0000")}");
                     break;
 
                 case "stop":
-                    // TODO: implement stop logic
                     break;
 
                 case "quit":
                     return;
-
-                default:
-                    Console.WriteLine($"Unknown command: {command}");
-                    break;
             }
+
+            Console.Out.Flush();
         }
     }
 
-    // TODO: Safely parse time control
-    private static TimeControl ParseTimeControl(string[] parts)
+    private static void SetPosition(VeloceEngine engine, string[] commandParts)
     {
-        var timeLeft = -1;
-        var increment = -1;
-        var movesToGo = -1;
+        if (commandParts.Length < 2) return;
 
-        for (var i = 1; i < parts.Length; i++)
-        {
-            if (i + 1 >= parts.Length) break;
-
-            switch (parts[i])
-            {
-                case "wtime":
-                case "btime":
-                    int.TryParse(parts[i + 1], out timeLeft);
-                    i++;
-                    break;
-
-                case "winc":
-                case "binc":
-                    int.TryParse(parts[i + 1], out increment);
-                    i++;
-                    break;
-
-                case "movestogo":
-                    int.TryParse(parts[i + 1], out movesToGo);
-                    i++;
-                    break;
-
-                case "depth":
-                case "nodes":
-                case "infinite":
-                    return TimeControl.Infinite;
-            }
-        }
-
-        return new TimeControl(timeLeft, increment, movesToGo);
-    }
-
-    private static void SetOption(VeloceEngine veloceEngine, string[] commandParts)
-    {
-        // Expected format: setoption name <option_name> value <option_value>
-        if (commandParts.Length < 5)
-            return;
-
-        var nameIndex = Array.IndexOf(commandParts, "name");
-        var valueIndex = Array.IndexOf(commandParts, "value");
-
-        if (nameIndex == -1 || valueIndex == -1 || nameIndex >= valueIndex)
-            return;
-
-        // Extract option name (might be multiple words between "name" and "value")
-        var optionNameParts = new List<string>();
-        for (var i = nameIndex + 1; i < valueIndex; i++)
-        {
-            optionNameParts.Add(commandParts[i]);
-        }
-        var optionName = string.Join(" ", optionNameParts).ToLower();
-
-        // Extract option value (everything after "value")
-        var optionValueParts = new List<string>();
-        for (var i = valueIndex + 1; i < commandParts.Length; i++)
-        {
-            optionValueParts.Add(commandParts[i]);
-        }
-        var optionValue = string.Join(" ", optionValueParts);
-
-        // Handle specific options
-        switch (optionName)
-        {
-            case "threads":
-                if (int.TryParse(optionValue, out var threads))
-                {
-                    veloceEngine.SetThreads(threads);
-                }
-                break;
-
-            case "hash":
-                if (int.TryParse(optionValue, out var hashSize))
-                {
-                    veloceEngine.SetHashSize(hashSize);
-                }
-                break;
-        }
-    }
-
-    private static void SetPosition(VeloceEngine veloceEngine, string[] commandParts)
-    {
-        if (commandParts.Length < 2)
-            return;
-
-        var index = 1; // Skip "position" command
+        var index = 1;
         Position position;
 
-        if (commandParts[index] == "startpos")
+        if (commandParts[index].Equals("startpos", StringComparison.OrdinalIgnoreCase))
         {
             position = new Position();
             index++;
         }
-        else if (commandParts[index] == "fen" && index + 1 < commandParts.Length)
+        else if (commandParts[index].Equals("fen", StringComparison.OrdinalIgnoreCase) && index + 1 < commandParts.Length)
         {
-            // Parse FEN string - might span multiple array elements
             var fenBuilder = new System.Text.StringBuilder();
-            index++; // Move past "fen"
+            index++;
 
-            // Collect parts of the FEN string until we hit "moves" or end of command
-            while (index < commandParts.Length && commandParts[index] != "moves")
+            while (index < commandParts.Length && !commandParts[index].Equals("moves", StringComparison.OrdinalIgnoreCase))
             {
-                fenBuilder.Append(commandParts[index++] + " ");
+                fenBuilder.Append(commandParts[index++]);
+                fenBuilder.Append(' ');
             }
 
-            var fen = fenBuilder.ToString().Trim();
-            position = Fen.Parse(fen);
+            position = Fen.Parse(fenBuilder.ToString().Trim());
         }
         else
         {
-            // Invalid command format
             return;
         }
 
-        veloceEngine.SetPosition(position);
+        engine.SetPosition(position);
 
-        if (index >= commandParts.Length || commandParts[index] != "moves") return;
+        if (index >= commandParts.Length || !commandParts[index].Equals("moves", StringComparison.OrdinalIgnoreCase)) return;
 
-        index++; // Skip "moves" keyword
-        // Apply each move
+        index++;
         while (index < commandParts.Length)
         {
-            var moveUci = commandParts[index++];
             try
             {
-                veloceEngine.MakeUciMove(moveUci);
+                engine.MakeUciMove(commandParts[index++]);
             }
             catch (ArgumentException)
             {

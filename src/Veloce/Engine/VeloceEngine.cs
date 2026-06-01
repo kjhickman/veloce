@@ -1,39 +1,21 @@
-﻿using ChessLite;
+using ChessLite;
 using ChessLite.Movement;
 using ChessLite.State;
-using Veloce.Search;
-using Veloce.Search.Interfaces;
 
 namespace Veloce.Engine;
 
-public class VeloceEngine
+public class VeloceEngine(Random? random = null)
 {
-    private MoveFinder _moveFinder;
-    private readonly EngineSettings _engineSettings;
-    private readonly IEngineLogger? _engineLogger;
-    private Game _game;
-
-    public VeloceEngine(EngineSettings? engineSettings = null, IEngineLogger? engineLogger = null)
-    {
-        _engineSettings = engineSettings ?? EngineSettings.Default;
-        _engineLogger = engineLogger;
-        _moveFinder = new MoveFinder(_engineSettings, _engineLogger);
-        _game = new Game();
-    }
+    private readonly Random _random = random ?? Random.Shared;
+    private Game _game = new();
 
     public Move? FindBestMove()
     {
-        var bestMove = _moveFinder.FindBestMove(_game).BestMove;
-        _engineLogger?.LogBestMove(bestMove);
-        return bestMove;
-    }
+        Span<Move> moves = stackalloc Move[218];
+        var moveCount = _game.WriteLegalMoves(moves);
+        if (moveCount == 0) return null;
 
-    public SearchResult FindBestMove(TimeControl timeControl)
-    {
-        var timeToSearchMs = TimeManagement.CalculateMoveTime(timeControl);
-        var searchResult = _moveFinder.FindBestMove(_game, timeToSearchMs);
-        _engineLogger?.LogBestMove(searchResult.BestMove);
-        return searchResult;
+        return moves[_random.Next(moveCount)];
     }
 
     public void MakeMove(Move move)
@@ -49,7 +31,6 @@ public class VeloceEngine
     public void NewGame()
     {
         _game = new Game();
-        _moveFinder.Reset();
     }
 
     public void SetPosition(Position position)
@@ -57,14 +38,8 @@ public class VeloceEngine
         _game.ResetPosition(position);
     }
 
-    public void SetThreads(int threads)
+    public int WriteLegalMoves(Span<Move> moves)
     {
-        _engineSettings.SetThreads(threads);
-        _moveFinder = new MoveFinder(_engineSettings,  _engineLogger);
-    }
-
-    public void SetHashSize(int hashSizeMb)
-    {
-        _engineSettings.SetTranspositionTableSizeMb(hashSizeMb);
+        return _game.WriteLegalMoves(moves);
     }
 }
