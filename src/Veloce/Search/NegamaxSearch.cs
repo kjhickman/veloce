@@ -16,6 +16,8 @@ public sealed class NegamaxSearch
     private const int MaxSearchPly = 128;
     private const int InitialAspirationWindow = 25;
     private const int MaxAspirationWindow = MateScore * 2;
+    private const int NullMoveMinDepth = 3;
+    private const int NullMoveReduction = 2;
     private const int TableMoveScore = 1_000_000;
     private const int CaptureMoveScore = 100_000;
     private const int PrimaryKillerScore = 90_000;
@@ -182,14 +184,14 @@ public sealed class NegamaxSearch
             {
                 if (searchedMoves == 0)
                 {
-                    score = -Search(game, depth - 1, -beta, -alpha, 1, cancellationToken);
+                    score = -Search(game, depth - 1, -beta, -alpha, 1, true, cancellationToken);
                 }
                 else
                 {
-                    score = -Search(game, depth - 1, -alpha - 1, -alpha, 1, cancellationToken);
+                    score = -Search(game, depth - 1, -alpha - 1, -alpha, 1, true, cancellationToken);
                     if (score > alpha && score < beta)
                     {
-                        score = -Search(game, depth - 1, -beta, -alpha, 1, cancellationToken);
+                        score = -Search(game, depth - 1, -beta, -alpha, 1, true, cancellationToken);
                     }
                 }
             }
@@ -220,7 +222,7 @@ public sealed class NegamaxSearch
         return (depthBestMove, depthBestScore);
     }
 
-    private int Search(Game game, int depth, int alpha, int beta, int ply, CancellationToken cancellationToken)
+    private int Search(Game game, int depth, int alpha, int beta, int ply, bool allowNullMove, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         _nodes++;
@@ -259,6 +261,26 @@ public sealed class NegamaxSearch
             }
         }
 
+        var inCheck = game.IsInCheck();
+        if (ShouldTryNullMove(game, depth, alpha, beta, allowNullMove, inCheck))
+        {
+            game.MakeNullMove();
+            int score;
+            try
+            {
+                score = -Search(game, depth - 1 - NullMoveReduction, -beta, -beta + 1, ply + 1, false, cancellationToken);
+            }
+            finally
+            {
+                game.UndoMove();
+            }
+
+            if (score >= beta)
+            {
+                return beta;
+            }
+        }
+
         Span<Move> moves = stackalloc Move[218];
         var moveCount = game.WriteLegalMoves(moves);
         if (moveCount == 0)
@@ -283,14 +305,14 @@ public sealed class NegamaxSearch
             {
                 if (searchedMoves == 0)
                 {
-                    score = -Search(game, depth - 1, -beta, -alpha, ply + 1, cancellationToken);
+                    score = -Search(game, depth - 1, -beta, -alpha, ply + 1, true, cancellationToken);
                 }
                 else
                 {
-                    score = -Search(game, depth - 1, -alpha - 1, -alpha, ply + 1, cancellationToken);
+                    score = -Search(game, depth - 1, -alpha - 1, -alpha, ply + 1, true, cancellationToken);
                     if (score > alpha && score < beta)
                     {
-                        score = -Search(game, depth - 1, -beta, -alpha, ply + 1, cancellationToken);
+                        score = -Search(game, depth - 1, -beta, -alpha, ply + 1, true, cancellationToken);
                     }
                 }
             }
@@ -331,6 +353,26 @@ public sealed class NegamaxSearch
         _transpositions.Store(key, ScoreToTable(bestScore, ply), new CompactMove(bestMove), depth, bound);
 
         return bestScore;
+    }
+
+    private static bool ShouldTryNullMove(Game game, int depth, int alpha, int beta, bool allowNullMove, bool inCheck)
+    {
+        return allowNullMove
+            && depth >= NullMoveMinDepth
+            && !inCheck
+            && alpha > -MateThreshold
+            && beta < MateThreshold
+            && HasNonPawnMaterial(game);
+    }
+
+    private static bool HasNonPawnMaterial(Game game)
+    {
+        var position = game.Position;
+        var pieces = position.WhiteToMove
+            ? position.WhiteKnights | position.WhiteBishops | position.WhiteRooks | position.WhiteQueens
+            : position.BlackKnights | position.BlackBishops | position.BlackRooks | position.BlackQueens;
+
+        return pieces.IsNotEmpty();
     }
 
     private int Quiescence(Game game, int alpha, int beta, int ply, int qPly, CancellationToken cancellationToken)
