@@ -27,13 +27,15 @@ public sealed class NegamaxSearch
     private const int SecondaryKillerScore = 80_000;
     private const ulong HalfmoveHashMultiplier = 0x9E37_79B9_7F4A_7C15UL;
     private readonly TranspositionTable _transpositions;
+    private readonly int _rootMoveOffset;
     private readonly CompactMove[] _primaryKillers = new CompactMove[MaxSearchPly];
     private readonly CompactMove[] _secondaryKillers = new CompactMove[MaxSearchPly];
     private long _nodes;
 
-    internal NegamaxSearch(TranspositionTable transpositions)
+    internal NegamaxSearch(TranspositionTable transpositions, int rootMoveOffset = 0)
     {
         _transpositions = transpositions;
+        _rootMoveOffset = rootMoveOffset;
     }
 
     public SearchResult FindBestMove(
@@ -69,6 +71,7 @@ public sealed class NegamaxSearch
         var bestScore = MaterialEvaluator.Evaluate(game.Position);
         var completedDepth = 0;
         var rootKey = GetTranspositionKey(game);
+        var diversifiedRootMove = _rootMoveOffset == 0 ? Move.NullMove : moves[_rootMoveOffset % moveCount];
 
         for (var depth = 1; depth <= settings.Depth; depth++)
         {
@@ -87,6 +90,7 @@ public sealed class NegamaxSearch
                     bestMove,
                     bestScore,
                     rootTableMove,
+                    diversifiedRootMove,
                     effectiveCancellation);
 
                 bestMove = depthBestMove;
@@ -112,6 +116,7 @@ public sealed class NegamaxSearch
         Move previousBestMove,
         int previousBestScore,
         Move rootTableMove,
+        Move diversifiedRootMove,
         CancellationToken cancellationToken)
     {
         const int fullAlpha = int.MinValue + 1;
@@ -130,6 +135,7 @@ public sealed class NegamaxSearch
                 depth,
                 previousBestMove,
                 rootTableMove,
+                diversifiedRootMove,
                 alpha,
                 beta,
                 cancellationToken);
@@ -166,6 +172,7 @@ public sealed class NegamaxSearch
         int depth,
         Move previousBestMove,
         Move rootTableMove,
+        Move diversifiedRootMove,
         int alpha,
         int beta,
         CancellationToken cancellationToken)
@@ -178,7 +185,7 @@ public sealed class NegamaxSearch
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var move = PickNextMove(moves, moveCount, i, rootTableMove, 0, useKillers: false);
+            var move = PickNextRootMove(moves, moveCount, i, rootTableMove, diversifiedRootMove);
             game.MakeMove(move);
             int score;
             try
@@ -500,6 +507,23 @@ public sealed class NegamaxSearch
         if (score > MateThreshold) return score - ply;
         if (score < -MateThreshold) return score + ply;
         return score;
+    }
+
+    private Move PickNextRootMove(Span<Move> moves, int moveCount, int startIndex, Move tableMove, Move diversifiedRootMove)
+    {
+        if (startIndex == 0 && diversifiedRootMove != Move.NullMove)
+        {
+            for (var i = 0; i < moveCount; i++)
+            {
+                if (moves[i] == diversifiedRootMove)
+                {
+                    (moves[startIndex], moves[i]) = (moves[i], moves[startIndex]);
+                    return moves[startIndex];
+                }
+            }
+        }
+
+        return PickNextMove(moves, moveCount, startIndex, tableMove, 0, useKillers: false);
     }
 
     private Move PickNextMove(Span<Move> moves, int moveCount, int startIndex, Move tableMove, int ply, bool useKillers)

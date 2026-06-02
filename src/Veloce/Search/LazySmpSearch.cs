@@ -44,8 +44,9 @@ internal sealed class LazySmpSearch
         for (var i = 0; i < helpers.Length; i++)
         {
             var helperGame = game.Clone();
+            var rootMoveOffset = i + 1;
             helpers[i] = Task.Run(
-                () => new NegamaxSearch(_transpositions).FindBestMove(helperGame, settings, null, helperCancellation.Token),
+                () => new NegamaxSearch(_transpositions, rootMoveOffset).FindBestMove(helperGame, settings, null, helperCancellation.Token),
                 CancellationToken.None);
         }
 
