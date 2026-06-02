@@ -19,11 +19,20 @@ sprt:
 sprt-rounds rounds:
     pwsh scripts/sprt.ps1 -Rounds {{rounds}}
 
+sprt-threads threads:
+    pwsh scripts/sprt.ps1 -EngineThreads {{threads}}
+
 sprt-dirty:
     pwsh scripts/sprt.ps1 -Dirty
 
 sprt-dirty-rounds rounds:
     pwsh scripts/sprt.ps1 -Dirty -Rounds {{rounds}}
+
+sprt-dirty-threads threads:
+    pwsh scripts/sprt.ps1 -Dirty -EngineThreads {{threads}}
+
+sprt-dirty-rounds-threads rounds threads:
+    pwsh scripts/sprt.ps1 -Dirty -Rounds {{rounds}} -EngineThreads {{threads}}
 
 promote-baseline:
     pwsh scripts/promote-baseline.ps1

@@ -1,4 +1,5 @@
 using Veloce.Engine;
+using Veloce.Uci.Commands;
 
 namespace Veloce.Uci;
 
@@ -7,8 +8,8 @@ public static class Program
     public static async Task Main()
     {
         var engine = new VeloceEngine();
-        var output = new UciOutput();
-        var searchSession = new UciSearchSession(output);
+        var output = new UciWriter();
+        var session = new SearchSession(output);
 
         while (true)
         {
@@ -23,13 +24,13 @@ public static class Program
                 case "uci":
                     output.WriteLine("id name Veloce");
                     output.WriteLine("id author Kyle Hickman");
-                    output.WriteLine("option name Threads type spin default 1 min 1 max 1");
+                    output.WriteLine($"option name Threads type spin default 1 min 1 max {VeloceEngine.MaximumThreadCount}");
                     output.WriteLine("option name Hash type spin default 16 min 1 max 1024");
                     output.WriteLine("uciok");
                     break;
 
                 case "setoption":
-                    await searchSession.StopAsync();
+                    await session.StopAsync();
                     SetOptionCommand.Handle(engine, parts);
                     break;
 
@@ -38,25 +39,25 @@ public static class Program
                     break;
 
                 case "ucinewgame":
-                    await searchSession.StopAsync();
+                    await session.StopAsync();
                     engine.NewGame();
                     break;
 
                 case "position":
-                    await searchSession.StopAsync();
+                    await session.StopAsync();
                     PositionCommand.Handle(engine, parts);
                     break;
 
                 case "go":
-                    await GoCommand.HandleAsync(engine, searchSession, parts);
+                    await GoCommand.HandleAsync(engine, session, parts);
                     break;
 
                 case "stop":
-                    await searchSession.StopAsync();
+                    await session.StopAsync();
                     break;
 
                 case "quit":
-                    await searchSession.StopAsync();
+                    await session.StopAsync();
                     return;
             }
 

@@ -1,15 +1,18 @@
 param(
     [switch]$Dirty,
     [int]$Rounds = 10000,
-    [int]$Concurrency = 0
+    [int]$Concurrency = 0,
+    [int]$EngineThreads = 1
 )
 
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..')
 
+$EngineThreads = [Math]::Max(1, $EngineThreads)
+
 if ($Concurrency -le 0) {
-    $Concurrency = [Environment]::ProcessorCount
+    $Concurrency = [Math]::Max(1, [int][Math]::Floor([Environment]::ProcessorCount / $EngineThreads))
 }
 
 if (-not $Dirty) {
@@ -50,9 +53,9 @@ if ($Dirty) {
 }
 
 $arguments = @(
-    '-engine', "name=candidate", "cmd=$candidate", 'proto=uci',
-    '-engine', "name=baseline", "cmd=$baseline", 'proto=uci',
-    '-each', 'tc=30+0.3', 'option.Hash=16', 'option.Threads=1',
+    '-engine', "name=candidate", "cmd=$candidate", 'proto=uci', "option.Threads=$EngineThreads",
+    '-engine', "name=baseline", "cmd=$baseline", 'proto=uci', 'option.Threads=1',
+    '-each', 'tc=30+0.3', 'option.Hash=16',
     '-rounds', "$Rounds",
     '-repeat',
     '-concurrency', "$Concurrency",

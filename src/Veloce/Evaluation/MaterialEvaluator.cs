@@ -5,11 +5,11 @@ namespace Veloce.Evaluation;
 
 public static class MaterialEvaluator
 {
-    private const int PawnValue = 100;
-    private const int KnightValue = 320;
-    private const int BishopValue = 330;
-    private const int RookValue = 500;
-    private const int QueenValue = 900;
+    internal const int PawnValue = 100;
+    internal const int KnightValue = 320;
+    internal const int BishopValue = 330;
+    internal const int RookValue = 500;
+    internal const int QueenValue = 900;
 
     private static readonly int[] PawnTable =
     [
@@ -123,14 +123,14 @@ public static class MaterialEvaluator
     private static int EvaluatePiecePositions(Bitboard pieces, int[] table, bool isWhite)
     {
         var score = 0;
-        var currentPieces = pieces;
-        while (currentPieces.IsNotEmpty())
+        var remainingPieces = pieces;
+        while (remainingPieces.IsNotEmpty())
         {
-            var square = currentPieces.GetFirstSquare();
+            var square = remainingPieces.GetFirstSquare();
             var index = isWhite ? (int)square : 63 - (int)square;
             score += table[index];
 
-            currentPieces &= currentPieces - 1;
+            remainingPieces &= remainingPieces - 1;
         }
 
         return score;

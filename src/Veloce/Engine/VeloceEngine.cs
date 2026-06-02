@@ -7,7 +7,7 @@ namespace Veloce.Engine;
 
 public class VeloceEngine
 {
-    private readonly NegamaxSearch _search = new();
+    private readonly LazySmpSearch _search = new();
     private Game _game = new();
 
     public SearchResult FindBestMove(
@@ -22,6 +22,13 @@ public class VeloceEngine
     {
         _search.SetHashSize(megabytes);
     }
+
+    public void SetThreadCount(int threadCount)
+    {
+        _search.SetThreadCount(threadCount);
+    }
+
+    public static int MaximumThreadCount => LazySmpSearch.MaximumThreadCount;
 
     public bool WhiteToMove => _game.Position.WhiteToMove;
 

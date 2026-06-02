@@ -1,6 +1,6 @@
 namespace Veloce.Uci;
 
-internal sealed class UciOutput
+internal sealed class UciWriter
 {
     private readonly Lock _lock = new();
 

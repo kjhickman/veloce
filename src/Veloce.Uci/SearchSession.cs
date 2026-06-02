@@ -2,10 +2,10 @@ using Veloce.Engine;
 
 namespace Veloce.Uci;
 
-internal sealed class UciSearchSession(UciOutput output)
+internal sealed class SearchSession(UciWriter output)
 {
     private readonly Lock _stateLock = new();
-    private readonly UciOutput _output = output;
+    private readonly UciWriter _output = output;
     private Task? _activeSearch;
     private CancellationTokenSource? _activeSearchCancellation;
     private int _activeSearchId;
@@ -19,7 +19,7 @@ internal sealed class UciSearchSession(UciOutput output)
             _activeSearchCancellation = new CancellationTokenSource();
             var searchCancellation = _activeSearchCancellation;
             var searchId = ++_activeSearchId;
-            _activeSearch = Task.Run(() => CompleteSearchAsync(search, searchCancellation, searchId), CancellationToken.None);
+            _activeSearch = Task.Run(() => CompleteSearch(search, searchCancellation, searchId), CancellationToken.None);
         }
     }
 
@@ -40,25 +40,22 @@ internal sealed class UciSearchSession(UciOutput output)
         await activeSearch;
     }
 
-    private Task CompleteSearchAsync(
+    private void CompleteSearch(
         Func<CancellationToken, Action<SearchInfo>, SearchResult> search,
         CancellationTokenSource searchCancellation,
         int searchId)
     {
         try
         {
-            var wroteSearchInfo = false;
             var result = search(searchCancellation.Token, info =>
             {
-                wroteSearchInfo = true;
-                WriteSearchInfo(info);
+                _output.WriteLine(UciFormatting.FormatSearchInfo(info));
+                _output.Flush();
             });
-            if (!wroteSearchInfo)
-            {
-                _output.WriteLine($"info depth {result.Depth} score cp {result.Score} nodes {result.Nodes} time {(long)result.Elapsed.TotalMilliseconds}");
-            }
 
-            _output.WriteLine($"bestmove {(result.BestMove.HasValue ? UciMoveFormatter.Format(result.BestMove.Value) : "0000")}");
+            _output.WriteLine(UciFormatting.FormatSearchResult(result));
+
+            _output.WriteLine($"bestmove {(result.BestMove.HasValue ? UciFormatting.FormatMove(result.BestMove.Value) : "0000")}");
             _output.Flush();
         }
         finally
@@ -73,14 +70,5 @@ internal sealed class UciSearchSession(UciOutput output)
                 }
             }
         }
-
-        return Task.CompletedTask;
-    }
-
-    private void WriteSearchInfo(SearchInfo info)
-    {
-        _output.WriteLine(
-            $"info depth {info.Depth} score cp {info.Score} nodes {info.Nodes} time {(long)info.Elapsed.TotalMilliseconds} pv {UciMoveFormatter.Format(info.BestMove)}");
-        _output.Flush();
     }
 }

@@ -91,6 +91,28 @@ public class UciProcessTests
     }
 
     [Test]
+    public async Task UciProcess_SetOptionThreads_RemainsReadyAndSearches()
+    {
+        using var process = StartUciProcess();
+
+        await SendLine(process, "uci");
+        await ReadUntil(process, line => line == "uciok");
+
+        await SendLine(process, "setoption name Threads value 2");
+        await SendLine(process, "isready");
+        await ReadUntil(process, line => line == "readyok");
+        await SendLine(process, "position startpos");
+        await SendLine(process, "go depth 2");
+        var bestMove = await ReadUntil(process, line => line.StartsWith("bestmove ", StringComparison.Ordinal));
+
+        await SendLine(process, "quit");
+        await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
+
+        await Assert.That(Regex.IsMatch(bestMove, "^bestmove ([a-h][1-8][a-h][1-8][qrbn]?|0000)$")).IsTrue();
+        await Assert.That(process.ExitCode).IsEqualTo(0);
+    }
+
+    [Test]
     public async Task UciProcess_GoInfiniteStop_ReturnsBestMove()
     {
         using var process = StartUciProcess();

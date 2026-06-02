@@ -26,14 +26,14 @@ public sealed class NegamaxSearch
     private const int PrimaryKillerScore = 90_000;
     private const int SecondaryKillerScore = 80_000;
     private const ulong HalfmoveHashMultiplier = 0x9E37_79B9_7F4A_7C15UL;
-    private readonly TranspositionTable _transpositions = new();
+    private readonly TranspositionTable _transpositions;
     private readonly CompactMove[] _primaryKillers = new CompactMove[MaxSearchPly];
     private readonly CompactMove[] _secondaryKillers = new CompactMove[MaxSearchPly];
     private long _nodes;
 
-    public void SetHashSize(int megabytes)
+    internal NegamaxSearch(TranspositionTable transpositions)
     {
-        _transpositions.Resize(megabytes);
+        _transpositions = transpositions;
     }
 
     public SearchResult FindBestMove(
@@ -52,8 +52,6 @@ public sealed class NegamaxSearch
             ? null
             : CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeLimit.Token);
         var effectiveCancellation = linkedCancellation?.Token ?? cancellationToken;
-
-        _transpositions.NewSearch();
 
         if (game.GetDrawState().IsDraw())
         {
@@ -575,11 +573,11 @@ public sealed class NegamaxSearch
     {
         return pieceType switch
         {
-            PieceType.WhitePawn or PieceType.BlackPawn => 100,
-            PieceType.WhiteKnight or PieceType.BlackKnight => 320,
-            PieceType.WhiteBishop or PieceType.BlackBishop => 330,
-            PieceType.WhiteRook or PieceType.BlackRook => 500,
-            PieceType.WhiteQueen or PieceType.BlackQueen => 900,
+            PieceType.WhitePawn or PieceType.BlackPawn => MaterialEvaluator.PawnValue,
+            PieceType.WhiteKnight or PieceType.BlackKnight => MaterialEvaluator.KnightValue,
+            PieceType.WhiteBishop or PieceType.BlackBishop => MaterialEvaluator.BishopValue,
+            PieceType.WhiteRook or PieceType.BlackRook => MaterialEvaluator.RookValue,
+            PieceType.WhiteQueen or PieceType.BlackQueen => MaterialEvaluator.QueenValue,
             PieceType.WhiteKing or PieceType.BlackKing => 20_000,
             _ => 0,
         };

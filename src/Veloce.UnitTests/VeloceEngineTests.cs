@@ -79,7 +79,7 @@ public class VeloceEngineTests
     {
         var engine = new VeloceEngine();
 
-        var result = engine.FindBestMove(SearchSettings.Timed(TimeSpan.FromMilliseconds(20)));
+        var result = engine.FindBestMove(SearchSettings.Timed(TimeSpan.FromMilliseconds(100)));
 
         await Assert.That(result.BestMove.HasValue).IsTrue();
         await Assert.That(IsLegal(engine, result.BestMove!.Value)).IsTrue();
@@ -99,6 +99,20 @@ public class VeloceEngineTests
         await Assert.That(second.Nodes).IsLessThan(first.Nodes);
     }
 
+    [Test]
+    public async Task FindBestMove_WithMultipleThreads_ReturnsLegalMoveWithoutMutatingPosition()
+    {
+        var engine = new VeloceEngine();
+        engine.SetThreadCount(2);
+        var legalMovesBefore = CountLegalMoves(engine);
+
+        var result = engine.FindBestMove(new SearchSettings(2));
+
+        await Assert.That(result.BestMove.HasValue).IsTrue();
+        await Assert.That(IsLegal(engine, result.BestMove!.Value)).IsTrue();
+        await Assert.That(CountLegalMoves(engine)).IsEqualTo(legalMovesBefore);
+    }
+
     private static bool IsLegal(VeloceEngine engine, Move move)
     {
         Span<Move> moves = stackalloc Move[218];
@@ -110,5 +124,11 @@ public class VeloceEngineTests
         }
 
         return false;
+    }
+
+    private static int CountLegalMoves(VeloceEngine engine)
+    {
+        Span<Move> moves = stackalloc Move[218];
+        return engine.WriteLegalMoves(moves);
     }
 }

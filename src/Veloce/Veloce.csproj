@@ -12,11 +12,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ChessLite" Version="1.0.0-alpha.4" />
     <PackageReference Include="Microsoft.CodeAnalysis.PerformanceSensitiveAnalyzers" Version="5.0.0-1.25277.114">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../chesslite/src/ChessLite/ChessLite.csproj" />
   </ItemGroup>
 
 </Project>

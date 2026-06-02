@@ -25,7 +25,15 @@ internal readonly struct TranspositionEntry
             | ((ulong)(generation & GenerationMask) << GenerationOffset);
     }
 
+    public TranspositionEntry(ulong key, ulong packed)
+    {
+        Key = key;
+        _packed = packed;
+    }
+
     public ulong Key { get; }
+
+    public ulong Packed => _packed;
 
     public bool IsEmpty => Key == 0;
 

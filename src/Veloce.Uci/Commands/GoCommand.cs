@@ -1,13 +1,13 @@
 using Veloce.Engine;
 
-namespace Veloce.Uci;
+namespace Veloce.Uci.Commands;
 
 internal static class GoCommand
 {
-    public static ValueTask HandleAsync(VeloceEngine engine, UciSearchSession searchSession, string[] commandParts)
+    public static ValueTask HandleAsync(VeloceEngine engine, SearchSession session, string[] commandParts)
     {
         var settings = ParseSearchSettings(engine, commandParts);
-        return searchSession.StartAsync((cancellationToken, searchInfo) => engine.FindBestMove(settings, searchInfo, cancellationToken));
+        return session.StartAsync((cancellationToken, searchInfo) => engine.FindBestMove(settings, searchInfo, cancellationToken));
     }
 
     private static SearchSettings ParseSearchSettings(VeloceEngine engine, string[] commandParts)
@@ -20,54 +20,41 @@ internal static class GoCommand
         var blackIncrement = 0;
         int? moveTime = null;
         var movesToGo = 30;
-        var infinite = false;
+        var infinite = commandParts.Any(part => IsToken(part, "infinite"));
 
         for (var i = 1; i < commandParts.Length - 1; i++)
         {
-            if (commandParts[i].Equals("depth", StringComparison.OrdinalIgnoreCase)
-                && int.TryParse(commandParts[i + 1], out var parsedDepth))
+            var parameter = commandParts[i];
+            var value = commandParts[i + 1];
+
+            if (IsToken(parameter, "depth") && int.TryParse(value, out var parsedDepth))
             {
                 depth = Math.Max(1, parsedDepth);
                 hasDepth = true;
             }
-            else if (commandParts[i].Equals("movetime", StringComparison.OrdinalIgnoreCase)
-                && int.TryParse(commandParts[i + 1], out var parsedMoveTime))
+            else if (IsToken(parameter, "movetime") && int.TryParse(value, out var parsedMoveTime))
             {
                 moveTime = Math.Max(1, parsedMoveTime);
             }
-            else if (commandParts[i].Equals("wtime", StringComparison.OrdinalIgnoreCase)
-                && int.TryParse(commandParts[i + 1], out var parsedWhiteTime))
+            else if (IsToken(parameter, "wtime") && int.TryParse(value, out var parsedWhiteTime))
             {
                 whiteTime = Math.Max(0, parsedWhiteTime);
             }
-            else if (commandParts[i].Equals("btime", StringComparison.OrdinalIgnoreCase)
-                && int.TryParse(commandParts[i + 1], out var parsedBlackTime))
+            else if (IsToken(parameter, "btime") && int.TryParse(value, out var parsedBlackTime))
             {
                 blackTime = Math.Max(0, parsedBlackTime);
             }
-            else if (commandParts[i].Equals("winc", StringComparison.OrdinalIgnoreCase)
-                && int.TryParse(commandParts[i + 1], out var parsedWhiteIncrement))
+            else if (IsToken(parameter, "winc") && int.TryParse(value, out var parsedWhiteIncrement))
             {
                 whiteIncrement = Math.Max(0, parsedWhiteIncrement);
             }
-            else if (commandParts[i].Equals("binc", StringComparison.OrdinalIgnoreCase)
-                && int.TryParse(commandParts[i + 1], out var parsedBlackIncrement))
+            else if (IsToken(parameter, "binc") && int.TryParse(value, out var parsedBlackIncrement))
             {
                 blackIncrement = Math.Max(0, parsedBlackIncrement);
             }
-            else if (commandParts[i].Equals("movestogo", StringComparison.OrdinalIgnoreCase)
-                && int.TryParse(commandParts[i + 1], out var parsedMovesToGo))
+            else if (IsToken(parameter, "movestogo") && int.TryParse(value, out var parsedMovesToGo))
             {
                 movesToGo = Math.Max(1, parsedMovesToGo);
-            }
-        }
-
-        for (var i = 1; i < commandParts.Length; i++)
-        {
-            if (commandParts[i].Equals("infinite", StringComparison.OrdinalIgnoreCase))
-            {
-                infinite = true;
-                break;
             }
         }
 
@@ -96,7 +83,14 @@ internal static class GoCommand
     {
         var reserve = Math.Min(1000, remainingMilliseconds / 20);
         var usable = Math.Max(1, remainingMilliseconds - reserve);
-        var budget = usable / Math.Max(1, movesToGo) + (incrementMilliseconds * 3 / 4);
-        return TimeSpan.FromMilliseconds(Math.Max(1, Math.Min(budget, usable)));
+        var baseTime = usable / Math.Max(1, movesToGo);
+        var timeWithIncrement = baseTime + (incrementMilliseconds * 3 / 4);
+        var budget = Math.Clamp(timeWithIncrement, 1, usable);
+        return TimeSpan.FromMilliseconds(budget);
+    }
+
+    private static bool IsToken(string value, string expected)
+    {
+        return value.Equals(expected, StringComparison.OrdinalIgnoreCase);
     }
 }
