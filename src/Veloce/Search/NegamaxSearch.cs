@@ -14,6 +14,8 @@ public sealed class NegamaxSearch
     private const int MateThreshold = MateScore - 1_000;
     private const int MaxQuiescencePly = 8;
     private const int MaxSearchPly = 128;
+    private const int InitialAspirationWindow = 25;
+    private const int MaxAspirationWindow = MateScore * 2;
     private const int TableMoveScore = 1_000_000;
     private const int CaptureMoveScore = 100_000;
     private const int PrimaryKillerScore = 90_000;
@@ -71,56 +73,18 @@ public sealed class NegamaxSearch
             {
                 effectiveCancellation.ThrowIfCancellationRequested();
 
-                var depthBestMove = bestMove;
-                var depthBestScore = int.MinValue + 1;
-                var alpha = int.MinValue + 1;
-                const int beta = int.MaxValue;
-
                 var rootTableMove = _transpositions.TryGet(rootKey, out var rootEntry)
                     ? rootEntry.Move.FindMatchingMove(moves, moveCount)
                     : Move.NullMove;
-                var searchedMoves = 0;
-
-                for (var i = 0; i < moveCount; i++)
-                {
-                    effectiveCancellation.ThrowIfCancellationRequested();
-
-                    var move = PickNextMove(moves, moveCount, i, rootTableMove, 0, useKillers: false);
-                    game.MakeMove(move);
-                    int score;
-                    try
-                    {
-                        if (searchedMoves == 0)
-                        {
-                            score = -Search(game, depth - 1, -beta, -alpha, 1, effectiveCancellation);
-                        }
-                        else
-                        {
-                            score = -Search(game, depth - 1, -alpha - 1, -alpha, 1, effectiveCancellation);
-                            if (score > alpha && score < beta)
-                            {
-                                score = -Search(game, depth - 1, -beta, -alpha, 1, effectiveCancellation);
-                            }
-                        }
-                    }
-                    finally
-                    {
-                        game.UndoMove();
-                    }
-
-                    searchedMoves++;
-
-                    if (score > depthBestScore)
-                    {
-                        depthBestScore = score;
-                        depthBestMove = move;
-                    }
-
-                    if (score > alpha)
-                    {
-                        alpha = score;
-                    }
-                }
+                var (depthBestMove, depthBestScore) = SearchRootWithAspiration(
+                    game,
+                    moves,
+                    moveCount,
+                    depth,
+                    bestMove,
+                    bestScore,
+                    rootTableMove,
+                    effectiveCancellation);
 
                 bestMove = depthBestMove;
                 bestScore = depthBestScore;
@@ -135,6 +99,125 @@ public sealed class NegamaxSearch
         }
 
         return new SearchResult(bestMove, bestScore, completedDepth, _nodes, Stopwatch.GetElapsedTime(now));
+    }
+
+    private (Move BestMove, int BestScore) SearchRootWithAspiration(
+        Game game,
+        Span<Move> moves,
+        int moveCount,
+        int depth,
+        Move previousBestMove,
+        int previousBestScore,
+        Move rootTableMove,
+        CancellationToken cancellationToken)
+    {
+        const int fullAlpha = int.MinValue + 1;
+        const int fullBeta = int.MaxValue;
+        var useAspiration = depth > 1 && Math.Abs(previousBestScore) < MateThreshold;
+        var window = InitialAspirationWindow;
+        var alpha = useAspiration ? Math.Max(fullAlpha, previousBestScore - window) : fullAlpha;
+        var beta = useAspiration ? Math.Min(fullBeta, previousBestScore + window) : fullBeta;
+
+        while (true)
+        {
+            var (bestMove, bestScore) = SearchRootDepth(
+                game,
+                moves,
+                moveCount,
+                depth,
+                previousBestMove,
+                rootTableMove,
+                alpha,
+                beta,
+                cancellationToken);
+
+            if (!useAspiration || (bestScore > alpha && bestScore < beta))
+            {
+                return (bestMove, bestScore);
+            }
+
+            if (bestScore <= alpha)
+            {
+                window = Math.Min(window * 2, MaxAspirationWindow);
+                alpha = Math.Max(fullAlpha, previousBestScore - window);
+            }
+            else
+            {
+                window = Math.Min(window * 2, MaxAspirationWindow);
+                beta = Math.Min(fullBeta, previousBestScore + window);
+            }
+
+            if (window == MaxAspirationWindow)
+            {
+                useAspiration = false;
+                alpha = fullAlpha;
+                beta = fullBeta;
+            }
+        }
+    }
+
+    private (Move BestMove, int BestScore) SearchRootDepth(
+        Game game,
+        Span<Move> moves,
+        int moveCount,
+        int depth,
+        Move previousBestMove,
+        Move rootTableMove,
+        int alpha,
+        int beta,
+        CancellationToken cancellationToken)
+    {
+        var depthBestMove = previousBestMove;
+        var depthBestScore = int.MinValue + 1;
+        var searchedMoves = 0;
+
+        for (var i = 0; i < moveCount; i++)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var move = PickNextMove(moves, moveCount, i, rootTableMove, 0, useKillers: false);
+            game.MakeMove(move);
+            int score;
+            try
+            {
+                if (searchedMoves == 0)
+                {
+                    score = -Search(game, depth - 1, -beta, -alpha, 1, cancellationToken);
+                }
+                else
+                {
+                    score = -Search(game, depth - 1, -alpha - 1, -alpha, 1, cancellationToken);
+                    if (score > alpha && score < beta)
+                    {
+                        score = -Search(game, depth - 1, -beta, -alpha, 1, cancellationToken);
+                    }
+                }
+            }
+            finally
+            {
+                game.UndoMove();
+            }
+
+            searchedMoves++;
+
+            if (score > depthBestScore)
+            {
+                depthBestScore = score;
+                depthBestMove = move;
+            }
+
+            if (score > alpha)
+            {
+                alpha = score;
+            }
+
+            if (alpha >= beta)
+            {
+                break;
+            }
+        }
+
+        return (depthBestMove, depthBestScore);
     }
 
     private int Search(Game game, int depth, int alpha, int beta, int ply, CancellationToken cancellationToken)
