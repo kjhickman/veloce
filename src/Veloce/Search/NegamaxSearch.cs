@@ -18,6 +18,9 @@ public sealed class NegamaxSearch
     private const int MaxAspirationWindow = MateScore * 2;
     private const int NullMoveMinDepth = 3;
     private const int NullMoveReduction = 2;
+    private const int LateMoveReductionMinDepth = 3;
+    private const int LateMoveReductionMoveNumber = 4;
+    private const int LateMoveReduction = 1;
     private const int TableMoveScore = 1_000_000;
     private const int CaptureMoveScore = 100_000;
     private const int PrimaryKillerScore = 90_000;
@@ -309,7 +312,13 @@ public sealed class NegamaxSearch
                 }
                 else
                 {
-                    score = -Search(game, depth - 1, -alpha - 1, -alpha, ply + 1, true, cancellationToken);
+                    var reduction = GetLateMoveReduction(move, tableMove, depth, searchedMoves, ply, inCheck, alpha, beta);
+                    score = -Search(game, depth - 1 - reduction, -alpha - 1, -alpha, ply + 1, true, cancellationToken);
+                    if (reduction > 0 && score > alpha)
+                    {
+                        score = -Search(game, depth - 1, -alpha - 1, -alpha, ply + 1, true, cancellationToken);
+                    }
+
                     if (score > alpha && score < beta)
                     {
                         score = -Search(game, depth - 1, -beta, -alpha, ply + 1, true, cancellationToken);
@@ -363,6 +372,31 @@ public sealed class NegamaxSearch
             && alpha > -MateThreshold
             && beta < MateThreshold
             && HasNonPawnMaterial(game);
+    }
+
+    private int GetLateMoveReduction(Move move, Move tableMove, int depth, int searchedMoves, int ply, bool inCheck, int alpha, int beta)
+    {
+        return depth >= LateMoveReductionMinDepth
+            && searchedMoves >= LateMoveReductionMoveNumber
+            && !inCheck
+            && !move.IsCapture
+            && move != tableMove
+            && !IsKillerMove(ply, move)
+            && alpha > -MateThreshold
+            && beta < MateThreshold
+            ? LateMoveReduction
+            : 0;
+    }
+
+    private bool IsKillerMove(int ply, Move move)
+    {
+        if (ply >= MaxSearchPly)
+        {
+            return false;
+        }
+
+        var compactMove = new CompactMove(move);
+        return compactMove == _primaryKillers[ply] || compactMove == _secondaryKillers[ply];
     }
 
     private static bool HasNonPawnMaterial(Game game)
