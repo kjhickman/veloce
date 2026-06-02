@@ -99,6 +99,18 @@ public class VeloceEngineTests
         await Assert.That(second.Nodes).IsLessThan(first.Nodes);
     }
 
+    [Test]
+    public async Task FindBestMove_ReportsCompletedDepths()
+    {
+        var engine = new VeloceEngine();
+        var depths = new List<int>();
+
+        var result = engine.FindBestMove(new SearchSettings(3), onInfo: info => depths.Add(info.Depth));
+
+        await Assert.That(result.Depth).IsEqualTo(3);
+        await Assert.That(depths).IsEquivalentTo([1, 2, 3]);
+    }
+
     private static bool IsLegal(VeloceEngine engine, Move move)
     {
         Span<Move> moves = stackalloc Move[218];

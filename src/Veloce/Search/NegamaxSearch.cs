@@ -29,7 +29,11 @@ public sealed class NegamaxSearch
         _transpositions.Resize(megabytes);
     }
 
-    public SearchResult FindBestMove(Game game, SearchSettings settings, CancellationToken cancellationToken = default)
+    public SearchResult FindBestMove(
+        Game game,
+        SearchSettings settings,
+        Action<SearchInfo>? onInfo = null,
+        CancellationToken cancellationToken = default)
     {
         var now = Stopwatch.GetTimestamp();
         _nodes = 0;
@@ -122,6 +126,7 @@ public sealed class NegamaxSearch
                 bestScore = depthBestScore;
                 completedDepth = depth;
                 _transpositions.Store(rootKey, ScoreToTable(bestScore, 0), new CompactMove(bestMove), depth, TranspositionBound.Exact);
+                onInfo?.Invoke(new SearchInfo(bestMove, bestScore, completedDepth, _nodes, Stopwatch.GetElapsedTime(now)));
             }
             catch (OperationCanceledException) when (effectiveCancellation.IsCancellationRequested)
             {

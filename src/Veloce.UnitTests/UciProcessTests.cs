@@ -48,6 +48,27 @@ public class UciProcessTests
     }
 
     [Test]
+    public async Task UciProcess_GoDepth_EmitsInfoBeforeBestMove()
+    {
+        using var process = StartUciProcess();
+
+        await SendLine(process, "uci");
+        await ReadUntil(process, line => line == "uciok");
+
+        await SendLine(process, "position startpos");
+        await SendLine(process, "go depth 3");
+        var lines = await ReadUntilWithLines(process, line => line.StartsWith("bestmove ", StringComparison.Ordinal));
+
+        await SendLine(process, "quit");
+        await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
+
+        await Assert.That(lines.Any(line => line.StartsWith("info depth 1 ", StringComparison.Ordinal))).IsTrue();
+        await Assert.That(lines.Any(line => line.StartsWith("info depth 2 ", StringComparison.Ordinal))).IsTrue();
+        await Assert.That(lines.Any(line => line.StartsWith("info depth 3 ", StringComparison.Ordinal))).IsTrue();
+        await Assert.That(process.ExitCode).IsEqualTo(0);
+    }
+
+    [Test]
     public async Task UciProcess_SetOptionHash_RemainsReady()
     {
         using var process = StartUciProcess();
@@ -118,6 +139,25 @@ public class UciProcessTests
             var line = await lineTask;
             if (line is null) break;
             if (predicate(line)) return line;
+        }
+
+        var error = await process.StandardError.ReadToEndAsync(cts.Token);
+        throw new TimeoutException($"Timed out waiting for UCI output. stderr: {error}");
+    }
+
+    private static async Task<List<string>> ReadUntilWithLines(Process process, Func<string, bool> predicate)
+    {
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(20));
+        var lines = new List<string>();
+
+        while (!cts.IsCancellationRequested)
+        {
+            var lineTask = process.StandardOutput.ReadLineAsync(cts.Token).AsTask();
+            var line = await lineTask;
+            if (line is null) break;
+
+            lines.Add(line);
+            if (predicate(line)) return lines;
         }
 
         var error = await process.StandardError.ReadToEndAsync(cts.Token);

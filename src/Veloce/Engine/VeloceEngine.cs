@@ -10,9 +10,12 @@ public class VeloceEngine
     private readonly NegamaxSearch _search = new();
     private Game _game = new();
 
-    public SearchResult FindBestMove(SearchSettings? settings = null, CancellationToken cancellationToken = default)
+    public SearchResult FindBestMove(
+        SearchSettings? settings = null,
+        Action<SearchInfo>? onInfo = null,
+        CancellationToken cancellationToken = default)
     {
-        return _search.FindBestMove(_game, settings ?? SearchSettings.Default, cancellationToken);
+        return _search.FindBestMove(_game, settings ?? SearchSettings.Default, onInfo, cancellationToken);
     }
 
     public void SetHashSize(int megabytes)
