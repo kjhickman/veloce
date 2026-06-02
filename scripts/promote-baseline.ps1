@@ -17,10 +17,13 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 $new = & git -C $repoRoot rev-parse HEAD
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-& git -C $repoRoot branch -f baseline HEAD
+$baselineStatus = & git -C $worktreePath status --porcelain
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+if ($baselineStatus) {
+    throw "Baseline worktree is not clean. Commit or discard changes in $worktreePath before promoting baseline."
+}
 
-& git -C $worktreePath reset --hard baseline
+& git -C $worktreePath reset --hard $new
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 Write-Host "Promoted baseline: $old -> $new"
