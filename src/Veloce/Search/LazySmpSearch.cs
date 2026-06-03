@@ -53,18 +53,24 @@ internal sealed class LazySmpSearch
         var mainResult = new NegamaxSearch(_transpositions).FindBestMove(game.Clone(), settings, searchInfo, helperCancellation.Token);
         helperCancellation.Cancel();
 
-        var helperNodes = 0L;
+        var bestResult = mainResult;
+        var nodes = mainResult.Nodes;
         foreach (var helper in helpers)
         {
             try
             {
-                helperNodes += helper.GetAwaiter().GetResult().Nodes;
+                var helperResult = helper.GetAwaiter().GetResult();
+                nodes += helperResult.Nodes;
+                if (helperResult.Depth > bestResult.Depth)
+                {
+                    bestResult = helperResult;
+                }
             }
             catch (OperationCanceledException)
             {
             }
         }
 
-        return mainResult with { Nodes = mainResult.Nodes + helperNodes };
+        return bestResult with { Nodes = nodes };
     }
 }
