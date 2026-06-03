@@ -28,14 +28,16 @@ public sealed class NegamaxSearch
     private const ulong HalfmoveHashMultiplier = 0x9E37_79B9_7F4A_7C15UL;
     private readonly TranspositionTable _transpositions;
     private readonly int _rootMoveOffset;
+    private readonly int _depthOffset;
     private readonly CompactMove[] _primaryKillers = new CompactMove[MaxSearchPly];
     private readonly CompactMove[] _secondaryKillers = new CompactMove[MaxSearchPly];
     private long _nodes;
 
-    internal NegamaxSearch(TranspositionTable transpositions, int rootMoveOffset = 0)
+    internal NegamaxSearch(TranspositionTable transpositions, int rootMoveOffset = 0, int depthOffset = 0)
     {
         _transpositions = transpositions;
         _rootMoveOffset = rootMoveOffset;
+        _depthOffset = depthOffset;
     }
 
     public SearchResult FindBestMove(
@@ -73,7 +75,8 @@ public sealed class NegamaxSearch
         var rootKey = GetTranspositionKey(game);
         var diversifiedRootMove = _rootMoveOffset == 0 ? Move.NullMove : moves[_rootMoveOffset % moveCount];
 
-        for (var depth = 1; depth <= settings.Depth; depth++)
+        var startDepth = Math.Min(settings.Depth, 1 + _depthOffset);
+        for (var depth = startDepth; depth <= settings.Depth; depth++)
         {
             try
             {
