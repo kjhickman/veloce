@@ -26,6 +26,6 @@ public class UciFormattingTests
     {
         var result = new SearchResult(null, 0, 0, 0, TimeSpan.Zero);
 
-        await Assert.That(UciFormatting.FormatSearchResult(result)).IsEqualTo("info depth 0 score cp 0 nodes 0 time 0");
+        await Assert.That(UciFormatting.FormatSearchResult(result)).IsEqualTo("info depth 0 score cp 0 nodes 0 nps 0 time 0 hashfull 0");
     }
 }

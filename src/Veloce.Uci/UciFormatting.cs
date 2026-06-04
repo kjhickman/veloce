@@ -28,17 +28,19 @@ public static class UciFormatting
 
     public static string FormatSearchInfo(SearchInfo info)
     {
-        return FormatInfoLine(info.Depth, info.Score, info.Nodes, info.Elapsed, info.BestMove);
+        return FormatInfoLine(info.Depth, info.Score, info.Nodes, info.Elapsed, info.HashFull, info.BestMove);
     }
 
     public static string FormatSearchResult(SearchResult result)
     {
-        return FormatInfoLine(result.Depth, result.Score, result.Nodes, result.Elapsed, result.BestMove);
+        return FormatInfoLine(result.Depth, result.Score, result.Nodes, result.Elapsed, result.HashFull, result.BestMove);
     }
 
-    private static string FormatInfoLine(int depth, int score, long nodes, TimeSpan elapsed, Move? bestMove)
+    private static string FormatInfoLine(int depth, int score, long nodes, TimeSpan elapsed, int hashFull, Move? bestMove)
     {
-        var line = $"info depth {depth} score cp {score} nodes {nodes} time {(long)elapsed.TotalMilliseconds}";
+        var elapsedMilliseconds = (long)elapsed.TotalMilliseconds;
+        var nodesPerSecond = elapsedMilliseconds > 0 ? nodes * 1000 / elapsedMilliseconds : nodes;
+        var line = $"info depth {depth} score cp {score} nodes {nodes} nps {nodesPerSecond} time {elapsedMilliseconds} hashfull {hashFull}";
         return bestMove.HasValue ? $"{line} pv {FormatMove(bestMove.Value)}" : line;
     }
 }

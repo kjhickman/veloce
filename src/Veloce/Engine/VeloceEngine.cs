@@ -23,6 +23,13 @@ public class VeloceEngine
         _search.SetHashSize(megabytes);
     }
 
+    public void ClearHash()
+    {
+        _search.ClearHash();
+    }
+
+    public int HashFull => _search.HashFull;
+
     public void SetThreadCount(int threadCount)
     {
         _search.SetThreadCount(threadCount);

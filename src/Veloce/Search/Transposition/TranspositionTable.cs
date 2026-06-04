@@ -30,6 +30,36 @@ internal sealed class TranspositionTable
         _generation = 0;
     }
 
+    public void Clear()
+    {
+        Array.Clear(_keys);
+        Array.Clear(_packedEntries);
+        _generation = 0;
+    }
+
+    public int HashFull
+    {
+        get
+        {
+            var sampleCount = Math.Min(1000, _keys.Length);
+            if (sampleCount == 0)
+            {
+                return 0;
+            }
+
+            var used = 0;
+            for (var i = 0; i < sampleCount; i++)
+            {
+                if (Volatile.Read(ref _keys[i]) != 0)
+                {
+                    used++;
+                }
+            }
+
+            return used * 1000 / sampleCount;
+        }
+    }
+
     public void NewSearch()
     {
         _generation = (byte)((_generation + 1) & 0x3F);

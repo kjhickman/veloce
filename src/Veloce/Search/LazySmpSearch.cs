@@ -13,7 +13,14 @@ internal sealed class LazySmpSearch
 
     public int ThreadCount => Volatile.Read(ref _threadCount);
 
+    public int HashFull => _transpositions.HashFull;
+
     public static int MaximumThreadCount => MaxThreadCount;
+
+    public void ClearHash()
+    {
+        _transpositions.Clear();
+    }
 
     public void SetHashSize(int megabytes)
     {
@@ -36,7 +43,8 @@ internal sealed class LazySmpSearch
         var threadCount = ThreadCount;
         if (threadCount == 1)
         {
-            return new NegamaxSearch(_transpositions).FindBestMove(game.Clone(), settings, searchInfo, cancellationToken);
+            var result = new NegamaxSearch(_transpositions).FindBestMove(game.Clone(), settings, WithHashFull(searchInfo), cancellationToken);
+            return result with { HashFull = HashFull };
         }
 
         using var helperCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
@@ -51,7 +59,7 @@ internal sealed class LazySmpSearch
                 CancellationToken.None);
         }
 
-        var mainResult = new NegamaxSearch(_transpositions).FindBestMove(game.Clone(), settings, searchInfo, helperCancellation.Token);
+        var mainResult = new NegamaxSearch(_transpositions).FindBestMove(game.Clone(), settings, WithHashFull(searchInfo), helperCancellation.Token);
         helperCancellation.Cancel();
 
         var bestResult = mainResult;
@@ -72,6 +80,11 @@ internal sealed class LazySmpSearch
             }
         }
 
-        return bestResult with { Nodes = nodes };
+        return bestResult with { Nodes = nodes, HashFull = HashFull };
+    }
+
+    private Action<SearchInfo>? WithHashFull(Action<SearchInfo>? searchInfo)
+    {
+        return searchInfo is null ? null : info => searchInfo(info with { HashFull = HashFull });
     }
 }

@@ -12,12 +12,24 @@ internal static class SetOptionCommand
     {
         var nameIndex = FindTokenIndex(commandParts, "name");
         var valueIndex = FindTokenIndex(commandParts, "value");
-        if (nameIndex < 0 || valueIndex < 0 || valueIndex + 1 >= commandParts.Length)
+        if (nameIndex < 0)
         {
             return;
         }
 
-        var optionName = string.Join(' ', commandParts[(nameIndex + 1)..valueIndex]);
+        var optionNameEnd = valueIndex < 0 ? commandParts.Length : valueIndex;
+        var optionName = string.Join(' ', commandParts[(nameIndex + 1)..optionNameEnd]);
+        if (optionName.Equals("Clear Hash", StringComparison.OrdinalIgnoreCase))
+        {
+            engine.ClearHash();
+            return;
+        }
+
+        if (valueIndex < 0 || valueIndex + 1 >= commandParts.Length)
+        {
+            return;
+        }
+
         if (optionName.Equals("Hash", StringComparison.OrdinalIgnoreCase))
         {
             if (!int.TryParse(commandParts[valueIndex + 1], out var megabytes))
@@ -37,6 +49,11 @@ internal static class SetOptionCommand
             }
 
             engine.SetThreadCount(Math.Clamp(threads, MinThreads, VeloceEngine.MaximumThreadCount));
+            return;
+        }
+
+        if (optionName.Equals("MultiPV", StringComparison.OrdinalIgnoreCase))
+        {
             return;
         }
     }

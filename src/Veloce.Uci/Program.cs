@@ -26,6 +26,8 @@ public static class Program
                     output.WriteLine("id author Kyle Hickman");
                     output.WriteLine($"option name Threads type spin default 1 min 1 max {VeloceEngine.MaximumThreadCount}");
                     output.WriteLine("option name Hash type spin default 16 min 1 max 1024");
+                    output.WriteLine("option name Clear Hash type button");
+                    output.WriteLine("option name MultiPV type spin default 1 min 1 max 1");
                     output.WriteLine("uciok");
                     break;
 
