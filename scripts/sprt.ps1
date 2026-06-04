@@ -54,7 +54,7 @@ if ($Dirty) {
 
 $arguments = @(
     '-engine', "name=candidate", "cmd=$candidate", 'proto=uci', "option.Threads=$EngineThreads",
-    '-engine', "name=baseline", "cmd=$baseline", 'proto=uci', 'option.Threads=1',
+    '-engine', "name=baseline", "cmd=$baseline", 'proto=uci', "option.Threads=$EngineThreads",
     '-each', 'tc=30+0.3', 'option.Hash=16',
     '-rounds', "$Rounds",
     '-repeat',
