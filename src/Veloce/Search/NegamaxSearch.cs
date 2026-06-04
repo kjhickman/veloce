@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using ChessLite;
 using ChessLite.Movement;
-using ChessLite.Primitives;
 using Veloce.Engine;
 using Veloce.Evaluation;
 using Veloce.Search.Transposition;
@@ -10,23 +9,6 @@ namespace Veloce.Search;
 
 public sealed partial class NegamaxSearch
 {
-    private const int MateScore = 100_000;
-    private const int MateThreshold = MateScore - 1_000;
-    private const int MaxQuiescencePly = 8;
-    private const int MaxSearchPly = 128;
-    private const int InitialAspirationWindow = 25;
-    private const int MaxAspirationWindow = MateScore * 2;
-    private const int NullMoveMinDepth = 3;
-    private const int NullMoveReduction = 2;
-    private const int LateMoveReductionMinDepth = 3;
-    private const int LateMoveReductionMoveNumber = 4;
-    private const int LateMoveReduction = 1;
-    private const int TableMoveScore = 1_000_000;
-    private const int CaptureMoveScore = 100_000;
-    private const int PrimaryKillerScore = 90_000;
-    private const int SecondaryKillerScore = 80_000;
-    private const int MaxHistoryScore = 70_000;
-    private const ulong HalfmoveHashMultiplier = 0x9E37_79B9_7F4A_7C15UL;
     private readonly TranspositionTable _transpositions;
     private readonly int _rootMoveOffset;
     private readonly int _depthOffset;
@@ -52,9 +34,7 @@ public sealed partial class NegamaxSearch
         var now = Stopwatch.GetTimestamp();
         _nodes = 0;
         _nodeLimit = settings.NodeLimit ?? long.MaxValue;
-        Array.Clear(_primaryKillers);
-        Array.Clear(_secondaryKillers);
-        Array.Clear(_history);
+        ResetSearchHeuristics();
 
         using var timeLimit = settings.MoveTime.HasValue ? new CancellationTokenSource(settings.MoveTime.Value) : null;
         using var linkedCancellation = timeLimit is null

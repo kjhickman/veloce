@@ -47,12 +47,14 @@ public sealed partial class NegamaxSearch
     {
         if (move == tableMove)
         {
-            return TableMoveScore;
+            return TranspositionMoveScore;
         }
 
         if (move.IsCapture)
         {
-            return CaptureMoveScore + GetPieceValue(move.CapturedPieceType) * 16 - GetPieceValue(move.PieceType);
+            var victimValue = GetPieceValue(move.CapturedPieceType);
+            var attackerValue = GetPieceValue(move.PieceType);
+            return CaptureOrderingBaseScore + (victimValue * CaptureOrderingVictimMultiplier) - attackerValue;
         }
 
         if (!useKillers || ply >= MaxSearchPly)
@@ -63,12 +65,12 @@ public sealed partial class NegamaxSearch
         var compactMove = new CompactMove(move);
         if (compactMove == _primaryKillers[ply])
         {
-            return PrimaryKillerScore;
+            return PrimaryKillerMoveScore;
         }
 
         if (compactMove == _secondaryKillers[ply])
         {
-            return SecondaryKillerScore;
+            return SecondaryKillerMoveScore;
         }
 
         return _history[GetSideIndex(move.PieceType), (int)move.From, (int)move.To];
@@ -77,7 +79,7 @@ public sealed partial class NegamaxSearch
     private int GetLateMoveReduction(Move move, Move tableMove, int depth, int searchedMoves, int ply, bool inCheck, int alpha, int beta)
     {
         return depth >= LateMoveReductionMinDepth
-            && searchedMoves >= LateMoveReductionMoveNumber
+            && searchedMoves >= LateMoveReductionMinSearchedMoves
             && !inCheck
             && !move.IsCapture
             && move != tableMove
@@ -122,7 +124,14 @@ public sealed partial class NegamaxSearch
         var from = (int)move.From;
         var to = (int)move.To;
         var bonus = depth * depth;
-        _history[side, from, to] = Math.Min(MaxHistoryScore, _history[side, from, to] + bonus);
+        _history[side, from, to] = Math.Min(MaxHistoryMoveScore, _history[side, from, to] + bonus);
+    }
+
+    private void ResetSearchHeuristics()
+    {
+        Array.Clear(_primaryKillers);
+        Array.Clear(_secondaryKillers);
+        Array.Clear(_history);
     }
 
     private static int GetSideIndex(PieceType pieceType)
@@ -143,7 +152,7 @@ public sealed partial class NegamaxSearch
             PieceType.WhiteBishop or PieceType.BlackBishop => MaterialEvaluator.BishopValue,
             PieceType.WhiteRook or PieceType.BlackRook => MaterialEvaluator.RookValue,
             PieceType.WhiteQueen or PieceType.BlackQueen => MaterialEvaluator.QueenValue,
-            PieceType.WhiteKing or PieceType.BlackKing => 20_000,
+            PieceType.WhiteKing or PieceType.BlackKing => KingOrderingValue,
             _ => 0,
         };
     }
