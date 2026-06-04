@@ -52,7 +52,8 @@ internal static class SetOptionCommand
             return;
         }
 
-        if (optionName.Equals("MultiPV", StringComparison.OrdinalIgnoreCase))
+        if (optionName.Equals("MultiPV", StringComparison.OrdinalIgnoreCase)
+            || optionName.Equals("UCI_AnalyseMode", StringComparison.OrdinalIgnoreCase))
         {
             return;
         }

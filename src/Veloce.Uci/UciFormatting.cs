@@ -40,7 +40,7 @@ public static class UciFormatting
     {
         var elapsedMilliseconds = (long)elapsed.TotalMilliseconds;
         var nodesPerSecond = elapsedMilliseconds > 0 ? nodes * 1000 / elapsedMilliseconds : nodes;
-        var line = $"info depth {depth} score cp {score} nodes {nodes} nps {nodesPerSecond} time {elapsedMilliseconds} hashfull {hashFull}";
+        var line = $"info depth {depth} multipv 1 score cp {score} nodes {nodes} nps {nodesPerSecond} time {elapsedMilliseconds} hashfull {hashFull}";
         return bestMove.HasValue ? $"{line} pv {FormatMove(bestMove.Value)}" : line;
     }
 }

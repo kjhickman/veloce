@@ -21,6 +21,8 @@ internal static class GoCommand
         int? moveTime = null;
         var movesToGo = 30;
         var infinite = commandParts.Any(part => IsToken(part, "infinite"));
+        var ponder = commandParts.Any(part => IsToken(part, "ponder"));
+        long? nodeLimit = null;
 
         for (var i = 1; i < commandParts.Length - 1; i++)
         {
@@ -56,16 +58,20 @@ internal static class GoCommand
             {
                 movesToGo = Math.Max(1, parsedMovesToGo);
             }
+            else if (IsToken(parameter, "nodes") && long.TryParse(value, out var parsedNodeLimit))
+            {
+                nodeLimit = Math.Max(1, parsedNodeLimit);
+            }
         }
 
         if (infinite)
         {
-            return new SearchSettings(int.MaxValue, Infinite: true);
+            return new SearchSettings(int.MaxValue, Infinite: true, NodeLimit: nodeLimit, Ponder: ponder);
         }
 
         if (moveTime.HasValue)
         {
-            return new SearchSettings(hasDepth ? depth : int.MaxValue, TimeSpan.FromMilliseconds(moveTime.Value));
+            return new SearchSettings(hasDepth ? depth : int.MaxValue, TimeSpan.FromMilliseconds(moveTime.Value), NodeLimit: nodeLimit, Ponder: ponder);
         }
 
         var remaining = engine.WhiteToMove ? whiteTime : blackTime;
@@ -73,10 +79,10 @@ internal static class GoCommand
         {
             var increment = engine.WhiteToMove ? whiteIncrement : blackIncrement;
             var budget = CalculateMoveTime(remaining.Value, increment, movesToGo);
-            return new SearchSettings(hasDepth ? depth : int.MaxValue, budget);
+            return new SearchSettings(hasDepth ? depth : int.MaxValue, budget, NodeLimit: nodeLimit, Ponder: ponder);
         }
 
-        return new SearchSettings(depth);
+        return new SearchSettings(depth, NodeLimit: nodeLimit, Ponder: ponder);
     }
 
     private static TimeSpan CalculateMoveTime(int remainingMilliseconds, int incrementMilliseconds, int movesToGo)

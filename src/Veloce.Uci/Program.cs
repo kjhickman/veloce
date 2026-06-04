@@ -28,6 +28,7 @@ public static class Program
                     output.WriteLine("option name Hash type spin default 16 min 1 max 1024");
                     output.WriteLine("option name Clear Hash type button");
                     output.WriteLine("option name MultiPV type spin default 1 min 1 max 1");
+                    output.WriteLine("option name UCI_AnalyseMode type check default false");
                     output.WriteLine("uciok");
                     break;
 

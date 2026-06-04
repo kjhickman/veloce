@@ -1,6 +1,6 @@
 namespace Veloce.Engine;
 
-public sealed record SearchSettings(int Depth, TimeSpan? MoveTime = null, bool Infinite = false)
+public sealed record SearchSettings(int Depth, TimeSpan? MoveTime = null, bool Infinite = false, long? NodeLimit = null, bool Ponder = false)
 {
     public static SearchSettings Default { get; } = new(3);
 

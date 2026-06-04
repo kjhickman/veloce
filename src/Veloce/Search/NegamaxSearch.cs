@@ -34,6 +34,7 @@ public sealed class NegamaxSearch
     private readonly CompactMove[] _secondaryKillers = new CompactMove[MaxSearchPly];
     private readonly int[,,] _history = new int[2, 64, 64];
     private long _nodes;
+    private long _nodeLimit = long.MaxValue;
 
     internal NegamaxSearch(TranspositionTable transpositions, int rootMoveOffset = 0, int depthOffset = 0)
     {
@@ -50,6 +51,7 @@ public sealed class NegamaxSearch
     {
         var now = Stopwatch.GetTimestamp();
         _nodes = 0;
+        _nodeLimit = settings.NodeLimit ?? long.MaxValue;
         Array.Clear(_primaryKillers);
         Array.Clear(_secondaryKillers);
         Array.Clear(_history);
@@ -106,6 +108,10 @@ public sealed class NegamaxSearch
                 searchInfo?.Invoke(new SearchInfo(bestMove, bestScore, completedDepth, _nodes, Stopwatch.GetElapsedTime(now)));
             }
             catch (OperationCanceledException) when (effectiveCancellation.IsCancellationRequested)
+            {
+                break;
+            }
+            catch (NodeLimitReachedException)
             {
                 break;
             }
@@ -239,7 +245,7 @@ public sealed class NegamaxSearch
     private int Search(Game game, int depth, int alpha, int beta, int ply, bool allowNullMove, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        _nodes++;
+        RecordNode();
 
         if (game.GetDrawState().IsDraw())
         {
@@ -424,7 +430,7 @@ public sealed class NegamaxSearch
     private int Quiescence(Game game, int alpha, int beta, int ply, int qPly, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        _nodes++;
+        RecordNode();
 
         if (game.GetDrawState().IsDraw())
         {
@@ -494,6 +500,19 @@ public sealed class NegamaxSearch
     private static int EvaluateTerminal(Game game, int ply)
     {
         return game.IsInCheck() ? -MateScore + ply : 0;
+    }
+
+    private void RecordNode()
+    {
+        _nodes++;
+        if (_nodes >= _nodeLimit)
+        {
+            throw new NodeLimitReachedException();
+        }
+    }
+
+    private sealed class NodeLimitReachedException : Exception
+    {
     }
 
     private static ulong GetTranspositionKey(Game game)
