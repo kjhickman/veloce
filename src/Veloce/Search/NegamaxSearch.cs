@@ -25,12 +25,14 @@ public sealed class NegamaxSearch
     private const int CaptureMoveScore = 100_000;
     private const int PrimaryKillerScore = 90_000;
     private const int SecondaryKillerScore = 80_000;
+    private const int MaxHistoryScore = 70_000;
     private const ulong HalfmoveHashMultiplier = 0x9E37_79B9_7F4A_7C15UL;
     private readonly TranspositionTable _transpositions;
     private readonly int _rootMoveOffset;
     private readonly int _depthOffset;
     private readonly CompactMove[] _primaryKillers = new CompactMove[MaxSearchPly];
     private readonly CompactMove[] _secondaryKillers = new CompactMove[MaxSearchPly];
+    private readonly int[,,] _history = new int[2, 64, 64];
     private long _nodes;
 
     internal NegamaxSearch(TranspositionTable transpositions, int rootMoveOffset = 0, int depthOffset = 0)
@@ -50,6 +52,7 @@ public sealed class NegamaxSearch
         _nodes = 0;
         Array.Clear(_primaryKillers);
         Array.Clear(_secondaryKillers);
+        Array.Clear(_history);
 
         using var timeLimit = settings.MoveTime.HasValue ? new CancellationTokenSource(settings.MoveTime.Value) : null;
         using var linkedCancellation = timeLimit is null
@@ -356,6 +359,7 @@ public sealed class NegamaxSearch
                 if (!move.IsCapture)
                 {
                     StoreKiller(ply, move);
+                    StoreHistory(move, depth);
                 }
 
                 break;
@@ -576,7 +580,7 @@ public sealed class NegamaxSearch
             return SecondaryKillerScore;
         }
 
-        return 0;
+        return _history[GetSideIndex(move.PieceType), (int)move.From, (int)move.To];
     }
 
     private void StoreKiller(int ply, Move move)
@@ -594,6 +598,24 @@ public sealed class NegamaxSearch
 
         _secondaryKillers[ply] = _primaryKillers[ply];
         _primaryKillers[ply] = compactMove;
+    }
+
+    private void StoreHistory(Move move, int depth)
+    {
+        var side = GetSideIndex(move.PieceType);
+        var from = (int)move.From;
+        var to = (int)move.To;
+        var bonus = depth * depth;
+        _history[side, from, to] = Math.Min(MaxHistoryScore, _history[side, from, to] + bonus);
+    }
+
+    private static int GetSideIndex(PieceType pieceType)
+    {
+        return pieceType switch
+        {
+            PieceType.WhitePawn or PieceType.WhiteKnight or PieceType.WhiteBishop or PieceType.WhiteRook or PieceType.WhiteQueen or PieceType.WhiteKing => 0,
+            _ => 1,
+        };
     }
 
     private static int GetPieceValue(PieceType pieceType)
