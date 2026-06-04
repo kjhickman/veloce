@@ -1,6 +1,6 @@
 namespace Veloce.Search;
 
-public sealed partial class NegamaxSearch
+public sealed partial class Negamax
 {
     private const int MateScore = 100_000;
     private const int MateThreshold = MateScore - 1_000;

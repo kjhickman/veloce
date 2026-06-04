@@ -7,7 +7,7 @@ using Veloce.Search.Transposition;
 
 namespace Veloce.Search;
 
-public sealed partial class NegamaxSearch
+public sealed partial class Negamax
 {
     private readonly TranspositionTable _transpositions;
     private readonly int _rootMoveOffset;
@@ -18,7 +18,7 @@ public sealed partial class NegamaxSearch
     private long _nodes;
     private long _nodeLimit = long.MaxValue;
 
-    internal NegamaxSearch(TranspositionTable transpositions, int rootMoveOffset = 0, int depthOffset = 0)
+    internal Negamax(TranspositionTable transpositions, int rootMoveOffset = 0, int depthOffset = 0)
     {
         _transpositions = transpositions;
         _rootMoveOffset = rootMoveOffset;

@@ -5,7 +5,7 @@ using Veloce.Search.Transposition;
 
 namespace Veloce.Search;
 
-public sealed partial class NegamaxSearch
+public sealed partial class Negamax
 {
     private Move PickNextRootMove(Span<Move> moves, int moveCount, int startIndex, Move tableMove, Move diversifiedRootMove)
     {

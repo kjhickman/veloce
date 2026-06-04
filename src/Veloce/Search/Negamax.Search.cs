@@ -5,7 +5,7 @@ using Veloce.Search.Transposition;
 
 namespace Veloce.Search;
 
-public sealed partial class NegamaxSearch
+public sealed partial class Negamax
 {
     private int Search(Game game, int depth, int alpha, int beta, int ply, bool allowNullMove, CancellationToken cancellationToken)
     {

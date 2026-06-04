@@ -43,7 +43,7 @@ internal sealed class LazySmpSearch
         var threadCount = ThreadCount;
         if (threadCount == 1)
         {
-            var result = new NegamaxSearch(_transpositions).FindBestMove(game.Clone(), settings, WithHashFull(searchInfo), cancellationToken);
+            var result = new Negamax(_transpositions).FindBestMove(game.Clone(), settings, WithHashFull(searchInfo), cancellationToken);
             return result with { HashFull = HashFull };
         }
 
@@ -55,11 +55,11 @@ internal sealed class LazySmpSearch
             var rootMoveOffset = i + 1;
             var depthOffset = i + 1;
             helpers[i] = Task.Run(
-                () => new NegamaxSearch(_transpositions, rootMoveOffset, depthOffset).FindBestMove(helperGame, settings, null, helperCancellation.Token),
+                () => new Negamax(_transpositions, rootMoveOffset, depthOffset).FindBestMove(helperGame, settings, null, helperCancellation.Token),
                 CancellationToken.None);
         }
 
-        var mainResult = new NegamaxSearch(_transpositions).FindBestMove(game.Clone(), settings, WithHashFull(searchInfo), helperCancellation.Token);
+        var mainResult = new Negamax(_transpositions).FindBestMove(game.Clone(), settings, WithHashFull(searchInfo), helperCancellation.Token);
         helperCancellation.Cancel();
 
         var bestResult = mainResult;

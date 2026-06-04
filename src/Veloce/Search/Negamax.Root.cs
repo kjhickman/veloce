@@ -3,7 +3,7 @@ using ChessLite.Movement;
 
 namespace Veloce.Search;
 
-public sealed partial class NegamaxSearch
+public sealed partial class Negamax
 {
     private (Move BestMove, int BestScore) SearchRootWithAspiration(
         Game game,

@@ -19,11 +19,11 @@ internal readonly struct TranspositionEntry
     public TranspositionEntry(ulong key, int score, CompactMove move, int depth, TranspositionBound bound, byte generation)
     {
         Key = key;
-        _packed = ((ulong)(uint)score & ScoreMask)
+        _packed = ((uint)score & ScoreMask)
             | ((ulong)(ushort)move << MoveOffset)
             | ((ulong)(byte)Math.Clamp(depth, 0, byte.MaxValue) << DepthOffset)
             | ((ulong)bound << BoundOffset)
-            | ((ulong)(generation & GenerationMask) << GenerationOffset);
+            | ((generation & GenerationMask) << GenerationOffset);
     }
 
     public TranspositionEntry(ulong key, ulong packed)
