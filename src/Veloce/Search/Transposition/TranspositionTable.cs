@@ -7,6 +7,8 @@ internal sealed class TranspositionTable
     private const int BucketSizeBytes = EntriesPerBucket * EntrySizeBytes;
     private const int DefaultMegabytes = 16;
     private const int MaxBucketCount = 1 << 29;
+    private const int GenerationMask = 0x3F;
+    private const int ReplacementAgePenalty = 8;
 
     private long[] _keys = [];
     private long[] _packedEntries = [];
@@ -62,7 +64,7 @@ internal sealed class TranspositionTable
 
     public void NewSearch()
     {
-        _generation = (byte)((_generation + 1) & 0x3F);
+        _generation = (byte)((_generation + 1) & GenerationMask);
     }
 
     public bool TryGet(ulong key, out TranspositionEntry entry)
@@ -78,6 +80,8 @@ internal sealed class TranspositionTable
             }
 
             var packed = (ulong)Volatile.Read(ref _packedEntries[index]);
+            // A concurrent writer can change the slot between reading the key and entry.
+            // Re-check the key so callers never receive an entry for a different position.
             if ((ulong)Volatile.Read(ref _keys[index]) != key)
             {
                 entry = default;
@@ -109,6 +113,30 @@ internal sealed class TranspositionTable
     {
         var startIndex = GetBucketStartIndex(key);
 
+        var index = FindMatchingKeyIndex(startIndex, key);
+        if (index >= 0)
+        {
+            return index;
+        }
+
+        index = FindEmptyIndex(startIndex);
+        if (index >= 0)
+        {
+            return index;
+        }
+
+        index = FindStaleIndex(startIndex);
+        if (index >= 0)
+        {
+            return index;
+        }
+
+        var (replaceIndex, replacePriority) = FindLowestPriorityIndex(startIndex);
+        return depth >= replacePriority ? replaceIndex : -1;
+    }
+
+    private int FindMatchingKeyIndex(int startIndex, ulong key)
+    {
         for (var i = 0; i < EntriesPerBucket; i++)
         {
             var index = startIndex + i;
@@ -119,6 +147,11 @@ internal sealed class TranspositionTable
             }
         }
 
+        return -1;
+    }
+
+    private int FindEmptyIndex(int startIndex)
+    {
         for (var i = 0; i < EntriesPerBucket; i++)
         {
             var index = startIndex + i;
@@ -128,27 +161,35 @@ internal sealed class TranspositionTable
             }
         }
 
+        return -1;
+    }
+
+    private int FindStaleIndex(int startIndex)
+    {
         for (var i = 0; i < EntriesPerBucket; i++)
         {
             var index = startIndex + i;
-            var storedKey = (ulong)Volatile.Read(ref _keys[index]);
-            var existing = new TranspositionEntry(storedKey, (ulong)Volatile.Read(ref _packedEntries[index]));
+            var existing = ReadEntry(index);
             if (existing.Generation != _generation)
             {
                 return index;
             }
         }
 
+        return -1;
+    }
+
+    private (int Index, int Priority) FindLowestPriorityIndex(int startIndex)
+    {
         var replaceIndex = startIndex;
         var replacePriority = int.MaxValue;
 
         for (var i = 0; i < EntriesPerBucket; i++)
         {
             var index = startIndex + i;
-            var storedKey = (ulong)Volatile.Read(ref _keys[index]);
-            var existing = new TranspositionEntry(storedKey, (ulong)Volatile.Read(ref _packedEntries[index]));
+            var existing = ReadEntry(index);
 
-            var priority = existing.Depth - (RelativeAge(existing.Generation) * 8);
+            var priority = existing.Depth - (RelativeAge(existing.Generation) * ReplacementAgePenalty);
             if (priority < replacePriority)
             {
                 replacePriority = priority;
@@ -156,7 +197,14 @@ internal sealed class TranspositionTable
             }
         }
 
-        return depth >= replacePriority ? replaceIndex : -1;
+        return (replaceIndex, replacePriority);
+    }
+
+    private TranspositionEntry ReadEntry(int index)
+    {
+        var storedKey = (ulong)Volatile.Read(ref _keys[index]);
+        var packed = (ulong)Volatile.Read(ref _packedEntries[index]);
+        return new TranspositionEntry(storedKey, packed);
     }
 
     private int GetBucketStartIndex(ulong key)
@@ -166,7 +214,7 @@ internal sealed class TranspositionTable
 
     private int RelativeAge(byte generation)
     {
-        return (_generation - generation) & 0x3F;
+        return (_generation - generation) & GenerationMask;
     }
 
     private static int PreviousPowerOfTwo(long value)

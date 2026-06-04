@@ -2,6 +2,7 @@ namespace Veloce.Search.Transposition;
 
 internal readonly struct TranspositionEntry
 {
+    // Packed layout, low to high bits: score[0..31], move[32..47], depth[48..55], bound[56..57], generation[58..63].
     private const int MoveOffset = 32;
     private const int DepthOffset = 48;
     private const int BoundOffset = 56;
