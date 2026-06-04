@@ -66,12 +66,12 @@ internal static class GoCommand
 
         if (infinite)
         {
-            return new SearchSettings(int.MaxValue, Infinite: true, NodeLimit: nodeLimit, Ponder: ponder);
+            return SearchSettings.InfiniteSearch(nodeLimit, ponder);
         }
 
         if (moveTime.HasValue)
         {
-            return new SearchSettings(hasDepth ? depth : int.MaxValue, TimeSpan.FromMilliseconds(moveTime.Value), NodeLimit: nodeLimit, Ponder: ponder);
+            return SearchSettings.Timed(TimeSpan.FromMilliseconds(moveTime.Value), hasDepth ? depth : null, nodeLimit, ponder);
         }
 
         var remaining = engine.WhiteToMove ? whiteTime : blackTime;
@@ -79,10 +79,10 @@ internal static class GoCommand
         {
             var increment = engine.WhiteToMove ? whiteIncrement : blackIncrement;
             var budget = CalculateMoveTime(remaining.Value, increment, movesToGo);
-            return new SearchSettings(hasDepth ? depth : int.MaxValue, budget, NodeLimit: nodeLimit, Ponder: ponder);
+            return SearchSettings.Timed(budget, hasDepth ? depth : null, nodeLimit, ponder);
         }
 
-        return new SearchSettings(depth, NodeLimit: nodeLimit, Ponder: ponder);
+        return SearchSettings.DepthLimited(depth, nodeLimit, ponder);
     }
 
     private static TimeSpan CalculateMoveTime(int remainingMilliseconds, int incrementMilliseconds, int movesToGo)

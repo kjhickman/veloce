@@ -37,7 +37,7 @@ public class VeloceEngineTests
         var engine = new VeloceEngine();
         engine.SetPosition(Fen.Parse("q3k3/8/8/8/8/8/8/R3K3 w - - 0 1"));
 
-        var result = engine.FindBestMove(new SearchSettings(1));
+        var result = engine.FindBestMove(SearchSettings.DepthLimited(1));
 
         await Assert.That(result.BestMove?.ToString()).IsEqualTo("a1a8");
         await Assert.That(result.Score).IsGreaterThan(0);
@@ -49,7 +49,7 @@ public class VeloceEngineTests
         var engine = new VeloceEngine();
         engine.SetPosition(Fen.Parse("rk6/8/8/8/8/8/8/Q3K3 w - - 0 1"));
 
-        var result = engine.FindBestMove(new SearchSettings(1));
+        var result = engine.FindBestMove(SearchSettings.DepthLimited(1));
 
         await Assert.That(result.BestMove?.ToString()).IsNotEqualTo("a1a8");
     }
@@ -68,7 +68,7 @@ public class VeloceEngineTests
         engine.MakeUciMove("d2b1");
         engine.MakeUciMove("f6g8");
 
-        var result = engine.FindBestMove(new SearchSettings(1));
+        var result = engine.FindBestMove(SearchSettings.DepthLimited(1));
 
         await Assert.That(result.BestMove.HasValue).IsFalse();
         await Assert.That(result.Score).IsEqualTo(0);
@@ -92,8 +92,8 @@ public class VeloceEngineTests
         var engine = new VeloceEngine();
         engine.SetPosition(Fen.Parse("r2q1rk1/3n1pb1/pp1p1np1/3Pp2p/2P5/1N2BP2/PP1QB1PP/R4RK1 w - - 1 15"));
 
-        var first = engine.FindBestMove(new SearchSettings(3));
-        var second = engine.FindBestMove(new SearchSettings(3));
+        var first = engine.FindBestMove(SearchSettings.DepthLimited(3));
+        var second = engine.FindBestMove(SearchSettings.DepthLimited(3));
 
         await Assert.That(second.BestMove).IsEqualTo(first.BestMove);
         await Assert.That(second.Nodes).IsLessThan(first.Nodes);
@@ -106,7 +106,7 @@ public class VeloceEngineTests
         engine.SetThreadCount(2);
         var legalMovesBefore = CountLegalMoves(engine);
 
-        var result = engine.FindBestMove(new SearchSettings(2));
+        var result = engine.FindBestMove(SearchSettings.DepthLimited(2));
 
         await Assert.That(result.BestMove.HasValue).IsTrue();
         await Assert.That(IsLegal(engine, result.BestMove!.Value)).IsTrue();
