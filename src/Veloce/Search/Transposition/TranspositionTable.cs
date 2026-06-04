@@ -2,9 +2,11 @@ namespace Veloce.Search.Transposition;
 
 internal sealed class TranspositionTable
 {
+    private const int EntriesPerBucket = 2;
     private const int EntrySizeBytes = 16;
+    private const int BucketSizeBytes = EntriesPerBucket * EntrySizeBytes;
     private const int DefaultMegabytes = 16;
-    private const int MaxEntryCount = 1 << 30;
+    private const int MaxBucketCount = 1 << 29;
 
     private long[] _keys = [];
     private long[] _packedEntries = [];
@@ -19,11 +21,12 @@ internal sealed class TranspositionTable
     public void Resize(int megabytes)
     {
         var bytes = Math.Max(1, megabytes) * 1024L * 1024L;
-        var entryCount = PreviousPowerOfTwo(Math.Max(1, bytes / EntrySizeBytes));
+        var bucketCount = PreviousPowerOfTwo(Math.Max(1, bytes / BucketSizeBytes));
+        var entryCount = bucketCount * EntriesPerBucket;
 
         _keys = new long[entryCount];
         _packedEntries = new long[entryCount];
-        _mask = entryCount - 1;
+        _mask = bucketCount - 1;
         _generation = 0;
     }
 
@@ -34,33 +37,35 @@ internal sealed class TranspositionTable
 
     public bool TryGet(ulong key, out TranspositionEntry entry)
     {
-        var index = (int)key & _mask;
-        var storedKey = (ulong)Volatile.Read(ref _keys[index]);
-        if (storedKey != key)
+        var startIndex = GetBucketStartIndex(key);
+        for (var i = 0; i < EntriesPerBucket; i++)
         {
-            entry = default;
-            return false;
+            var index = startIndex + i;
+            var storedKey = (ulong)Volatile.Read(ref _keys[index]);
+            if (storedKey != key)
+            {
+                continue;
+            }
+
+            var packed = (ulong)Volatile.Read(ref _packedEntries[index]);
+            if ((ulong)Volatile.Read(ref _keys[index]) != key)
+            {
+                entry = default;
+                return false;
+            }
+
+            entry = new TranspositionEntry(key, packed);
+            return true;
         }
 
-        var packed = (ulong)Volatile.Read(ref _packedEntries[index]);
-        if ((ulong)Volatile.Read(ref _keys[index]) != key)
-        {
-            entry = default;
-            return false;
-        }
-
-        entry = new TranspositionEntry(key, packed);
-        return true;
+        entry = default;
+        return false;
     }
 
     public void Store(ulong key, int score, CompactMove move, int depth, TranspositionBound bound)
     {
-        var index = (int)key & _mask;
-        var storedKey = (ulong)Volatile.Read(ref _keys[index]);
-        var existing = storedKey == 0
-            ? default
-            : new TranspositionEntry(storedKey, (ulong)Volatile.Read(ref _packedEntries[index]));
-        if (!ShouldReplace(existing, key, depth))
+        var index = FindReplacementIndex(key, depth);
+        if (index < 0)
         {
             return;
         }
@@ -70,18 +75,74 @@ internal sealed class TranspositionTable
         Volatile.Write(ref _keys[index], (long)key);
     }
 
-    private bool ShouldReplace(TranspositionEntry existing, ulong key, int depth)
+    private int FindReplacementIndex(ulong key, int depth)
     {
-        return existing.IsEmpty
-            || existing.Key == key
-            || existing.Generation != _generation
-            || depth >= existing.Depth;
+        var startIndex = GetBucketStartIndex(key);
+
+        for (var i = 0; i < EntriesPerBucket; i++)
+        {
+            var index = startIndex + i;
+            var storedKey = (ulong)Volatile.Read(ref _keys[index]);
+            if (storedKey == key)
+            {
+                return index;
+            }
+        }
+
+        for (var i = 0; i < EntriesPerBucket; i++)
+        {
+            var index = startIndex + i;
+            if (Volatile.Read(ref _keys[index]) == 0)
+            {
+                return index;
+            }
+        }
+
+        for (var i = 0; i < EntriesPerBucket; i++)
+        {
+            var index = startIndex + i;
+            var storedKey = (ulong)Volatile.Read(ref _keys[index]);
+            var existing = new TranspositionEntry(storedKey, (ulong)Volatile.Read(ref _packedEntries[index]));
+            if (existing.Generation != _generation)
+            {
+                return index;
+            }
+        }
+
+        var replaceIndex = startIndex;
+        var replacePriority = int.MaxValue;
+
+        for (var i = 0; i < EntriesPerBucket; i++)
+        {
+            var index = startIndex + i;
+            var storedKey = (ulong)Volatile.Read(ref _keys[index]);
+            var existing = new TranspositionEntry(storedKey, (ulong)Volatile.Read(ref _packedEntries[index]));
+
+            var priority = existing.Depth - (RelativeAge(existing.Generation) * 8);
+            if (priority < replacePriority)
+            {
+                replacePriority = priority;
+                replaceIndex = index;
+            }
+        }
+
+        return depth >= replacePriority ? replaceIndex : -1;
+    }
+
+    private int GetBucketStartIndex(ulong key)
+    {
+        return ((int)key & _mask) * EntriesPerBucket;
+    }
+
+    private int RelativeAge(byte generation)
+    {
+        return (_generation - generation) & 0x3F;
     }
 
     private static int PreviousPowerOfTwo(long value)
     {
         var result = 1;
-        while ((long)result << 1 <= value && result < MaxEntryCount)
+        while ((long)result << 1 <= value && result < MaxBucketCount)
         {
             result <<= 1;
         }
