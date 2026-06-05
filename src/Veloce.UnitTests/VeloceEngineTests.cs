@@ -113,6 +113,33 @@ public class VeloceEngineTests
         await Assert.That(CountLegalMoves(engine)).IsEqualTo(legalMovesBefore);
     }
 
+    [Arguments(0, 1)]
+    [Arguments(1, 20)]
+    [Arguments(2, 400)]
+    [Arguments(3, 8902)]
+    [Test]
+    public async Task Perft_FromStartPosition_ReturnsKnownNodeCount(int depth, long expectedNodes)
+    {
+        var engine = new VeloceEngine();
+
+        var nodes = engine.Perft(depth);
+
+        await Assert.That(nodes).IsEqualTo(expectedNodes);
+    }
+
+    [Test]
+    public async Task Perft_ReportsRootMoveCounts()
+    {
+        var engine = new VeloceEngine();
+        var rootCounts = new Dictionary<string, long>();
+
+        var nodes = engine.Perft(2, (move, moveNodes) => rootCounts.Add(move.ToString(), moveNodes));
+
+        await Assert.That(nodes).IsEqualTo(400);
+        await Assert.That(rootCounts).ContainsKey("e2e4");
+        await Assert.That(rootCounts["e2e4"]).IsEqualTo(20);
+    }
+
     private static bool IsLegal(VeloceEngine engine, Move move)
     {
         Span<Move> moves = stackalloc Move[218];

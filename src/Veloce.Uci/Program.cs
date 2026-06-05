@@ -52,7 +52,7 @@ public static class Program
                     break;
 
                 case "go":
-                    await GoCommand.HandleAsync(engine, session, parts);
+                    await GoCommand.HandleAsync(engine, session, output, parts);
                     break;
 
                 case "stop":

@@ -63,4 +63,67 @@ public class VeloceEngine
     {
         return _game.WriteLegalMoves(moves);
     }
+
+    public long Perft(int depth, Action<Move, long>? rootMoveCount = null)
+    {
+        if (depth <= 0)
+        {
+            return 1;
+        }
+
+        Span<Move> moves = stackalloc Move[218];
+        var moveCount = _game.WriteLegalMoves(moves);
+        long nodes = 0;
+
+        for (var i = 0; i < moveCount; i++)
+        {
+            var move = moves[i];
+            _game.MakeMove(move);
+            long moveNodes;
+            try
+            {
+                moveNodes = CountPerftNodes(depth - 1);
+            }
+            finally
+            {
+                _game.UndoMove();
+            }
+
+            nodes += moveNodes;
+            rootMoveCount?.Invoke(move, moveNodes);
+        }
+
+        return nodes;
+    }
+
+    private long CountPerftNodes(int depth)
+    {
+        if (depth == 0)
+        {
+            return 1;
+        }
+
+        Span<Move> moves = stackalloc Move[218];
+        var moveCount = _game.WriteLegalMoves(moves);
+        if (depth == 1)
+        {
+            return moveCount;
+        }
+
+        long nodes = 0;
+        for (var i = 0; i < moveCount; i++)
+        {
+            _game.MakeMove(moves[i]);
+            try
+            {
+                nodes += CountPerftNodes(depth - 1);
+            }
+            finally
+            {
+                _game.UndoMove();
+            }
+        }
+
+        return nodes;
+    }
 }

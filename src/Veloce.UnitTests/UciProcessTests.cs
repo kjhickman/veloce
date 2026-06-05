@@ -172,6 +172,26 @@ public class UciProcessTests
         await Assert.That(process.ExitCode).IsEqualTo(0);
     }
 
+    [Test]
+    public async Task UciProcess_GoPerft_ReturnsRootCountsAndTotalNodes()
+    {
+        using var process = StartUciProcess();
+
+        await SendLine(process, "uci");
+        await ReadUntil(process, line => line == "uciok");
+
+        await SendLine(process, "position startpos");
+        await SendLine(process, "go perft 2");
+        var output = await ReadUntilOutput(process, line => line == "Nodes searched: 400");
+
+        await SendLine(process, "quit");
+        await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
+
+        await Assert.That(output).Contains("e2e4: 20");
+        await Assert.That(output).Contains("Nodes searched: 400");
+        await Assert.That(process.ExitCode).IsEqualTo(0);
+    }
+
     private static Process StartUciProcess()
     {
         var repoRoot = FindRepoRoot();
