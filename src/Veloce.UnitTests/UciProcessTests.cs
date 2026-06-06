@@ -82,7 +82,7 @@ public class UciProcessTests
         var bestMoveIndex = output.FindIndex(line => line.StartsWith("bestmove ", StringComparison.Ordinal));
         var infoIndex = output.FindIndex(line => Regex.IsMatch(
             line,
-            "^info depth 1 multipv 1 score cp -?\\d+ nodes \\d+ nps \\d+ time \\d+ hashfull \\d+ pv [a-h][1-8][a-h][1-8][qrbn]?$"));
+            "^info depth 1 seldepth \\d+ multipv 1 score (cp -?\\d+|mate -?\\d+) nodes \\d+ nps \\d+ time \\d+ hashfull \\d+ pv [a-h][1-8][a-h][1-8][qrbn]?( [a-h][1-8][a-h][1-8][qrbn]?)*$"));
 
         await Assert.That(infoIndex).IsGreaterThanOrEqualTo(0);
         await Assert.That(infoIndex).IsLessThan(bestMoveIndex);

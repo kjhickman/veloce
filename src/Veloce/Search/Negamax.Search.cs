@@ -11,6 +11,7 @@ public sealed partial class Negamax
     {
         cancellationToken.ThrowIfCancellationRequested();
         RecordNode();
+        RecordSelectiveDepth(ply);
 
         if (game.GetDrawState().IsDraw())
         {
@@ -171,6 +172,7 @@ public sealed partial class Negamax
     {
         cancellationToken.ThrowIfCancellationRequested();
         RecordNode();
+        RecordSelectiveDepth(ply);
 
         if (game.GetDrawState().IsDraw())
         {
@@ -248,6 +250,14 @@ public sealed partial class Negamax
         if (_nodes >= _nodeLimit)
         {
             throw new NodeLimitReachedException();
+        }
+    }
+
+    private void RecordSelectiveDepth(int ply)
+    {
+        if (ply > _selectiveDepth)
+        {
+            _selectiveDepth = ply;
         }
     }
 

@@ -17,6 +17,7 @@ public sealed partial class Negamax
     private readonly int[,,] _history = new int[2, 64, 64];
     private long _nodes;
     private long _nodeLimit = long.MaxValue;
+    private int _selectiveDepth;
 
     internal Negamax(TranspositionTable transpositions, int rootMoveOffset = 0, int depthOffset = 0)
     {
@@ -34,6 +35,7 @@ public sealed partial class Negamax
         var now = Stopwatch.GetTimestamp();
         _nodes = 0;
         _nodeLimit = settings.NodeLimit ?? long.MaxValue;
+        _selectiveDepth = 0;
         ResetSearchHeuristics();
 
         using var timeLimit = settings.MoveTime.HasValue ? new CancellationTokenSource(settings.MoveTime.Value) : null;
@@ -57,6 +59,7 @@ public sealed partial class Negamax
         var bestMove = moves[0];
         var bestScore = MaterialEvaluator.Evaluate(game.Position);
         var completedDepth = 0;
+        var principalVariation = Array.Empty<Move>();
         var rootKey = GetTranspositionKey(game);
         var diversifiedRootMove = _rootMoveOffset == 0 ? Move.NullMove : moves[_rootMoveOffset % moveCount];
 
@@ -85,7 +88,8 @@ public sealed partial class Negamax
                 bestScore = depthBestScore;
                 completedDepth = depth;
                 _transpositions.Store(rootKey, ScoreToTable(bestScore, 0), new CompactMove(bestMove), depth, TranspositionBound.Exact);
-                searchInfo?.Invoke(new SearchInfo(bestMove, bestScore, completedDepth, _nodes, Stopwatch.GetElapsedTime(now)));
+                principalVariation = BuildPrincipalVariation(game, bestMove);
+                searchInfo?.Invoke(new SearchInfo(bestMove, bestScore, completedDepth, _nodes, Stopwatch.GetElapsedTime(now), 0, _selectiveDepth, principalVariation));
             }
             catch (OperationCanceledException) when (effectiveCancellation.IsCancellationRequested)
             {
@@ -97,7 +101,53 @@ public sealed partial class Negamax
             }
         }
 
-        return new SearchResult(bestMove, bestScore, completedDepth, _nodes, Stopwatch.GetElapsedTime(now));
+        return new SearchResult(bestMove, bestScore, completedDepth, _nodes, Stopwatch.GetElapsedTime(now), 0, _selectiveDepth, principalVariation);
+    }
+
+    private Move[] BuildPrincipalVariation(Game game, Move bestMove)
+    {
+        if (bestMove == Move.NullMove)
+        {
+            return [];
+        }
+
+        var principalVariation = new List<Move>(MaxSearchPly);
+        var seenKeys = new HashSet<ulong>();
+
+        game.MakeMove(bestMove);
+        principalVariation.Add(bestMove);
+
+        try
+        {
+            Span<Move> moves = stackalloc Move[218];
+            while (principalVariation.Count < MaxSearchPly && seenKeys.Add(GetTranspositionKey(game)))
+            {
+                var moveCount = game.WriteLegalMoves(moves);
+                var key = GetTranspositionKey(game);
+                if (moveCount == 0 || !_transpositions.TryGet(key, out var entry))
+                {
+                    break;
+                }
+
+                var move = entry.Move.FindMatchingMove(moves, moveCount);
+                if (move == Move.NullMove)
+                {
+                    break;
+                }
+
+                game.MakeMove(move);
+                principalVariation.Add(move);
+            }
+        }
+        finally
+        {
+            for (var i = 0; i < principalVariation.Count; i++)
+            {
+                game.UndoMove();
+            }
+        }
+
+        return [.. principalVariation];
     }
 
     private static ulong GetTranspositionKey(Game game)
