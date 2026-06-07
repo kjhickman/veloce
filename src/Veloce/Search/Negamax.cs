@@ -120,7 +120,9 @@ public sealed partial class Negamax
         try
         {
             Span<Move> moves = stackalloc Move[218];
-            while (principalVariation.Count < MaxSearchPly && seenKeys.Add(GetTranspositionKey(game)))
+            while (!game.GetDrawState().IsDraw()
+                && principalVariation.Count < MaxSearchPly
+                && seenKeys.Add(GetTranspositionKey(game)))
             {
                 var moveCount = game.WriteLegalMoves(moves);
                 var key = GetTranspositionKey(game);
