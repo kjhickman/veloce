@@ -58,6 +58,43 @@ public class UciFormattingTests
         await Assert.That(UciFormatting.FormatSearchResult(result)).Contains("score mate -2");
     }
 
+    [Test]
+    public async Task FormatBestMove_WithPonderMove_AppendsPonder()
+    {
+        var game = new Game();
+        var firstMove = FindMove(game, "e2e4");
+        game.MakeMove(firstMove);
+        var principalVariation = new[] { firstMove, FindMove(game, "e7e5") };
+        var result = new SearchResult(principalVariation[0], 34, 2, 100, TimeSpan.FromMilliseconds(10), 0, 3, principalVariation);
+
+        await Assert.That(UciFormatting.FormatBestMove(result)).IsEqualTo("bestmove e2e4 ponder e7e5");
+    }
+
+    [Test]
+    public async Task FormatBestMove_WithSingleMovePrincipalVariation_OmitsPonder()
+    {
+        var bestMove = FindMove(new Game(), "e2e4");
+        var result = new SearchResult(bestMove, 34, 1, 100, TimeSpan.Zero, 0, 1, new[] { bestMove });
+
+        await Assert.That(UciFormatting.FormatBestMove(result)).IsEqualTo("bestmove e2e4");
+    }
+
+    [Test]
+    public async Task FormatBestMove_WithoutPrincipalVariation_OmitsPonder()
+    {
+        var result = new SearchResult(FindMove(new Game(), "e2e4"), 34, 1, 100, TimeSpan.Zero);
+
+        await Assert.That(UciFormatting.FormatBestMove(result)).IsEqualTo("bestmove e2e4");
+    }
+
+    [Test]
+    public async Task FormatBestMove_WhenBestMoveIsMissing_ReturnsNullMove()
+    {
+        var result = new SearchResult(null, 0, 0, 0, TimeSpan.Zero);
+
+        await Assert.That(UciFormatting.FormatBestMove(result)).IsEqualTo("bestmove 0000");
+    }
+
     private static Move FindMove(Game game, string uciMove)
     {
         Span<Move> moves = stackalloc Move[218];

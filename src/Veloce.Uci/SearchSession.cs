@@ -55,7 +55,7 @@ internal sealed class SearchSession(UciWriter output)
 
             _output.WriteLine(UciFormatting.FormatSearchResult(result));
 
-            _output.WriteLine($"bestmove {(result.BestMove.HasValue ? UciFormatting.FormatMove(result.BestMove.Value) : "0000")}");
+            _output.WriteLine(UciFormatting.FormatBestMove(result));
             _output.Flush();
         }
         finally

@@ -24,7 +24,7 @@ public class UciProcessTests
         await SendLine(process, "quit");
         await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
 
-        await Assert.That(Regex.IsMatch(bestMove, "^bestmove ([a-h][1-8][a-h][1-8][qrbn]?|0000)$")).IsTrue();
+        await Assert.That(Regex.IsMatch(bestMove, "^bestmove ([a-h][1-8][a-h][1-8][qrbn]?|0000)( ponder [a-h][1-8][a-h][1-8][qrbn]?)?$")).IsTrue();
         await Assert.That(process.ExitCode).IsEqualTo(0);
     }
 
@@ -60,7 +60,7 @@ public class UciProcessTests
         await SendLine(process, "quit");
         await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
 
-        await Assert.That(Regex.IsMatch(bestMove, "^bestmove ([a-h][1-8][a-h][1-8][qrbn]?|0000)$")).IsTrue();
+        await Assert.That(Regex.IsMatch(bestMove, "^bestmove ([a-h][1-8][a-h][1-8][qrbn]?|0000)( ponder [a-h][1-8][a-h][1-8][qrbn]?)?$")).IsTrue();
         await Assert.That(process.ExitCode).IsEqualTo(0);
     }
 
@@ -128,7 +128,7 @@ public class UciProcessTests
         await SendLine(process, "quit");
         await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
 
-        await Assert.That(Regex.IsMatch(bestMove, "^bestmove ([a-h][1-8][a-h][1-8][qrbn]?|0000)$")).IsTrue();
+        await Assert.That(Regex.IsMatch(bestMove, "^bestmove ([a-h][1-8][a-h][1-8][qrbn]?|0000)( ponder [a-h][1-8][a-h][1-8][qrbn]?)?$")).IsTrue();
         await Assert.That(process.ExitCode).IsEqualTo(0);
     }
 
@@ -147,7 +147,7 @@ public class UciProcessTests
         await SendLine(process, "quit");
         await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
 
-        await Assert.That(Regex.IsMatch(bestMove, "^bestmove ([a-h][1-8][a-h][1-8][qrbn]?|0000)$")).IsTrue();
+        await Assert.That(Regex.IsMatch(bestMove, "^bestmove ([a-h][1-8][a-h][1-8][qrbn]?|0000)( ponder [a-h][1-8][a-h][1-8][qrbn]?)?$")).IsTrue();
         await Assert.That(process.ExitCode).IsEqualTo(0);
     }
 
@@ -168,7 +168,7 @@ public class UciProcessTests
         await SendLine(process, "quit");
         await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
 
-        await Assert.That(Regex.IsMatch(bestMove, "^bestmove ([a-h][1-8][a-h][1-8][qrbn]?|0000)$")).IsTrue();
+        await Assert.That(Regex.IsMatch(bestMove, "^bestmove ([a-h][1-8][a-h][1-8][qrbn]?|0000)( ponder [a-h][1-8][a-h][1-8][qrbn]?)?$")).IsTrue();
         await Assert.That(process.ExitCode).IsEqualTo(0);
     }
 

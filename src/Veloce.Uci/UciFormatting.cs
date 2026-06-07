@@ -39,6 +39,18 @@ public static class UciFormatting
         return FormatInfoLine(result.Depth, result.SelectiveDepth, result.Score, result.Nodes, result.Elapsed, result.HashFull, result.BestMove, result.PrincipalVariation);
     }
 
+    public static string FormatBestMove(SearchResult result)
+    {
+        var bestMove = result.BestMove.HasValue ? FormatMove(result.BestMove.Value) : "0000";
+
+        if (result.BestMove.HasValue && result.PrincipalVariation is { Length: >= 2 } principalVariation)
+        {
+            return $"bestmove {bestMove} ponder {FormatMove(principalVariation[1])}";
+        }
+
+        return $"bestmove {bestMove}";
+    }
+
     private static string FormatInfoLine(int depth, int selectiveDepth, int score, long nodes, TimeSpan elapsed, int hashFull, Move? bestMove, Move[]? principalVariation)
     {
         var elapsedMilliseconds = (long)elapsed.TotalMilliseconds;
