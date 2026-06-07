@@ -9,6 +9,9 @@ internal sealed class SearchSession(UciWriter output)
     private Task? _activeSearch;
     private CancellationTokenSource? _activeSearchCancellation;
     private int _activeSearchId;
+    private bool _suppressBestMove;
+
+    public SearchSettings? PendingPonderSettings { get; set; }
 
     public async ValueTask StartAsync(Func<CancellationToken, Action<SearchInfo>, SearchResult> search)
     {
@@ -23,11 +26,18 @@ internal sealed class SearchSession(UciWriter output)
         }
     }
 
-    public async ValueTask StopAsync()
+    public async ValueTask StopAsync(bool emitBestMove = true)
     {
         Task? activeSearch;
         lock (_stateLock)
         {
+            PendingPonderSettings = null;
+
+            if (!emitBestMove)
+            {
+                _suppressBestMove = true;
+            }
+
             _activeSearchCancellation?.Cancel();
             activeSearch = _activeSearch;
         }
@@ -53,10 +63,19 @@ internal sealed class SearchSession(UciWriter output)
                 _output.Flush();
             });
 
-            _output.WriteLine(UciFormatting.FormatSearchResult(result));
+            bool suppressBestMove;
+            lock (_stateLock)
+            {
+                suppressBestMove = _suppressBestMove;
+                _suppressBestMove = false;
+            }
 
-            _output.WriteLine(UciFormatting.FormatBestMove(result));
-            _output.Flush();
+            if (!suppressBestMove)
+            {
+                _output.WriteLine(UciFormatting.FormatSearchResult(result));
+                _output.WriteLine(UciFormatting.FormatBestMove(result));
+                _output.Flush();
+            }
         }
         finally
         {

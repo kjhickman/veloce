@@ -42,6 +42,7 @@ public class UciProcessTests
         await Assert.That(output).Contains("option name Clear Hash type button");
         await Assert.That(output).Contains("option name MultiPV type spin default 1 min 1 max 1");
         await Assert.That(output).Contains("option name UCI_AnalyseMode type check default false");
+        await Assert.That(output).Contains("option name Ponder type check default false");
         await Assert.That(process.ExitCode).IsEqualTo(0);
     }
 
@@ -152,6 +153,54 @@ public class UciProcessTests
     }
 
     [Test]
+    public async Task UciProcess_GoPonder_DoesNotReturnBestMoveUntilPonderHit()
+    {
+        using var process = StartUciProcess();
+
+        await SendLine(process, "uci");
+        await ReadUntil(process, line => line == "uciok");
+
+        await SendLine(process, "position startpos moves e2e4 e7e5");
+        await SendLine(process, "go ponder wtime 60000 btime 60000");
+
+        var prematureBestMove = await ReadLineMatchingWithin(
+            process,
+            line => line.StartsWith("bestmove ", StringComparison.Ordinal),
+            TimeSpan.FromMilliseconds(300));
+
+        await SendLine(process, "ponderhit");
+        var bestMove = await ReadUntil(process, line => line.StartsWith("bestmove ", StringComparison.Ordinal));
+
+        await SendLine(process, "quit");
+        await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
+
+        await Assert.That(prematureBestMove).IsNull();
+        await Assert.That(Regex.IsMatch(bestMove, "^bestmove ([a-h][1-8][a-h][1-8][qrbn]?|0000)( ponder [a-h][1-8][a-h][1-8][qrbn]?)?$")).IsTrue();
+        await Assert.That(process.ExitCode).IsEqualTo(0);
+    }
+
+    [Test]
+    public async Task UciProcess_GoPonderStop_ReturnsBestMove()
+    {
+        using var process = StartUciProcess();
+
+        await SendLine(process, "uci");
+        await ReadUntil(process, line => line == "uciok");
+
+        await SendLine(process, "position startpos moves e2e4 e7e5");
+        await SendLine(process, "go ponder wtime 60000 btime 60000");
+        await Task.Delay(50);
+        await SendLine(process, "stop");
+        var bestMove = await ReadUntil(process, line => line.StartsWith("bestmove ", StringComparison.Ordinal));
+
+        await SendLine(process, "quit");
+        await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
+
+        await Assert.That(Regex.IsMatch(bestMove, "^bestmove ([a-h][1-8][a-h][1-8][qrbn]?|0000)( ponder [a-h][1-8][a-h][1-8][qrbn]?)?$")).IsTrue();
+        await Assert.That(process.ExitCode).IsEqualTo(0);
+    }
+
+    [Test]
     public async Task UciProcess_GoInfiniteStop_ReturnsBestMove()
     {
         using var process = StartUciProcess();
@@ -228,6 +277,25 @@ public class UciProcessTests
 
         var error = await process.StandardError.ReadToEndAsync(cts.Token);
         throw new TimeoutException($"Timed out waiting for UCI output. stderr: {error}");
+    }
+
+    private static async Task<string?> ReadLineMatchingWithin(Process process, Func<string, bool> predicate, TimeSpan timeout)
+    {
+        using var cts = new CancellationTokenSource(timeout);
+
+        try
+        {
+            while (true)
+            {
+                var line = await process.StandardOutput.ReadLineAsync(cts.Token);
+                if (line is null) return null;
+                if (predicate(line)) return line;
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            return null;
+        }
     }
 
     private static async Task<List<string>> ReadUntilOutput(Process process, Func<string, bool> predicate)

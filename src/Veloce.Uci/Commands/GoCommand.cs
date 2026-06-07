@@ -4,15 +4,24 @@ namespace Veloce.Uci.Commands;
 
 internal static class GoCommand
 {
-    public static ValueTask HandleAsync(VeloceEngine engine, SearchSession session, UciWriter output, string[] commandParts)
+    public static async ValueTask HandleAsync(VeloceEngine engine, SearchSession session, UciWriter output, string[] commandParts)
     {
         if (TryHandlePerft(engine, output, commandParts))
         {
-            return ValueTask.CompletedTask;
+            return;
         }
 
         var settings = ParseSearchSettings(engine, commandParts);
-        return session.StartAsync((cancellationToken, searchInfo) => engine.FindBestMove(settings, searchInfo, cancellationToken));
+
+        if (settings.Ponder)
+        {
+            var ponderSettings = SearchSettings.InfiniteSearch(settings.NodeLimit);
+            await session.StartAsync((cancellationToken, searchInfo) => engine.FindBestMove(ponderSettings, searchInfo, cancellationToken));
+            session.PendingPonderSettings = settings;
+            return;
+        }
+
+        await session.StartAsync((cancellationToken, searchInfo) => engine.FindBestMove(settings, searchInfo, cancellationToken));
     }
 
     private static bool TryHandlePerft(VeloceEngine engine, UciWriter output, string[] commandParts)

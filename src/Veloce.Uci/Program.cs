@@ -29,6 +29,7 @@ public static class Program
                     output.WriteLine("option name Clear Hash type button");
                     output.WriteLine("option name MultiPV type spin default 1 min 1 max 1");
                     output.WriteLine("option name UCI_AnalyseMode type check default false");
+                    output.WriteLine("option name Ponder type check default false");
                     output.WriteLine("uciok");
                     break;
 
@@ -53,6 +54,19 @@ public static class Program
 
                 case "go":
                     await GoCommand.HandleAsync(engine, session, output, parts);
+                    break;
+
+                case "ponderhit":
+                    {
+                        var pendingSettings = session.PendingPonderSettings;
+                        if (pendingSettings is not null)
+                        {
+                            session.PendingPonderSettings = null;
+                            await session.StopAsync(emitBestMove: false);
+                            await session.StartAsync((cancellationToken, searchInfo) => engine.FindBestMove(pendingSettings, searchInfo, cancellationToken));
+                        }
+                    }
+
                     break;
 
                 case "stop":
